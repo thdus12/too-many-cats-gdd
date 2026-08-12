@@ -1,4 +1,4 @@
-<title>고양이가 너무 많아! — 기획서 v0.9.5</title>
+<title>고양이가 너무 많아! — 기획서 v0.9.6</title>
 
 <style>
   /* ── 라이트가 기본. 다크는 토큰만 덮는다 ── */
@@ -1093,7 +1093,7 @@
 <nav id="nav">
   <div class="brand">
     <b>고양이가 너무 많아!</b>
-    <span>GDD v0.9.5</span>
+    <span>GDD v0.9.6</span>
   </div>
   <div class="nav-group"><h3>개요<small>무엇을 만드는가</small></h3><ul><li><a href="#s0"><span class="n">0</span><span class="t">문서 정보</span><span class="fig"></span></a></li><li><a href="#s1"><span class="n">1</span><span class="t">게임 개요</span><span class="fig"></span></a></li><li><a href="#s2"><span class="n">2</span><span class="t">핵심 판타지</span><span class="fig"></span></a></li><li><a href="#s3"><span class="n">3</span><span class="t">디자인 원칙</span><span class="fig"></span></a></li><li><a href="#s4"><span class="n">4</span><span class="t">기본 게임 루프</span><span class="fig"></span></a></li><li><a href="#s5"><span class="n">5</span><span class="t">Run 구조</span><span class="fig"></span></a></li><li><a href="#s6"><span class="n">6</span><span class="t">자원</span><span class="fig"></span></a></li></ul></div>
 <div class="nav-group"><h3>고양이<small>무리가 어떻게 움직이는가</small></h3><ul><li><a href="#s7"><span class="n">7</span><span class="t">고양이 데이터</span><span class="fig"></span></a></li><li><a href="#s8"><span class="n">8</span><span class="t">Cat State Machine</span><span class="fig"></span></a></li><li><a href="#s9"><span class="n">9</span><span class="t">고양이 이동 시스템</span><span class="fig"></span></a></li><li><a href="#s10"><span class="n">10</span><span class="t">Flow Field</span><span class="fig"></span></a></li><li><a href="#s11"><span class="n">11</span><span class="t">Attraction System</span><span class="fig"></span></a></li><li><a href="#s12"><span class="n">12</span><span class="t">Separation / Crowd</span><span class="fig"></span></a></li><li><a href="#s13"><span class="n">13</span><span class="t">기본 고양이 종류</span><span class="fig"></span></a></li><li><a href="#s14"><span class="n">14</span><span class="t">특수 고양이</span><span class="fig"></span></a></li><li><a href="#s15"><span class="n">15</span><span class="t">Wave 시스템</span><span class="fig"></span></a></li></ul></div>
@@ -1110,7 +1110,7 @@
 
 <main>
   <header>
-    <p class="eyebrow">Game Design Document v0.9.5</p>
+    <p class="eyebrow">Game Design Document v0.9.6</p>
     <h1>고양이가 너무 많아!</h1>
     <p>
       외계 고양이 행성에서 쳐들어온 고양이 떼를 구조해 로켓에 태워 돌려보내는
@@ -1814,15 +1814,63 @@ DirectionToSource
 </ul>
 <p>지형이 이미 무리를 모아 주는 판. 여기서 "모인 곳을 수확한다"의 후반부만 연습한다.
 겁쟁이 고양이 때문에 구조원을 병목 한가운데 두면 오히려 흩어진다.</p>
-<h2>Map 5 - 공장</h2>
-<p><strong>가르치는 것</strong>: 내 의지와 무관한 힘이 있다</p>
+<h2>Map 5 - 물류 터미널</h2>
+<p><strong>가르치는 것</strong>: 처리량이 병목이다</p>
 <ul>
-<li>Conveyor 2줄이 서로 반대 방향으로 강제 이동시킨다</li>
-<li>Spawn 2 (둘 다 서쪽) / Exit 1 — 벨트마다 방향이 다르지만 나가는 곳은 하나다</li>
+<li>넓은 아스팔트 야적장. 하역장 한 채와 파렛트 더미 둘뿐이라 <strong>놓을 자리가 가장 적다</strong> (75장)</li>
+<li>Spawn 2 (서쪽 상·중) / Exit 1 (우측 하단) — 야적장을 대각선으로 길게 가로지른다</li>
 <li>신규: 뚱냥이 · 구조 차량</li>
 </ul>
-<p>벨트를 거스를지 태워 보낼지가 판단이 된다.
-뚱냥이는 느려서 벨트 위에서 특히 오래 머문다.</p>
+<p><strong>세우는 것과 걷어내는 것은 다른 문제다.</strong> 앞의 네 판은 전부 "어디서 막을까" 를 물었다.
+여기서는 막는 게 쉽다 — 개활지라 츄르 하나면 다 붙든다.
+문제는 <strong>붙든 무리를 처리할 손이 모자란다</strong>는 것이다.</p>
+<h3>폭 30 — 이 맵의 교훈은 숫자 하나에 걸려 있다</h3>
+<p>설치형은 건물 가장자리에만 서므로 사거리가 길 <strong>폭</strong> 방향으로만 뻗는다 (75장).
+야적장 폭은 <strong>30</strong> — 대로(10)의 세 배다.</p>
+<table>
+<thead>
+<tr>
+<th>사거리</th>
+<th>덮이는가</th>
+<th>사각지대</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기본 3</td>
+<td>안 덮임</td>
+<td>24칸</td>
+</tr>
+<tr>
+<td>6 (스킬트리 ×2)</td>
+<td>안 덮임</td>
+<td><strong>18칸</strong></td>
+</tr>
+<tr>
+<td>12 (사거리 네 배)</td>
+<td><strong>여전히 안 덮임</strong></td>
+<td>6칸</td>
+</tr>
+</tbody>
+</table>
+<p><strong>사거리로는 안 풀린다.</strong> 덮이는 순간 "설치형을 잘 놓으면 되는 판" 이 되고
+구조 차량이 존재할 이유가 사라진다. 그래서 자리에 안 매이는 <strong>구조 차량</strong>이 처음으로 답이 되고,
+파렛트 더미 두 개는 야적장 한복판에 딛고 설 유일한 발판이 된다.</p>
+<p>뚱냥이는 구조에 더 오래 걸려서(14장) 같은 마릿수라도 처리량을 더 조인다.</p>
+<p><code>RoadWidth.Yard</code> 가 이 폭이고, 위 표는 <code>TheYard_CannotBeSolvedByRangeAlone</code> 이 잠근다.</p>
+<h3>왜 이 판이 필요한가</h3>
+<p>이건 종이 위의 가설이 아니라 <strong>이미 겪은 문제</strong>다. 73장의 스테이지 압력을 재면서
+츄르 하나가 240마리를 전부 붙들었는데 구조원이 못 걷어내서 판이 교착에 빠졌다.
+잡는 힘과 걷어내는 힘이 별개라는 걸 그때 확인했는데, <strong>어느 맵도 그걸 가르치고 있지 않았다.</strong></p>
+<h3>컨베이어를 걷어낸 이유</h3>
+<p>원래는 공장이었고 반대 방향 컨베이어 두 줄이 "내 의지와 무관한 힘" 을 가르쳤다. 두 가지가 틀렸다.</p>
+<p><strong>한쪽 벨트는 죽는다.</strong> 76장에서 잰 대로 Flow Field 는 셀마다 제일 싼 길 하나만 고른다.
+Exit 반대로 미는 벨트는 아무도 안 타는 절반이 된다.</p>
+<p><strong>힘을 하나 더 얹는 게 이 게임의 문제가 아니다.</strong> 고양이를 움직이고 세우는 건
+이미 유인·정지(77장)가 다 하고 있다. 벨트는 그 위에 얹힌 네 번째 이동 벡터일 뿐이라
+새로 배울 게 없었다.</p>
+<p><code>TerrainType.Conveyor</code> 는 코드에 남겨 둔다. 동작하고 테스트도 있지만
+<strong>지금 이걸 쓰는 맵은 하나도 없다.</strong> 쓸 맵이 안 생기면 지운다.</p>
 <h2>Map 6 - 침수 지역</h2>
 <p><strong>가르치는 것</strong>: 계획은 Wave 중에 무너진다</p>
 <ul>
@@ -3396,7 +3444,7 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 
           <div class="map-row shut">
             <span class="map-no">05</span>
-            <span class="map-nm">공장 <span class="map-teach">— 맵 4 보통을 깨면 열린다</span></span>
+            <span class="map-nm">물류 터미널 <span class="map-teach">— 맵 4 보통을 깨면 열린다</span></span>
             <div class="stage-cells">
               <div class="cell">쉬움</div>
               <div class="cell">보통</div>
@@ -3972,11 +4020,11 @@ Id 만 옛 이름을 쓰고 있었다.</p>
        0 = 시작쪽, 1 = 가운데, 2 = 끝쪽
 </code></pre>
 <h2>세 가지 규칙</h2>
-<p><strong>1. Spawn 과 Exit 은 정면으로 마주 보지 않는다.</strong> Map 5 만 예외다.</p>
+<p><strong>1. Spawn 과 Exit 은 정면으로 마주 보지 않는다.</strong> <strong>예외 없다.</strong></p>
 <p>마주 보면 최단 경로가 직선이고, 직선 위에서는 지형이 아무 일도 하지 않는다.
 꺾여야 병목이 생기고, 병목이 있어야 배치가 판단이 된다.</p>
-<p>Map 5 는 컨베이어가 직선으로 밀어 주는 게 설계 자체라 예외다.
-Map 1 도 예전엔 직선이었는데 Y 로 바뀌면서 아니게 됐다.</p>
+<p>예외는 두 번 있었고 둘 다 설계가 바뀌면서 사라졌다 — Map 1 은 Y 가 되면서,
+Map 5 는 컨베이어를 걷어내면서. <strong>예외를 지우지 않고 두면 다음 맵이 거기 기대게 된다.</strong></p>
 <p><strong>2. Exit 은 언제나 하나다.</strong> 예외 없다 — 최종 판도 하나다.</p>
 <p>들어오는 길은 하나든 여섯이든 상관없다. <strong>나가는 길만 하나로 묶는다.</strong></p>
 <p>이유가 셋이다.</p>
@@ -4038,10 +4086,10 @@ Map 1 도 예전엔 직선이었는데 Y 로 바뀌면서 아니게 됐다.</p>
 </tr>
 <tr>
 <td>5</td>
-<td>공장</td>
-<td>좌2 · 좌0</td>
-<td>우2</td>
-<td>벨트 두 줄이 서로 반대</td>
+<td>물류 터미널</td>
+<td>좌2 · 좌1</td>
+<td>우0</td>
+<td>야적장을 대각선으로 길게</td>
 </tr>
 <tr>
 <td>6</td>
@@ -4163,7 +4211,7 @@ Map 10 의 Exit 하나가 Spawn 과 마주 보고 있었다. 표를 손으로 �
 <p>전통시장, 아파트 단지, 항구. 흐름이 지형에 강하게 묶인다.
 배치 자리는 길에 접한 면 하나뿐이라 <strong>사거리가 한 방향으로만 뻗는다.</strong></p>
 <h3>개활형 — 넓은 통행 구역에 장애 지형이 섬처럼 박혀 있다</h3>
-<p>공장, 도심. 흐름이 자유롭고 무리가 넓게 퍼진다.</p>
+<p>물류 터미널, 도심. 흐름이 자유롭고 무리가 넓게 퍼진다.</p>
 <p><strong>섬은 사방이 가장자리다.</strong> 사거리가 360°로 뻗어서 골목의 한쪽 면보다 훨씬 강한 자리다.
 개활형의 재미가 여기서 나온다 — <strong>좋은 섬을 차지하는 것이 곧 그 구역을 지배하는 것</strong>이고,
 섬이 몇 개뿐이라 어디를 먼저 잡을지가 판단이 된다.</p>
@@ -4819,10 +4867,24 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 </section>
 <section class="chapter" id="end-of-document">
 <h2>End of Document</h2>
-<p><strong>Too Many Cats! — Game Design Document v0.9.5 FULL</strong></p>
+<p><strong>Too Many Cats! — Game Design Document v0.9.6 FULL</strong></p>
 </section>
 <section class="chapter" id="변경-이력">
 <h2>변경 이력</h2>
+<h2>v0.9.6 — Map 5 를 공장에서 물류 터미널로</h2>
+<ul>
+<li><strong>가르치는 것이 바뀌었다</strong> — "내 의지와 무관한 힘" → <strong>"처리량이 병목이다"</strong>.
+  세우는 것과 걷어내는 것은 다른 문제라는 걸 어느 맵도 안 가르치고 있었다.</li>
+<li><strong>컨베이어를 걷어냈다.</strong> 반대 방향 벨트 한쪽은 죽는다 — Flow Field 는 셀마다
+  제일 싼 길 하나만 고른다(76장). 게다가 벨트는 유인·정지 위에 얹힌
+  네 번째 이동 벡터라 새로 배울 게 없었다.</li>
+<li><strong>74장 규칙 1 의 예외가 사라졌다.</strong> 이제 직선 흐름 맵은 하나도 없고
+  <code>AllowsStraightFlow</code> 는 항상 false 다. 예외를 남기면 다음 맵이 거기 기댄다.</li>
+<li><strong><code>RoadWidth.Yard</code> = 30 신설.</strong> 사거리를 네 배로 올려도 안 덮인다 —
+  교훈이 폭 하나에 걸려 있어서 테스트로 잠갔다.</li>
+<li>맵 Id <code>map-05-factory</code> → <code>map-05-depot</code>. 흐름은 좌2 · 좌1 → 우0 대각선.</li>
+<li><code>TerrainType.Conveyor</code> 는 코드에 남긴다. 지금 쓰는 맵은 없다.</li>
+</ul>
 <h2>v0.9.5 — 타이틀 로고 확정</h2>
 <ul>
 <li><strong>79장 신설</strong> — 로고를 확정하고 마크·구조·색·사용 규칙을 적었다.
@@ -5451,16 +5513,17 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
       ],
       spawns: [['W',1],['E',1]], exits: [['N',1]] },
 
-    { n: 5, name: '공장', teach: '내 의지와 무관한 힘이 있다',
+    { n: 5, name: '물류 터미널', teach: '처리량이 병목이다',
       open: true,
-      roads: [{ pts: [[0,20],[64,20]], w: 34 }],
-      islands: [
-        [[12,15],[22,13],[24,19],[14,21]],
-        [[30,24],[44,26],[42,33],[28,31]],
-        [[46,10],[57,9],[58,16],[47,17]]
+      roads: [
+        { pts: [[0,9.6],[26,12],[46,24],[64,30.4]], w: 30 },
+        { pts: [[0,20],[24,19]], w: 26 }
       ],
-      belts: [[0,9.6,64,-1],[0,30.4,64,1]],
-      spawns: [['W',2],['W',0]], exits: [['E',2]] },
+      islands: [
+        [[20,26],[29,27],[28,32],[19,31]],
+        [[42,10],[50,11],[49,16],[41,15]]
+      ],
+      spawns: [['W',2],['W',1]], exits: [['E',0]] },
 
     { n: 6, name: '침수 지역', teach: '계획은 Wave 중에 무너진다',
       roads: [
@@ -5594,20 +5657,6 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
         'stroke-width': 1.5, 'stroke-dasharray': '5 4'
       }));
     }
-
-    (m.belts || []).forEach(function (b) {
-      var y = b[1] * PX;
-      var g = svgEl('g', { stroke: 'rgba(240,184,64,.55)', fill: 'rgba(240,184,64,.55)', 'stroke-width': 1.5 });
-      for (var x = 40; x < MAP_W - 20; x += 60) {
-        var d = b[3];
-        g.appendChild(svgEl('line', { x1: x, y1: y, x2: x + 14 * d, y2: y }));
-        g.appendChild(svgEl('polygon', {
-          points: (x + 18 * d) + ',' + y + ' ' + (x + 11 * d) + ',' + (y - 3.5) + ' ' + (x + 11 * d) + ',' + (y + 3.5),
-          stroke: 'none'
-        }));
-      }
-      svg.appendChild(g);
-    });
 
     // 합류점. 유인 하나가 두 줄기를 다 잡는 자리다. (GDD 25 Map 1)
     if (m.fork) {
