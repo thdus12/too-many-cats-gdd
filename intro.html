@@ -1,0 +1,484 @@
+<title>고양이가 너무 많아! — 인트로</title>
+
+<style>
+  :root {
+    --ink: #E8EAED;
+    --ink-2: #9AA3AE;
+    --panel: rgba(10, 13, 18, .88);
+    --edge: rgba(255, 255, 255, .16);
+    --gold: #FFC01F;
+    --orange: #F26B1E;
+    --pink: #F4657E;
+    --page: #14171C;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", "Noto Sans KR", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 16px 40px;
+    min-height: 100vh;
+  }
+
+  header {
+    width: 100%;
+    max-width: 960px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  h1 {
+    font-size: 15px;
+    font-weight: 650;
+    margin: 0;
+    letter-spacing: .01em;
+  }
+
+  header p {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--ink-2);
+  }
+
+  /* ── 화면. 640x360 을 그대로 확대한다 ── */
+
+  #stage {
+    width: 100%;
+    max-width: 960px;
+    aspect-ratio: 16 / 9;
+    position: relative;
+    background: #000;
+    border: 1px solid var(--edge);
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+    image-rendering: pixelated;
+  }
+
+  #bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    image-rendering: pixelated;
+  }
+
+  /* 그림이 없을 때 자리만 알려 준다 */
+  #bgSlot {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 2px;
+    padding: 14px 16px;
+    color: rgba(255, 255, 255, .26);
+    font-size: 11.5px;
+    letter-spacing: .04em;
+    background:
+      repeating-linear-gradient(45deg,
+        rgba(255,255,255,.022) 0 12px,
+        transparent 12px 24px);
+  }
+
+  #bgSlot b { font-weight: 600; font-size: 13px; color: rgba(255,255,255,.4); }
+
+  /* 안전 영역 — 대사창이 덮는 아래 1/3 */
+  #safe {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 66.667%;
+    border-bottom: 1px dashed rgba(255, 192, 31, .34);
+    pointer-events: none;
+    display: none;
+  }
+
+  #safe::after {
+    content: "안전 영역 640 × 240";
+    position: absolute;
+    right: 8px; bottom: 6px;
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    color: rgba(255, 192, 31, .6);
+  }
+
+  /* ── 대사창 ── */
+
+  #box {
+    position: absolute;
+    left: 3.2%; right: 3.2%; bottom: 5%;
+    height: 30%;
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-radius: 5px;
+    display: flex;
+    gap: 3%;
+    padding: 2.4% 3%;
+    backdrop-filter: blur(2px);
+  }
+
+  #face {
+    flex: 0 0 auto;
+    aspect-ratio: 1;
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 4px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    image-rendering: pixelated;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 4px;
+    font-size: 10px;
+    color: rgba(255, 255, 255, .34);
+    letter-spacing: .03em;
+  }
+
+  #say { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+
+  #who {
+    font-size: clamp(11px, 1.5vw, 14px);
+    font-weight: 650;
+    color: var(--gold);
+    letter-spacing: .04em;
+    min-height: 1em;
+  }
+
+  #text {
+    font-size: clamp(13px, 2.05vw, 21px);
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
+  #caret {
+    position: absolute;
+    right: 14px; bottom: 10px;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+
+  /* ── 타이틀 카드 ── */
+
+  #title {
+    position: absolute;
+    inset: 0 0 30% 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    pointer-events: none;
+  }
+
+  #title.on { display: flex; animation: drop .45s cubic-bezier(.2, 1.4, .4, 1); }
+
+  @keyframes drop {
+    from { transform: translateY(-16px) scale(.92); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+
+  #title b {
+    font-size: clamp(22px, 4.6vw, 46px);
+    font-weight: 800;
+    letter-spacing: -.01em;
+    background: linear-gradient(180deg, var(--gold), var(--orange));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 2px #000;
+    paint-order: stroke fill;
+  }
+
+  #title i {
+    font-style: normal;
+    font-size: clamp(11px, 1.7vw, 17px);
+    font-weight: 700;
+    letter-spacing: .16em;
+    color: #fff;
+    -webkit-text-stroke: 2px #000;
+    paint-order: stroke fill;
+  }
+
+  #title u { text-decoration: none; color: var(--pink); font-size: clamp(22px, 4.6vw, 46px); }
+
+  /* ── 조작 ── */
+
+  #bar {
+    width: 100%;
+    max-width: 960px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  button {
+    font: inherit;
+    font-size: 12.5px;
+    padding: 6px 13px;
+    border-radius: 5px;
+    border: 1px solid var(--edge);
+    background: #1D2229;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  button:hover { background: #262C34; }
+  button[aria-pressed="true"] { background: #33404F; border-color: rgba(255,192,31,.4); }
+
+  #meter {
+    flex: 1 1 200px;
+    min-width: 160px;
+    height: 4px;
+    border-radius: 2px;
+    background: #262C34;
+    overflow: hidden;
+  }
+
+  #meter div { height: 100%; width: 0; background: var(--gold); transition: width .12s linear; }
+
+  #pos { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+  /* ── 대본 목록 ── */
+
+  #list {
+    width: 100%;
+    max-width: 960px;
+    border: 1px solid var(--edge);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  #list summary {
+    padding: 9px 14px;
+    font-size: 12.5px;
+    color: var(--ink-2);
+    cursor: pointer;
+    background: #1A1F26;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+
+  td {
+    padding: 5px 10px;
+    border-top: 1px solid rgba(255, 255, 255, .06);
+    vertical-align: top;
+  }
+
+  tr.here { background: rgba(255, 192, 31, .1); }
+  tr.cut td { border-top-color: rgba(255, 192, 31, .34); }
+
+  td.n { color: #5C6773; width: 34px; text-align: right; font-variant-numeric: tabular-nums; }
+  td.w { color: var(--gold); width: 62px; white-space: nowrap; }
+  td.a { color: #6D7883; width: 128px; white-space: nowrap; font-size: 11px; }
+  td.f { color: #6D7883; width: 108px; white-space: nowrap; font-size: 11px; }
+  td.f.off { color: #3C444D; }
+</style>
+
+<header>
+  <h1>고양이가 너무 많아! — 인트로</h1>
+  <p>클릭 · Space 로 다음 &nbsp;·&nbsp; Esc 로 건너뛰기</p>
+</header>
+
+<div id="stage">
+  <div id="bg"></div>
+  <div id="bgSlot"><b></b><span></span></div>
+  <div id="safe"></div>
+  <div id="title"><b>고양이가 너무 많아<u>!</u></b><i>TOO MANY CATS!</i></div>
+  <div id="box">
+    <div id="face"></div>
+    <div id="say"><div id="who"></div><div id="text"></div></div>
+    <div id="caret">▼</div>
+  </div>
+</div>
+
+<div id="bar">
+  <button id="replay">처음부터</button>
+  <button id="auto" aria-pressed="false">자동 재생</button>
+  <button id="guide" aria-pressed="false">안전 영역</button>
+  <div id="meter"><div></div></div>
+  <span id="pos"></span>
+</div>
+
+<details id="list">
+  <summary>대본 전체 — 배경 · 표정이 어디서 바뀌는지</summary>
+  <table><tbody id="rows"></tbody></table>
+</details>
+
+<script>
+  var SCRIPT = {"scenes": [{"id": "story-opening", "trigger": "GameStart", "level": 0, "lines": [{"speaker": "", "portrait": false, "text": "[긴급 속보]", "hold": 0.8, "bg": "bg-black", "face": "face-neutral", "title": false}, {"speaker": "앵커", "portrait": false, "text": "오늘 오전 06시 12분,", "hold": 0, "bg": "bg-ufo", "face": "face-neutral", "title": false}, {"speaker": "앵커", "portrait": false, "text": "정체불명의 비행체 수백 대가 관측되었습니다.", "hold": 0, "bg": "bg-ufo", "face": "face-neutral", "title": false}, {"speaker": "앵커", "portrait": false, "text": "전 세계 상공입니다.", "hold": 0, "bg": "bg-ufo", "face": "face-neutral", "title": false}, {"speaker": "", "portrait": false, "text": "— 비행체가 열린다 —", "hold": 0, "bg": "bg-cats-pour", "face": "face-neutral", "title": false}, {"speaker": "앵커", "portrait": false, "text": "………", "hold": 1.2, "bg": "bg-cats-pour", "face": "face-shocked", "title": false}, {"speaker": "앵커", "portrait": false, "text": "그리고…", "hold": 0, "bg": "bg-cats-pour", "face": "face-shocked", "title": false}, {"speaker": "앵커", "portrait": false, "text": "고양이가 내렸습니다.", "hold": 0.8, "bg": "bg-cats-pour", "face": "face-shocked", "title": false}, {"speaker": "당신", "portrait": true, "text": "군 투입은 어떻게 됐습니까?", "hold": 0, "bg": "bg-forces-down", "face": "face-determined", "title": false}, {"speaker": "상황실", "portrait": false, "text": "전투 불능입니다.", "hold": 0, "bg": "bg-forces-down", "face": "face-confused", "title": false}, {"speaker": "당신", "portrait": true, "text": "경찰은요?", "hold": 0, "bg": "bg-forces-down", "face": "face-confused", "title": false}, {"speaker": "상황실", "portrait": false, "text": "전투 불능입니다.", "hold": 0, "bg": "bg-forces-down", "face": "face-sweating", "title": false}, {"speaker": "당신", "portrait": true, "text": "소방대는?", "hold": 0, "bg": "bg-forces-down", "face": "face-sweating", "title": false}, {"speaker": "상황실", "portrait": false, "text": "………", "hold": 1, "bg": "bg-forces-down", "face": "face-sweating", "title": false}, {"speaker": "상황실", "portrait": false, "text": "츄르 사러 갔습니다.", "hold": 0.6, "bg": "bg-forces-down", "face": "face-sweating", "title": false}, {"speaker": "앵커", "portrait": false, "text": "현재까지 인명 피해는 없습니다.", "hold": 0, "bg": "bg-city-paralyzed", "face": "face-neutral", "title": false}, {"speaker": "앵커", "portrait": false, "text": "하지만…", "hold": 0.6, "bg": "bg-city-paralyzed", "face": "face-neutral", "title": false}, {"speaker": "앵커", "portrait": false, "text": "아무도 일을 하지 않고 있습니다.", "hold": 0, "bg": "bg-city-paralyzed", "face": "face-confused", "title": false}, {"speaker": "앵커", "portrait": false, "text": "세계 경제가 멈췄습니다.", "hold": 0.8, "bg": "bg-city-paralyzed", "face": "face-shocked", "title": false}, {"speaker": "당신", "portrait": true, "text": "현재 확인된 개체 수는.", "hold": 0, "bg": "bg-briefing", "face": "face-determined", "title": false}, {"speaker": "상황실", "portrait": false, "text": "10,000마리까지 세고 포기했습니다.", "hold": 1, "bg": "bg-briefing", "face": "face-shocked", "title": false}, {"speaker": "당신", "portrait": true, "text": "……고양이가 너무 많아.", "hold": 1.5, "bg": "bg-briefing", "face": "face-shocked", "title": true}, {"speaker": "상황실", "portrait": false, "text": "공격은 불가능합니다.", "hold": 0, "bg": "bg-briefing", "face": "face-neutral", "title": false}, {"speaker": "당신", "portrait": true, "text": "왜?", "hold": 0, "bg": "bg-briefing", "face": "face-neutral", "title": false}, {"speaker": "상황실", "portrait": false, "text": "귀엽습니다.", "hold": 0, "bg": "bg-briefing", "face": "face-confused", "title": false}, {"speaker": "당신", "portrait": true, "text": "……그렇군.", "hold": 0.6, "bg": "bg-briefing", "face": "face-sweating", "title": false}, {"speaker": "상황실", "portrait": false, "text": "그래서 작전을 변경합니다.", "hold": 0, "bg": "bg-briefing", "face": "face-neutral", "title": false}, {"speaker": "", "portrait": false, "text": "[지구 고양이 긴급 구조대]", "hold": 1, "bg": "bg-rescue-team", "face": "face-determined", "title": false}, {"speaker": "상황실", "portrait": false, "text": "잡아서.", "hold": 0, "bg": "bg-rescue-team", "face": "face-determined", "title": false}, {"speaker": "상황실", "portrait": false, "text": "모아서.", "hold": 0, "bg": "bg-rescue-team", "face": "face-determined", "title": false}, {"speaker": "상황실", "portrait": false, "text": "로켓에 태워.", "hold": 0, "bg": "bg-rescue-team", "face": "face-determined", "title": false}, {"speaker": "상황실", "portrait": false, "text": "고향으로 돌려보냅니다.", "hold": 0, "bg": "bg-rescue-team", "face": "face-determined", "title": false}, {"speaker": "당신", "portrait": true, "text": "그게 구조입니까?", "hold": 0, "bg": "bg-rescue-team", "face": "face-confused", "title": false}, {"speaker": "상황실", "portrait": false, "text": "침략자도 고양이는 고양이니까요.", "hold": 0.8, "bg": "bg-rescue-team", "face": "face-neutral", "title": false}, {"speaker": "상황실", "portrait": false, "text": "그리고 오늘부로…", "hold": 0, "bg": "bg-rescue-team", "face": "face-neutral", "title": false}, {"speaker": "", "portrait": false, "text": "[긴급 구조대 팀장 임명장]", "hold": 1, "bg": "bg-appointment", "face": "face-neutral", "title": false}, {"speaker": "상황실", "portrait": false, "text": "당신이 팀장입니다.", "hold": 0, "bg": "bg-appointment", "face": "face-shocked", "title": false}, {"speaker": "팀장", "portrait": true, "text": "제가요?", "hold": 0, "bg": "bg-appointment", "face": "face-confused", "title": false}, {"speaker": "상황실", "portrait": false, "text": "네.", "hold": 0, "bg": "bg-appointment", "face": "face-confused", "title": false}, {"speaker": "팀장", "portrait": true, "text": "고양이 키워본 적 없는데요.", "hold": 0, "bg": "bg-appointment", "face": "face-sweating", "title": false}, {"speaker": "상황실", "portrait": false, "text": "츄르는 쓸 줄 아십니까?", "hold": 0, "bg": "bg-appointment", "face": "face-confused", "title": false}, {"speaker": "팀장", "portrait": true, "text": "짜면 되는 거 아닙니까?", "hold": 0, "bg": "bg-appointment", "face": "face-sweating", "title": false}, {"speaker": "상황실", "portrait": false, "text": "………", "hold": 1, "bg": "bg-appointment", "face": "face-sweating", "title": false}, {"speaker": "상황실", "portrait": false, "text": "충분합니다.", "hold": 1, "bg": "bg-appointment", "face": "face-sweating", "title": false}, {"speaker": "상황실", "portrait": false, "text": "팀장님.", "hold": 0, "bg": "bg-appointment", "face": "face-determined", "title": false}, {"speaker": "상황실", "portrait": false, "text": "잘 부탁드립니다.", "hold": 1.2, "bg": "bg-appointment", "face": "face-determined", "title": false}, {"speaker": "", "portrait": false, "text": "— 암전 —", "hold": 0.8, "bg": "bg-black", "face": "face-neutral", "title": false}, {"speaker": "", "portrait": false, "text": "— 야옹 —", "hold": 1.2, "bg": "bg-black", "face": "face-neutral", "title": true}]}, {"id": "story-vet-joins", "trigger": "BeforeLevel", "level": 7, "lines": [{"speaker": "상황실", "portrait": false, "text": "팀장님. 이상한 개체가 관측됐습니다.", "hold": 0, "bg": "bg-sick-cat", "face": "face-neutral", "title": false}, {"speaker": "상황실", "portrait": false, "text": "다른 고양이들을 계속 밀어냅니다.", "hold": 0, "bg": "bg-sick-cat", "face": "face-confused", "title": false}, {"speaker": "팀장", "portrait": true, "text": "겁먹은 건가.", "hold": 0, "bg": "bg-sick-cat", "face": "face-confused", "title": false}, {"speaker": "상황실", "portrait": false, "text": "아뇨.", "hold": 0.5, "bg": "bg-sick-cat", "face": "face-confused", "title": false}, {"speaker": "상황실", "portrait": false, "text": "아파 보입니다.", "hold": 1, "bg": "bg-sick-cat", "face": "face-shocked", "title": false}, {"speaker": "팀장", "portrait": true, "text": "………", "hold": 0.8, "bg": "bg-sick-cat", "face": "face-shocked", "title": false}, {"speaker": "팀장", "portrait": true, "text": "수의사 부른다.", "hold": 0, "bg": "bg-sick-cat", "face": "face-determined", "title": false}, {"speaker": "수의사", "portrait": false, "text": "늦었습니다. 어디죠?", "hold": 0, "bg": "bg-sick-cat", "face": "face-determined", "title": false}, {"speaker": "팀장", "portrait": true, "text": "할 일이 하나 늘었다.", "hold": 0, "bg": "bg-sick-cat", "face": "face-determined", "title": false}, {"speaker": "팀장", "portrait": true, "text": "고친다.", "hold": 0, "bg": "bg-sick-cat", "face": "face-determined", "title": false}]}, {"id": "story-ending", "trigger": "AfterLevel", "level": 10, "lines": [{"speaker": "상황실", "portrait": false, "text": "마지막 수송선 적재 완료.", "hold": 0, "bg": "bg-launch-pad", "face": "face-neutral", "title": false}, {"speaker": "상황실", "portrait": false, "text": "…팀장님. 한 마리가 안 들어갑니다.", "hold": 0, "bg": "bg-launch-pad", "face": "face-neutral", "title": false}, {"speaker": "팀장", "portrait": true, "text": "왜.", "hold": 0, "bg": "bg-launch-pad", "face": "face-neutral", "title": false}, {"speaker": "상황실", "portrait": false, "text": "돌아보고 있습니다.", "hold": 1.2, "bg": "bg-launch-pad", "face": "face-shocked", "title": false}, {"speaker": "팀장", "portrait": true, "text": "………", "hold": 1.2, "bg": "bg-launch-pad", "face": "face-shocked", "title": false}, {"speaker": "팀장", "portrait": true, "text": "…보내.", "hold": 0, "bg": "bg-launch-pad", "face": "face-determined", "title": false}, {"speaker": "", "portrait": false, "text": "— 발사 —", "hold": 1.5, "bg": "bg-launch-pad", "face": "face-relieved", "title": false}, {"speaker": "집사", "portrait": false, "text": "팀장님. 우시는 거예요?", "hold": 0, "bg": "bg-launch-pad", "face": "face-relieved", "title": false}, {"speaker": "팀장", "portrait": true, "text": "아니.", "hold": 0, "bg": "bg-launch-pad", "face": "face-relieved", "title": false}, {"speaker": "팀장", "portrait": true, "text": "털 들어갔어.", "hold": 0, "bg": "bg-launch-pad", "face": "face-sweating", "title": false}]}]};
+  var ART = {};
+
+  var SCENE = SCRIPT.scenes[0];          // 오프닝
+  var LINES = SCENE.lines;
+  var CPS = 30;                          // DialogueView 의 타자 속도
+
+  var bg = document.getElementById('bg');
+  var bgSlot = document.getElementById('bgSlot');
+  var face = document.getElementById('face');
+  var who = document.getElementById('who');
+  var text = document.getElementById('text');
+  var caret = document.getElementById('caret');
+  var titleCard = document.getElementById('title');
+  var stage = document.getElementById('stage');
+  var meter = document.querySelector('#meter div');
+  var pos = document.getElementById('pos');
+  var rows = document.getElementById('rows');
+
+  var index = 0;
+  var revealed = 0;
+  var holdLeft = 0;
+  var auto = false;
+  var last = 0;
+
+  function paint() {
+    var line = LINES[index];
+
+    // 배경. 그림이 없으면 자리만 알려 준다 — 대사는 그대로 돈다.
+    var image = ART[line.bg];
+    if (image) {
+      bg.style.backgroundImage = 'url("' + image + '")';
+      bgSlot.style.display = 'none';
+    } else {
+      bg.style.backgroundImage = 'none';
+      if (line.bg === 'bg-black') {
+        bgSlot.style.display = 'none';
+      } else {
+        bgSlot.style.display = 'flex';
+        bgSlot.querySelector('b').textContent = line.bg;
+        bgSlot.querySelector('span').textContent = '아직 그림 없음';
+      }
+    }
+
+    // 초상화는 팀장이 말할 때만.
+    if (line.portrait) {
+      face.style.display = 'flex';
+      var portrait = ART[line.face];
+      face.style.backgroundImage = portrait ? 'url("' + portrait + '")' : 'none';
+      face.textContent = portrait ? '' : line.face.replace('face-', '');
+    } else {
+      face.style.display = 'none';
+    }
+
+    who.textContent = line.speaker;
+    titleCard.classList.toggle('on', !!line.title);
+
+    for (var i = 0; i < rows.children.length; i++) {
+      rows.children[i].classList.toggle('here', i === index);
+    }
+
+    pos.textContent = (index + 1) + ' / ' + LINES.length;
+    meter.style.width = ((index + 1) / LINES.length * 100) + '%';
+  }
+
+  function tick(now) {
+    var dt = last ? Math.min((now - last) / 1000, 0.1) : 0;
+    last = now;
+
+    var line = LINES[index];
+    revealed += CPS * dt;
+
+    var full = revealed >= line.text.length;
+    text.textContent = full ? line.text : line.text.slice(0, Math.floor(revealed));
+
+    if (holdLeft > 0) {
+      holdLeft = Math.max(0, holdLeft - dt);
+    }
+
+    caret.style.opacity = full && holdLeft <= 0 ? (0.35 + 0.65 * Math.abs(Math.sin(now / 400))) : 0.12;
+
+    // 자동 재생은 다 쓰고 뜸까지 지난 뒤 조금 더 기다린다.
+    if (auto && full && holdLeft <= 0) {
+      if (!tick.wait) { tick.wait = now + 700; }
+      if (now >= tick.wait) { tick.wait = 0; advance(); }
+    } else {
+      tick.wait = 0;
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  function advance() {
+    if (revealed < LINES[index].text.length) {
+      revealed = 1e9;                    // 첫 입력은 "지금 줄을 다 보여 줘"
+      return;
+    }
+
+    if (holdLeft > 0) { return; }        // 뜸은 넘기지 못한다. 스킵만 뚫는다.
+    if (index >= LINES.length - 1) { return; }
+
+    go(index + 1);
+  }
+
+  function go(next) {
+    index = next;
+    revealed = 0;
+    holdLeft = LINES[index].hold;
+    paint();
+  }
+
+  stage.addEventListener('click', advance);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); advance(); }
+    if (e.key === 'Escape') { go(LINES.length - 1); revealed = 1e9; holdLeft = 0; }
+  });
+
+  document.getElementById('replay').onclick = function () { go(0); };
+
+  document.getElementById('auto').onclick = function () {
+    auto = !auto;
+    this.setAttribute('aria-pressed', auto);
+  };
+
+  document.getElementById('guide').onclick = function () {
+    var on = document.getElementById('safe').style.display !== 'block';
+    document.getElementById('safe').style.display = on ? 'block' : 'none';
+    this.setAttribute('aria-pressed', on);
+  };
+
+  // 대본 목록. 배경이 바뀌는 줄에 선을 긋는다.
+  LINES.forEach(function (line, i) {
+    var tr = document.createElement('tr');
+    if (i === 0 || line.bg !== LINES[i - 1].bg) { tr.className = 'cut'; }
+
+    var cut = (i === 0 || line.bg !== LINES[i - 1].bg) ? line.bg : '';
+    var faced = line.portrait ? line.face.replace('face-', '') : '—';
+
+    tr.innerHTML =
+      '<td class="n">' + (i + 1) + '</td>' +
+      '<td class="w">' + (line.speaker || '') + '</td>' +
+      '<td>' + line.text.replace(/</g, '&lt;') + (line.title ? '  <b style="color:#FFC01F">◆ 타이틀</b>' : '') + '</td>' +
+      '<td class="a">' + cut + '</td>' +
+      '<td class="f' + (line.portrait ? '' : ' off') + '">' + faced + '</td>';
+
+    tr.onclick = function () { go(i); };
+    tr.style.cursor = 'pointer';
+    rows.appendChild(tr);
+  });
+
+  // #12 로 특정 줄부터. 어느 컷이 이상한지 지목해서 보기 위한 것이다.
+  function fromHash() {
+    var n = parseInt((location.hash || '').replace('#', ''), 10);
+    return isFinite(n) && n >= 1 && n <= LINES.length ? n - 1 : 0;
+  }
+
+  window.addEventListener('hashchange', function () { go(fromHash()); });
+
+  go(fromHash());
+  requestAnimationFrame(tick);
+</script>

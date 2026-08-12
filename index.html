@@ -1,4 +1,4 @@
-<title>고양이가 너무 많아! — 기획서 v1.0.1</title>
+<title>고양이가 너무 많아! — 기획서 v1.1.0</title>
 
 <style>
   /* ── 라이트가 기본. 다크는 토큰만 덮는다 ── */
@@ -1093,7 +1093,7 @@
 <nav id="nav">
   <div class="brand">
     <b>고양이가 너무 많아!</b>
-    <span>GDD v1.0.1</span>
+    <span>GDD v1.1.0</span>
   </div>
   <div class="nav-group"><h3>개요<small>무엇을 만드는가</small></h3><ul><li><a href="#s0"><span class="n">0</span><span class="t">문서 정보</span><span class="fig"></span></a></li><li><a href="#s1"><span class="n">1</span><span class="t">게임 개요</span><span class="fig"></span></a></li><li><a href="#s2"><span class="n">2</span><span class="t">핵심 판타지</span><span class="fig"></span></a></li><li><a href="#s3"><span class="n">3</span><span class="t">디자인 원칙</span><span class="fig"></span></a></li><li><a href="#s4"><span class="n">4</span><span class="t">기본 게임 루프</span><span class="fig"></span></a></li><li><a href="#s5"><span class="n">5</span><span class="t">Run 구조</span><span class="fig"></span></a></li><li><a href="#s6"><span class="n">6</span><span class="t">자원</span><span class="fig"></span></a></li></ul></div>
 <div class="nav-group"><h3>고양이<small>무리가 어떻게 움직이는가</small></h3><ul><li><a href="#s7"><span class="n">7</span><span class="t">고양이 데이터</span><span class="fig"></span></a></li><li><a href="#s8"><span class="n">8</span><span class="t">Cat State Machine</span><span class="fig"></span></a></li><li><a href="#s9"><span class="n">9</span><span class="t">고양이 이동 시스템</span><span class="fig"></span></a></li><li><a href="#s10"><span class="n">10</span><span class="t">Flow Field</span><span class="fig"></span></a></li><li><a href="#s11"><span class="n">11</span><span class="t">Attraction System</span><span class="fig"></span></a></li><li><a href="#s12"><span class="n">12</span><span class="t">Separation / Crowd</span><span class="fig"></span></a></li><li><a href="#s13"><span class="n">13</span><span class="t">기본 고양이 종류</span><span class="fig"></span></a></li><li><a href="#s14"><span class="n">14</span><span class="t">특수 고양이</span><span class="fig"></span></a></li><li><a href="#s15"><span class="n">15</span><span class="t">Wave 시스템</span><span class="fig"></span></a></li></ul></div>
@@ -1110,7 +1110,7 @@
 
 <main>
   <header>
-    <p class="eyebrow">Game Design Document v1.0.1</p>
+    <p class="eyebrow">Game Design Document v1.1.0</p>
     <h1>고양이가 너무 많아!</h1>
     <p>
       외계 고양이 행성에서 쳐들어온 고양이 떼를 구조해 로켓에 태워 돌려보내는
@@ -1297,6 +1297,45 @@ x742</p>
 해금 재화 3종 →  선택지를 늘린다
 Golden Paw    →  판을 뒤집는 것을 연다
 </code></pre>
+<h2>미리보기 — <code>docs/intro.html</code></h2>
+<p>그림이 한 장도 없어도 <strong>인트로는 지금 돌아간다.</strong></p>
+<pre><code>StoryScripts.cs  →  tools/StoryExport  →  JSON  →  tools/build-intro.py  →  docs/intro.html
+</code></pre>
+<p>대본을 HTML 에 손으로 옮기지 않는다. 그렇게 하면 반드시 어긋나고,
+이 프로젝트는 문서 세 개로 이미 그 일을 겪었다 (76장).
+<strong>대본은 <code>StoryScripts.cs</code> 하나뿐이고 화면은 거기서 나온 것만 그린다.</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>클릭 · Space</td>
+<td>다음 줄. 타자 중이면 먼저 전부 표시</td>
+</tr>
+<tr>
+<td>Esc</td>
+<td>건너뛰기</td>
+</tr>
+<tr>
+<td>자동 재생</td>
+<td>뜸까지 지킨 실제 속도</td>
+</tr>
+<tr>
+<td>안전 영역</td>
+<td>위 640×240 경계선을 띄운다</td>
+</tr>
+<tr>
+<td><code>#22</code></td>
+<td>특정 줄부터. 어느 컷이 이상한지 지목할 때</td>
+</tr>
+</tbody>
+</table>
+<p>배경이 없으면 그 자리에 Id 를 띄운다 — <strong>무엇을 그려야 하는지가 화면에 적혀 있다.</strong>
+<code>Assets/Art/Story/</code> 에 파일을 넣고 다시 돌리면 그 컷부터 그림이 붙는다.</p>
 <h2>구현 상태</h2>
 <table>
 <thead>
@@ -3435,9 +3474,22 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 사람 얼굴이 처음 나오는 게 5번 브리핑이고, 그 자리에서
 "10,000마리까지 세고 포기했습니다" 와 제목이 떨어진다.</p>
 <h3>초상화 — 표정 6종</h3>
-<p><strong>누가 말하든 초상화는 팀장이다.</strong> 상황실도 앵커도 얼굴이 없다 —
-무전은 목소리고 앵커는 배경 안에 있다. 초상화 자리는 플레이어의 자리라
-남의 대사에도 팀장이 어떤 얼굴인지가 정보다.</p>
+<h3>임명 전에는 "팀장" 이라 부르지 않는다</h3>
+<p>주인공의 이름표는 5장면 <strong>"당신이 팀장입니다."</strong> 를 기점으로 바뀐다.</p>
+<pre><code>당신 8줄  →  [임명]  →  팀장 3줄
+</code></pre>
+<p>아직 팀장이 아닌 사람을 팀장이라 부르면 임명 장면이 김이 샌다.
+반대로 명패는 임명 직후 바로 바뀌는데 본인은 "제가요?" 라고 한다 —
+<strong>따라오지 못한 쪽이 본인이라는 게 그 장면의 농담이다.</strong></p>
+<p>다음 장면(수의사·엔딩)부터는 그냥 팀장이다. <code>Protagonist_IsNotCalledLeaderBeforeBeingAppointed</code>
+와 <code>OtherScenes_CallHimLeader</code> 가 양쪽을 잠근다.</p>
+<p><strong>초상화는 팀장이 말할 때만 보인다.</strong> 상황실은 무전 목소리라 얼굴이 없고
+앵커는 배경(뉴스 데스크) 안에 있다. 화자가 아닌데 초상화가 떠 있으면
+누가 말하는 건지가 흐려진다. <code>Speakers.HasPortrait</code> 이 이 판정이다.</p>
+<p><strong>표정은 그래도 모든 줄이 들고 있다.</strong> 남의 대사를 <b>듣는 동안</b> 얼굴이 바뀌고,
+바뀐 얼굴은 팀장이 다음에 입을 열 때 화면에 나온다 —
+상황실이 "10,000마리" 를 말하는 사이 경악으로 바뀌어서,
+"……고양이가 너무 많아." 에서 그 얼굴이 뜬다.</p>
 <table>
 <thead>
 <tr>
@@ -3515,14 +3567,9 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 </thead>
 <tbody>
 <tr>
-<td>"현재까지 인명 피해는 없습니다."</td>
-<td>안도</td>
-<td>66장 — 아무도 안 다친다는 걸 얼굴로 못 박는다</td>
-</tr>
-<tr>
-<td>"10,000마리까지 세고 포기했습니다."</td>
+<td>"……고양이가 너무 많아."</td>
 <td>경악</td>
-<td>31장의 숫자를 처음 듣는 순간</td>
+<td>상황실이 10,000마리를 말하는 사이 바뀐 얼굴</td>
 </tr>
 <tr>
 <td>"제가요?"</td>
@@ -3535,14 +3582,23 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 <td>이 게임을 요약하는 얼굴</td>
 </tr>
 <tr>
+<td>"……그렇군."</td>
+<td>식은땀</td>
+<td>바로 앞 줄이 "귀엽습니다" 다</td>
+</tr>
+<tr>
 <td>"잘 부탁드립니다."</td>
 <td>결의</td>
 <td>게임으로 넘어가기 직전</td>
 </tr>
 </tbody>
 </table>
-<p>또 하나 — <strong>"……그렇군." 이 식은땀이다.</strong> 바로 앞 줄이 "귀엽습니다" 다.
-상황은 심각한데 원인이 귀여움인 이 게임 전체가 그 한 컷에 들어 있다.</p>
+<p><strong>안도는 엔딩에 있다.</strong> 로켓이 떠난 뒤 "우시는 거예요?" / "아니." —
+안도한 얼굴로 부정하고, 들키니까 다음 컷에서 식은땀으로 딴청을 부린다.
+표정이 대사를 배신하는 게 농담이다.</p>
+<p>오프닝에는 안도가 없다. 초상화가 팀장 대사에만 뜨는데
+"인명 피해는 없습니다" 는 앵커의 줄이라 그 얼굴이 화면에 안 나온다 —
+안 나올 표정을 대본에 적어 두면 안 그려도 될 그림을 그리게 된다.</p>
 <h3>장면 전환은 박자로 끊는다</h3>
 <pre><code>암전 → UFO → 고양이 쏟아짐 → 군경 무너짐 → 도시 마비
      → 브리핑 → 구조대 창설 → 임명 → 암전
@@ -3613,6 +3669,18 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 <tr>
 <td><code>StoryScene.Face(expression)</code></td>
 <td>표정 변경. 배경보다 자주 부른다</td>
+</tr>
+<tr>
+<td><code>Speakers.HasPortrait</code></td>
+<td>초상화가 뜨는 화자. 지금은 팀장뿐</td>
+</tr>
+<tr>
+<td><code>Runtime/UI/StoryDirector.cs</code></td>
+<td><strong>장면을 트는 쪽.</strong> 이게 없어서 오프닝이 한 번도 안 돌았다</td>
+</tr>
+<tr>
+<td><code>tools/StoryExport</code> · <code>tools/build-intro.py</code></td>
+<td>대본 → <code>docs/intro.html</code> 미리보기</td>
 </tr>
 <tr>
 <td><code>SaveData.SeenScenes</code></td>
@@ -4727,6 +4795,32 @@ Spawn 을 둘로 바꾸니 150 / 150 이 됐다.</p>
 10,000마리가 2.41 → 1.78 ms 가 됐다. (<code>FlowField._nearObstacle</code>)</p>
 <p>그 최적화가 Wave 중 지형 변화(Map 9)에서 낡지 않는지는 테스트로 잡아 둔다 —
 <code>ObstacleAvoidance_FollowsTerrainChangesWithoutRecalculate</code>.</p>
+<h3>다시 재 보니 여유가 없다</h3>
+<p><strong>10,000마리 + 건물 맵이 16.5ms 다. 예산의 99%.</strong>
+같은 테스트가 다른 실행에서 17.5ms 로 넘어가 실패한 적도 있다 — 이제 동전 던지기다.</p>
+<p>빈 맵은 13ms 로 여유가 있으니 병목은 마릿수가 아니라 <strong>건물 맵의 경로 비용</strong>이다.
+한계선을 20ms 로 늘리지 않는다. 그건 목표를 낮추는 게 아니라 목표에 대해 거짓말하는 것이다.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>ms/frame</th>
+<th>예산 대비</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10,000 · 빈 맵</td>
+<td>12.9</td>
+<td>78%</td>
+</tr>
+<tr>
+<td>10,000 · 건물 맵</td>
+<td><strong>16.5</strong></td>
+<td><strong>99%</strong></td>
+</tr>
+</tbody>
+</table>
 <h3>하지 않은 것</h3>
 <p><strong>Jobs / Burst 는 아직 안 한다.</strong> 목표를 이미 여유 있게 넘겼고,
 이동 단계를 병렬화하려면 위치 배열을 이중 버퍼로 나눠야 한다.
@@ -4841,7 +4935,7 @@ Spawn 을 둘로 바꾸니 150 / 150 이 됐다.</p>
 <tbody>
 <tr>
 <td><code>TooManyCats.Core</code></td>
-<td>테스트 340개 + netstandard2.1 컴파일. <strong>CI 에서 매 push</strong></td>
+<td>테스트 343개 + netstandard2.1 컴파일. <strong>CI 에서 매 push</strong></td>
 </tr>
 <tr>
 <td><code>TooManyCats.Runtime</code></td>
@@ -5208,10 +5302,22 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 </section>
 <section class="chapter" id="end-of-document">
 <h2>End of Document</h2>
-<p><strong>Too Many Cats! — Game Design Document v1.0.1 FULL</strong></p>
+<p><strong>Too Many Cats! — Game Design Document v1.1.0 FULL</strong></p>
 </section>
 <section class="chapter" id="변경-이력">
 <h2>변경 이력</h2>
+<h2>v1.1.0 — 인트로 구현</h2>
+<ul>
+<li><strong><code>StoryDirector</code> 신설 (71장)</strong> — 장면을 트는 쪽이 아무 데도 없었다.
+  <code>DialogueView</code> 는 틀어 달라면 틀고 <code>StoryRunner</code> 는 본 적 있는지만 안다.
+  <strong>부르는 사람이 없어서 오프닝이 한 번도 재생되지 않았다.</strong></li>
+<li><strong>미리보기 <code>docs/intro.html</code></strong> — 그림 없이도 인트로가 돈다.
+  대본을 손으로 옮기지 않고 <code>StoryScripts.cs</code> 에서 뽑아 심는다.</li>
+<li><strong>초상화는 팀장이 말할 때만 뜬다.</strong> 앞 버전의 "누가 말하든 팀장" 은 틀렸다 —
+  화자가 아닌데 얼굴이 떠 있으면 누가 말하는지가 흐려진다.</li>
+<li>안도를 오프닝에서 엔딩으로 옮겼다. 오프닝의 그 자리는 앵커 대사라
+  초상화가 안 뜬다 — 안 나올 표정을 적어 두면 안 그려도 될 그림을 그리게 된다.</li>
+</ul>
 <h2>v1.0.1 — 대사창에 팀장 초상화</h2>
 <ul>
 <li><strong>표정 6종 (71장)</strong> — 기본 / 당황 / 경악 / 결의 / 식은땀 / 안도. 128×128.</li>
