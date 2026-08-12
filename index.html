@@ -1,4 +1,4 @@
-<title>Too Many Cats! — 기획서 v1.3.0</title>
+<title>Too Many Cats! — 기획서 v1.3.1</title>
 
 <style>
   /* ── 라이트가 기본. 다크는 토큰만 덮는다 ── */
@@ -1093,7 +1093,7 @@
 <nav id="nav">
   <div class="brand">
     <b>Too Many Cats!</b>
-    <span>GDD v1.3.0</span>
+    <span>GDD v1.3.1</span>
   </div>
   <div class="nav-group"><h3>개요<small>무엇을 만드는가</small></h3><ul><li><a href="#s0"><span class="n">0</span><span class="t">문서 정보</span><span class="fig"></span></a></li><li><a href="#s1"><span class="n">1</span><span class="t">게임 개요</span><span class="fig"></span></a></li><li><a href="#s2"><span class="n">2</span><span class="t">핵심 판타지</span><span class="fig"></span></a></li><li><a href="#s3"><span class="n">3</span><span class="t">디자인 원칙</span><span class="fig"></span></a></li><li><a href="#s4"><span class="n">4</span><span class="t">기본 게임 루프</span><span class="fig"></span></a></li><li><a href="#s5"><span class="n">5</span><span class="t">Run 구조</span><span class="fig"></span></a></li><li><a href="#s6"><span class="n">6</span><span class="t">자원</span><span class="fig"></span></a></li></ul></div>
 <div class="nav-group"><h3>고양이<small>무리가 어떻게 움직이는가</small></h3><ul><li><a href="#s7"><span class="n">7</span><span class="t">고양이 데이터</span><span class="fig"></span></a></li><li><a href="#s8"><span class="n">8</span><span class="t">Cat State Machine</span><span class="fig"></span></a></li><li><a href="#s9"><span class="n">9</span><span class="t">고양이 이동 시스템</span><span class="fig"></span></a></li><li><a href="#s10"><span class="n">10</span><span class="t">Flow Field</span><span class="fig"></span></a></li><li><a href="#s11"><span class="n">11</span><span class="t">Attraction System</span><span class="fig"></span></a></li><li><a href="#s12"><span class="n">12</span><span class="t">Separation / Crowd</span><span class="fig"></span></a></li><li><a href="#s13"><span class="n">13</span><span class="t">기본 고양이 종류</span><span class="fig"></span></a></li><li><a href="#s14"><span class="n">14</span><span class="t">특수 고양이</span><span class="fig"></span></a></li><li><a href="#s15"><span class="n">15</span><span class="t">Wave 시스템</span><span class="fig"></span></a></li></ul></div>
@@ -1110,7 +1110,7 @@
 
 <main>
   <header>
-    <p class="eyebrow">Game Design Document v1.3.0</p>
+    <p class="eyebrow">Game Design Document v1.3.1</p>
     <h1>Too Many Cats!</h1>
     <p>
       외계 고양이 행성에서 쳐들어온 고양이 떼를 구조해 로켓에 태워 돌려보내는
@@ -3530,6 +3530,7 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 <tr>
 <th>Id</th>
 <th>표정</th>
+<th>그림</th>
 <th>언제</th>
 </tr>
 </thead>
@@ -3537,35 +3538,45 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 <tr>
 <td><code>face-neutral</code></td>
 <td>기본 / 무표정</td>
+<td>담담한 정면</td>
 <td>평범한 대화, 브리핑</td>
 </tr>
 <tr>
 <td><code>face-confused</code></td>
 <td>당황 / 어리둥절</td>
-<td>"제가요?" — 상황을 이해 못 할 때</td>
+<td>눈썹 처지고 입 작게 벌림 + 땀</td>
+<td>"제가요?"</td>
 </tr>
 <tr>
 <td><code>face-shocked</code></td>
 <td>경악 / 충격</td>
-<td>고양이 수를 보고 놀랄 때. 눈이 크다</td>
+<td>눈 크게 · 입 벌림 + 땀</td>
+<td>10,000마리를 들었을 때</td>
 </tr>
 <tr>
 <td><code>face-determined</code></td>
 <td>진지 / 결의</td>
-<td>임무 설명, 출동 직전</td>
+<td>눈썹 세우고 정면</td>
+<td>"군 투입은?" · "잘부탁드립니다"</td>
 </tr>
 <tr>
 <td><code>face-sweating</code></td>
 <td>식은땀 / 난감</td>
-<td><strong>B급 개그의 핵심.</strong> 눈 옆에 땀 한 방울</td>
+<td>뒤통수 긁으며 어색한 웃음</td>
+<td><strong>B급 개그의 핵심</strong></td>
 </tr>
 <tr>
 <td><code>face-relieved</code></td>
 <td>기쁨 / 안도</td>
-<td>구조 성공, 고양이를 귀여워할 때</td>
+<td>눈 감고 웃음 + 반짝임</td>
+<td>엔딩 "아니."</td>
 </tr>
 </tbody>
 </table>
+<p><strong>여분 한 장 — 격분 / 절규.</strong> 주먹 쥐고 소리치는 얼굴(김 + 땀)이 하나 더 있다.
+경악(수동적 놀람)과 결의(단호함) 어느 쪽도 아닌 제3의 얼굴이라 지금 대본에는 자리가 없다.
+<strong>대본이 안 쓰는 표정은 목록에 넣지 않는다</strong> — 쓸 자리가 생기면 그때 <code>face-furious</code> 로 붙인다.
+광란 고양이(68장)나 실패 화면(43장)이 후보다.</p>
 <table>
 <thead>
 <tr>
@@ -5382,10 +5393,16 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 </section>
 <section class="chapter" id="end-of-document">
 <h2>End of Document</h2>
-<p><strong>Too Many Cats! — Game Design Document v1.3.0 FULL</strong></p>
+<p><strong>Too Many Cats! — Game Design Document v1.3.1 FULL</strong></p>
 </section>
 <section class="chapter" id="변경-이력">
 <h2>변경 이력</h2>
+<h2>v1.3.1 — 초상화 여섯 장 확정</h2>
+<ul>
+<li><strong>표정 6종에 그림이 배정됐다 (71장).</strong> 어떤 얼굴이 어느 Id 인지 표에 적었다.</li>
+<li>일곱 번째 얼굴(격분 · 절규)이 하나 더 있는데 지금 대본에 자리가 없다.
+  <strong>대본이 안 쓰는 표정은 목록에 넣지 않는다</strong> — 쓸 자리가 생기면 그때 붙인다.</li>
+</ul>
 <h2>v1.3.0 — 오프닝 일러스트를 6장으로</h2>
 <ul>
 <li><strong>5번 브리핑과 6번 작전 설명이 같은 상황실을 쓴다 (71장).</strong> 배경 두 장이 줄었다.</li>
