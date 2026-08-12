@@ -1,4 +1,4 @@
-<title>고양이가 너무 많아! — 기획서 v1.1.1</title>
+<title>고양이가 너무 많아! — 기획서 v1.1.2</title>
 
 <style>
   /* ── 라이트가 기본. 다크는 토큰만 덮는다 ── */
@@ -1093,7 +1093,7 @@
 <nav id="nav">
   <div class="brand">
     <b>고양이가 너무 많아!</b>
-    <span>GDD v1.1.1</span>
+    <span>GDD v1.1.2</span>
   </div>
   <div class="nav-group"><h3>개요<small>무엇을 만드는가</small></h3><ul><li><a href="#s0"><span class="n">0</span><span class="t">문서 정보</span><span class="fig"></span></a></li><li><a href="#s1"><span class="n">1</span><span class="t">게임 개요</span><span class="fig"></span></a></li><li><a href="#s2"><span class="n">2</span><span class="t">핵심 판타지</span><span class="fig"></span></a></li><li><a href="#s3"><span class="n">3</span><span class="t">디자인 원칙</span><span class="fig"></span></a></li><li><a href="#s4"><span class="n">4</span><span class="t">기본 게임 루프</span><span class="fig"></span></a></li><li><a href="#s5"><span class="n">5</span><span class="t">Run 구조</span><span class="fig"></span></a></li><li><a href="#s6"><span class="n">6</span><span class="t">자원</span><span class="fig"></span></a></li></ul></div>
 <div class="nav-group"><h3>고양이<small>무리가 어떻게 움직이는가</small></h3><ul><li><a href="#s7"><span class="n">7</span><span class="t">고양이 데이터</span><span class="fig"></span></a></li><li><a href="#s8"><span class="n">8</span><span class="t">Cat State Machine</span><span class="fig"></span></a></li><li><a href="#s9"><span class="n">9</span><span class="t">고양이 이동 시스템</span><span class="fig"></span></a></li><li><a href="#s10"><span class="n">10</span><span class="t">Flow Field</span><span class="fig"></span></a></li><li><a href="#s11"><span class="n">11</span><span class="t">Attraction System</span><span class="fig"></span></a></li><li><a href="#s12"><span class="n">12</span><span class="t">Separation / Crowd</span><span class="fig"></span></a></li><li><a href="#s13"><span class="n">13</span><span class="t">기본 고양이 종류</span><span class="fig"></span></a></li><li><a href="#s14"><span class="n">14</span><span class="t">특수 고양이</span><span class="fig"></span></a></li><li><a href="#s15"><span class="n">15</span><span class="t">Wave 시스템</span><span class="fig"></span></a></li></ul></div>
@@ -1110,7 +1110,7 @@
 
 <main>
   <header>
-    <p class="eyebrow">Game Design Document v1.1.1</p>
+    <p class="eyebrow">Game Design Document v1.1.2</p>
     <h1>고양이가 너무 많아!</h1>
     <p>
       외계 고양이 행성에서 쳐들어온 고양이 떼를 구조해 로켓에 태워 돌려보내는
@@ -3216,6 +3216,11 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 <td>—</td>
 </tr>
 <tr>
+<td>직원</td>
+<td>상황실 안의 한 명. <strong>오프닝에 한 줄</strong></td>
+<td>—</td>
+</tr>
+<tr>
 <td>구조원</td>
 <td></td>
 <td>없앤다</td>
@@ -3232,6 +3237,12 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 </tr>
 </tbody>
 </table>
+<p><strong>직원은 왜 예외인가.</strong> 개체 수 보고 한 줄뿐이다.
+상황실이 묻고 상황실이 답하면 자문자답이 되고, 그 자리에 사람이 하나 더 있어야
+상황실이 방 하나로 보인다. 얼굴도 이름도 없고 다시 안 나온다.</p>
+<p>이 한 줄 덕에 <strong>당신은 그 주고받음에 끼어들지 않는다</strong> —
+그래서 다음 한 줄("……고양이가 너무 많아.")이 그 장면에서 당신의 유일한 말이 되고,
+그게 제목이다.</p>
 <p><strong>수의사는 오프닝에 없다.</strong> 광란 고양이가 처음 나오는 판에서 합류한다(68장).
 오프닝에서 팀장이 "우리가 할 일은 셋이다 — 모은다, 잡는다, 돌려보낸다" 라고 말하고,
 수의사가 합류할 때 "할 일이 하나 늘었다. 고친다" 로 회수한다.
@@ -5326,10 +5337,18 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 </section>
 <section class="chapter" id="end-of-document">
 <h2>End of Document</h2>
-<p><strong>Too Many Cats! — Game Design Document v1.1.1 FULL</strong></p>
+<p><strong>Too Many Cats! — Game Design Document v1.1.2 FULL</strong></p>
 </section>
 <section class="chapter" id="변경-이력">
 <h2>변경 이력</h2>
+<h2>v1.1.2 — 3장면을 원고 그대로</h2>
+<ul>
+<li><strong>상황실이 묻고 직원이 답한다 (71장).</strong> 내가 질문을 당신에게 넘겼었는데
+  원고대로 되돌렸다. 당신이 그 주고받음에 안 끼어들어야
+  "……고양이가 너무 많아." 가 그 장면에서 당신의 유일한 말이 된다.</li>
+<li><strong><code>Speaker.Staff</code> 신설.</strong> 65장 유닛이 아닌 유일한 화자다 —
+  얼굴도 이름도 없고 한 줄뿐이지만, 상황실이 자문자답하는 것보다 낫다.</li>
+</ul>
 <h2>v1.1.1 — 타이틀 한 번, 대사창 치수</h2>
 <ul>
 <li><strong>가운데 타이틀을 뺐다 (71장).</strong> 30초짜리에 같은 카드가 두 번 나오니
