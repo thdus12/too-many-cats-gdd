@@ -1,4 +1,4 @@
-<title>고양이가 너무 많아! — 기획서 v0.9.6</title>
+<title>고양이가 너무 많아! — 기획서 v0.9.7</title>
 
 <style>
   /* ── 라이트가 기본. 다크는 토큰만 덮는다 ── */
@@ -1093,7 +1093,7 @@
 <nav id="nav">
   <div class="brand">
     <b>고양이가 너무 많아!</b>
-    <span>GDD v0.9.6</span>
+    <span>GDD v0.9.7</span>
   </div>
   <div class="nav-group"><h3>개요<small>무엇을 만드는가</small></h3><ul><li><a href="#s0"><span class="n">0</span><span class="t">문서 정보</span><span class="fig"></span></a></li><li><a href="#s1"><span class="n">1</span><span class="t">게임 개요</span><span class="fig"></span></a></li><li><a href="#s2"><span class="n">2</span><span class="t">핵심 판타지</span><span class="fig"></span></a></li><li><a href="#s3"><span class="n">3</span><span class="t">디자인 원칙</span><span class="fig"></span></a></li><li><a href="#s4"><span class="n">4</span><span class="t">기본 게임 루프</span><span class="fig"></span></a></li><li><a href="#s5"><span class="n">5</span><span class="t">Run 구조</span><span class="fig"></span></a></li><li><a href="#s6"><span class="n">6</span><span class="t">자원</span><span class="fig"></span></a></li></ul></div>
 <div class="nav-group"><h3>고양이<small>무리가 어떻게 움직이는가</small></h3><ul><li><a href="#s7"><span class="n">7</span><span class="t">고양이 데이터</span><span class="fig"></span></a></li><li><a href="#s8"><span class="n">8</span><span class="t">Cat State Machine</span><span class="fig"></span></a></li><li><a href="#s9"><span class="n">9</span><span class="t">고양이 이동 시스템</span><span class="fig"></span></a></li><li><a href="#s10"><span class="n">10</span><span class="t">Flow Field</span><span class="fig"></span></a></li><li><a href="#s11"><span class="n">11</span><span class="t">Attraction System</span><span class="fig"></span></a></li><li><a href="#s12"><span class="n">12</span><span class="t">Separation / Crowd</span><span class="fig"></span></a></li><li><a href="#s13"><span class="n">13</span><span class="t">기본 고양이 종류</span><span class="fig"></span></a></li><li><a href="#s14"><span class="n">14</span><span class="t">특수 고양이</span><span class="fig"></span></a></li><li><a href="#s15"><span class="n">15</span><span class="t">Wave 시스템</span><span class="fig"></span></a></li></ul></div>
@@ -1110,7 +1110,7 @@
 
 <main>
   <header>
-    <p class="eyebrow">Game Design Document v0.9.6</p>
+    <p class="eyebrow">Game Design Document v0.9.7</p>
     <h1>고양이가 너무 많아!</h1>
     <p>
       외계 고양이 행성에서 쳐들어온 고양이 떼를 구조해 로켓에 태워 돌려보내는
@@ -3210,7 +3210,7 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 <tr>
 <td>오프닝</td>
 <td>게임 최초 1회</td>
-<td>21줄</td>
+<td>48줄 · <strong>재생 30초</strong></td>
 </tr>
 <tr>
 <td>수의사 합류</td>
@@ -3226,16 +3226,62 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 </table>
 <p>세 개뿐이다. 판마다 대사를 붙이지 않는다 —
 25장이 이미 판마다 "가르치는 것 하나" 를 갖고 있고, 그게 진짜 진행감이다.</p>
-<h2>오프닝 구조 — 여섯 박자</h2>
-<pre><code>1. 사건    뉴스 앵커가 화면을 보다가 무너진다
-2. 피해    전원 무사. 그냥 안 움직인다. 쓰다듬고 있다
-3. 규모    &quot;몇 마리까지 셌지&quot; / &quot;만 마리요&quot;          ← 31장의 10,000
-4. 제목    &quot;고양이가 너무 많아.&quot;                      ← 타이틀 드롭
-5. 임무    &quot;모은다. 잡는다. 돌려보낸다.&quot;              ← 65장의 동사, 하나 비움
-6. 태도    &quot;없애는 겁니까?&quot; / &quot;구조다.&quot;               ← 66장·64장의 근거
+<h2>오프닝이 30초 안에 해야 하는 것</h2>
+<p>세 가지뿐이다.</p>
+<pre><code>1. 외계에서 고양이가 침략했다.
+2. 인류는 너무 귀여워서 대응에 실패했다.
+3. 플레이어는 이들을 모아 고향으로 돌려보내야 한다.
 </code></pre>
-<p>3번이 제목 드롭의 셋업이고, 동시에 성능 목표(31장)를 서사로 선언한다.
-플레이어는 만 마리를 듣고 시작해서, 실제로 만 마리를 보게 된다.</p>
+<p>톤은 <strong>진지한 재난 영화의 형식을 빌린 B급 코미디</strong>다.
+상황은 인류 멸망급인데 피해 원인은 전부 "고양이가 너무 귀여움" 이다.
+형식이 진지할수록 내용이 웃긴다 — 그래서 뉴스 속보 포맷으로 연다.</p>
+<h2>다섯 장면 · 타이틀은 가운데</h2>
+<pre><code>1. 긴급 뉴스      앵커가 &quot;…그리고 고양이가 내렸습니다&quot;
+2. 인류의 대응    군 / 경찰 &quot;전투 불능&quot; ×2, 소방대 &quot;…츄르 사러 갔습니다&quot;
+3. 진짜 위기      인명 피해 0. 대신 아무도 일을 안 한다. &quot;10,000마리까지 세고 포기&quot;
+
+           ▼ 고양이가 너무 많아! ▼            ← 타이틀 드롭
+
+4. 구조대 창설    &quot;공격은?&quot; / &quot;귀엽습니다&quot; → 잡아서 · 모아서 · 로켓에 태워
+5. 플레이어 임명  &quot;츄르는 쓸 줄 아십니까?&quot; / &quot;짜면 되는 거 아닙니까?&quot; / &quot;충분합니다&quot;
+</code></pre>
+<p><strong>타이틀이 끝이 아니라 가운데에서 떨어진다.</strong> 앞의 셋이 문제를 세우고,
+제목이 그 문제의 이름이 되고, 뒤의 둘이 그래서 뭘 할 건지를 말한다.
+끝에 붙이면 "무슨 게임인지" 를 제목 뒤로 미루게 된다.</p>
+<table>
+<thead>
+<tr>
+<th>장면</th>
+<th>무엇을 심는가</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2 — "전투 불능" 반복</td>
+<td>아무도 안 다친다. 66장의 정서적 근거</td>
+</tr>
+<tr>
+<td>3 — 10,000마리</td>
+<td>31장의 성능 목표를 서사로 선언한다. 듣고 시작해서 실제로 본다</td>
+</tr>
+<tr>
+<td>4 — "침략자도 고양이는 고양이니까요"</td>
+<td>왜 처형이 아니라 귀향인가. 64장</td>
+</tr>
+<tr>
+<td>5 — "츄르는 쓸 줄 아십니까?"</td>
+<td>플레이어는 전문가가 아니다. 첫 장비가 츄르인 이유</td>
+</tr>
+</tbody>
+</table>
+<p>마지막 네 줄("팀장님." / "옵니다." / "몇 마리?" / "……너무 많습니다.")이
+곧 첫 판의 브리핑이다. <strong>튜토리얼 팝업이 하나 줄어든다.</strong></p>
+<h2>길이는 줄 수가 아니라 초로 잰다</h2>
+<p>줄 수로 재면 한 줄에 두 문장을 욱여넣어서 통과할 수 있다.
+<code>Opening_FitsInOneSitting</code> 은 타자 속도(30자/초)와 뜸을 더해 <strong>실제 재생 시간</strong>을 잰다.</p>
+<pre><code>오프닝 48줄 → 30초
+</code></pre>
+<p>넘기는 시간까지 치면 50~60초쯤이다. 상한은 2분으로 잡아 뒀다.</p>
 <h2>침묵도 대사다</h2>
 <p><code>DialogueLine.HoldSeconds</code> 로 줄마다 뜸을 줄 수 있다.
 "………" 을 빨리 넘겨 버리면 농담이 죽는다.</p>
@@ -3272,6 +3318,10 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 <tr>
 <td><code>Core/Story/StoryScripts.cs</code></td>
 <td>실제 대사 3장면</td>
+</tr>
+<tr>
+<td><code>StoryScene.TitleHere()</code></td>
+<td>타이틀이 뜨는 줄. 대본이 시점을 들고 있다</td>
 </tr>
 <tr>
 <td><code>SaveData.SeenScenes</code></td>
@@ -4500,7 +4550,7 @@ Spawn 을 둘로 바꾸니 150 / 150 이 됐다.</p>
 <tbody>
 <tr>
 <td><code>TooManyCats.Core</code></td>
-<td>테스트 328개 + netstandard2.1 컴파일. <strong>CI 에서 매 push</strong></td>
+<td>테스트 332개 + netstandard2.1 컴파일. <strong>CI 에서 매 push</strong></td>
 </tr>
 <tr>
 <td><code>TooManyCats.Runtime</code></td>
@@ -4867,10 +4917,23 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 </section>
 <section class="chapter" id="end-of-document">
 <h2>End of Document</h2>
-<p><strong>Too Many Cats! — Game Design Document v0.9.6 FULL</strong></p>
+<p><strong>Too Many Cats! — Game Design Document v0.9.7 FULL</strong></p>
 </section>
 <section class="chapter" id="변경-이력">
 <h2>변경 이력</h2>
+<h2>v0.9.7 — 오프닝 대본 교체</h2>
+<ul>
+<li><strong>다섯 장면으로 다시 썼다 (71장)</strong> — 긴급 뉴스 / 인류의 대응 / 진짜 위기 /
+  <strong>타이틀</strong> / 구조대 창설 / 플레이어 임명. 21줄 → 48줄, 재생 30초.</li>
+<li><strong>타이틀이 끝이 아니라 가운데에서 떨어진다.</strong> 앞의 셋이 문제를 세우고
+  제목이 그 문제의 이름이 되고 뒤의 둘이 뭘 할 건지를 말한다.</li>
+<li><strong>타이틀 드롭이 문자열 비교로 걸려 있었다.</strong> 화면이 <code>"고양이가 너무 많아."</code> 를
+  그대로 비교해서, 대본에서 말줄임표 하나만 바뀌어도 조용히 안 떴다.
+  <code>StoryScene.TitleHere()</code> 로 대본이 시점을 들고 있게 바꿨다.</li>
+<li><strong>길이를 줄 수가 아니라 초로 잰다.</strong> 줄 수 상한은 한 줄에 두 문장을 넣으면
+  통과한다. 타자 속도와 뜸을 더한 실제 재생 시간을 재고 상한을 2분으로 뒀다.</li>
+<li>화자 검사 추가 — 대본이 길어질수록 "직원" 같은 일회용 화자가 생긴다. (65장)</li>
+</ul>
 <h2>v0.9.6 — Map 5 를 공장에서 물류 터미널로</h2>
 <ul>
 <li><strong>가르치는 것이 바뀌었다</strong> — "내 의지와 무관한 힘" → <strong>"처리량이 병목이다"</strong>.
