@@ -1,0 +1,5708 @@
+<title>고양이가 너무 많아! — 기획서 v0.9.5</title>
+
+<style>
+  /* ── 라이트가 기본. 다크는 토큰만 덮는다 ── */
+  :root {
+    --bg: #EDEFF2;
+    --surface: #FFFFFF;
+    --surface-2: #F4F6F8;
+    --ink: #131820;
+    --ink-2: #4A5462;
+    --ink-3: #79838F;
+    --rule: #D5DAE1;
+    --rule-strong: #B8C0CA;
+    --accent: #A2730F;
+    --accent-soft: rgba(162, 115, 15, 0.10);
+    --danger: #B3261E;
+    --shadow: 0 1px 2px rgba(16, 22, 30, .06), 0 8px 24px rgba(16, 22, 30, .07);
+    --nav-w: 268px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1319;
+      --surface: #171C24;
+      --surface-2: #1C222B;
+      --ink: #E7EBF0;
+      --ink-2: #A3ADB9;
+      --ink-3: #6E7885;
+      --rule: #262D37;
+      --rule-strong: #38414D;
+      --accent: #D9A32E;
+      --accent-soft: rgba(217, 163, 46, 0.12);
+      --danger: #E8574A;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 28px rgba(0, 0, 0, .35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0F1319;
+    --surface: #171C24;
+    --surface-2: #1C222B;
+    --ink: #E7EBF0;
+    --ink-2: #A3ADB9;
+    --ink-3: #6E7885;
+    --rule: #262D37;
+    --rule-strong: #38414D;
+    --accent: #D9A32E;
+    --accent-soft: rgba(217, 163, 46, 0.12);
+    --danger: #E8574A;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 28px rgba(0, 0, 0, .35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", "Noto Sans KR",
+                 "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    font-size: 16px;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── 레이아웃 ── */
+  .shell { display: flex; align-items: flex-start; }
+
+  nav {
+    position: sticky;
+    top: 0;
+    flex: 0 0 var(--nav-w);
+    width: var(--nav-w);
+    height: 100vh;
+    overflow-y: auto;
+    padding: 26px 16px 60px 24px;
+    border-right: 1px solid var(--rule);
+    background: var(--surface);
+  }
+
+  main {
+    flex: 1;
+    min-width: 0;
+    max-width: 940px;
+    padding: 0 40px 120px;
+  }
+
+  /* ── 목차 ── */
+  .brand { margin-bottom: 22px; }
+  .brand b { display: block; font-size: 15px; letter-spacing: -.01em; }
+  .brand span {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11.5px;
+    color: var(--accent);
+    letter-spacing: .1em;
+  }
+
+  .nav-group { margin-bottom: 18px; }
+
+  .nav-group h3 {
+    margin: 0 0 6px;
+    font-size: 11.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 700;
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+  }
+
+  .nav-group h3 small {
+    font-size: 10.5px;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink-3);
+    font-weight: 400;
+    opacity: .8;
+  }
+
+  .nav-group ul { list-style: none; margin: 0; padding: 0; }
+
+  .nav-group a {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    padding: 2px 8px 2px 6px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--ink-2);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .nav-group a:hover { background: var(--surface-2); color: var(--ink); }
+
+  .nav-group a.here {
+    background: var(--accent-soft);
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .nav-group .n {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    min-width: 18px;
+    text-align: right;
+    flex: 0 0 auto;
+  }
+
+  .nav-group .t { flex: 1; min-width: 0; }
+  .nav-group .fig { color: var(--accent); font-size: 9px; flex: 0 0 auto; }
+
+  /* ── 머리말 ── */
+  header {
+    padding: 68px 0 34px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 8px;
+  }
+
+  header .eyebrow {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+
+  header h1 {
+    font-size: clamp(30px, 4.6vw, 44px);
+    line-height: 1.12;
+    letter-spacing: -.025em;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+
+  header p { font-size: 17.5px; color: var(--ink-2); max-width: 60ch; margin: 0; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 22px; }
+
+  .chip {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11.5px;
+    padding: 4px 10px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    color: var(--ink-2);
+  }
+  .chip.gold { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+  /* ── 본문 ── */
+  .chapter { padding-top: 44px; scroll-margin-top: 12px; }
+
+  .chapter > h2 {
+    font-size: clamp(22px, 3vw, 29px);
+    letter-spacing: -.018em;
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+    text-wrap: balance;
+  }
+
+  .chapter h1 { font-size: 21px; margin: 34px 0 12px; }
+  .chapter h2:not(:first-child) { font-size: 19px; }
+  .chapter h3 {
+    font-size: 17px;
+    margin: 30px 0 10px;
+    letter-spacing: -.005em;
+  }
+  .chapter h4 { font-size: 15px; margin: 22px 0 8px; color: var(--ink-2); }
+
+  main p { margin: 0 0 15px; max-width: 70ch; }
+  main li { max-width: 70ch; }
+
+  main ul, main ol { margin: 0 0 16px; padding-left: 22px; }
+  main li { margin-bottom: 4px; }
+
+  strong { font-weight: 650; }
+
+  main a { color: var(--accent); }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .89em;
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: .08em .34em;
+  }
+
+  pre {
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 15px 18px;
+    overflow-x: auto;
+    margin: 0 0 20px;
+  }
+
+  pre code {
+    background: none;
+    border: 0;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  blockquote {
+    margin: 0 0 18px;
+    padding: 2px 0 2px 18px;
+    border-left: 3px solid var(--accent);
+    color: var(--ink-2);
+  }
+
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 30px 0; }
+
+  /* 표는 자기 안에서 가로로 굴러야 한다. 본문이 옆으로 밀리면 안 된다.
+     단 셀 전체에 nowrap 을 걸면 서술이 긴 칸이 화면 밖으로 나가 안 읽힌다.
+     머리글만 한 줄로 붙잡고 셀은 줄바꿈시킨다. */
+  main table {
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 14.5px;
+    margin: 0 0 22px;
+    max-width: 100%;
+  }
+
+  main td { min-width: 6em; }
+
+  main th {
+    white-space: nowrap;
+    text-align: left;
+    font-size: 11.5px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 600;
+    padding: 0 16px 9px 0;
+    border-bottom: 1px solid var(--rule-strong);
+  }
+
+  main td {
+    padding: 10px 16px 10px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    color: var(--ink-2);
+  }
+
+  main td:first-child { color: var(--ink); }
+
+  /* ── Mermaid ──
+     런타임이 밝은 기본 테마로 그린다. 다크 페이지에 그대로 두면 글자가 안 보인다.
+     그림판을 항상 밝게 고정한다 — 화면 목업이 항상 어두운 것과 같은 이유다.
+     그림은 인쇄물처럼 자기 바탕을 갖는다. */
+  pre.mermaid {
+    background: #F3F5F8;
+    border: 1px solid #DCE1E7;
+    border-radius: 8px;
+    padding: 22px 18px;
+    margin: 0 0 24px;
+    text-align: center;
+    overflow-x: auto;
+  }
+
+  /* 렌더링 전에는 mermaid 원문이 그대로 보인다. 잠깐이라도 소스가 번쩍이면 지저분하다. */
+  pre.mermaid:not([data-processed]) { color: transparent; min-height: 120px; }
+
+  /* ── 목업 ── */
+  .mockup { margin: 26px 0 30px; }
+  .mockup figure { margin: 0; }
+
+  figcaption {
+    font-size: 13.5px;
+    color: var(--ink-3);
+    margin-top: 11px;
+    max-width: 70ch;
+    white-space: normal;
+  }
+
+
+  .screen {
+    --s-bg: #0A0D12;
+    --s-ground: #141A22;
+    --s-panel: rgba(9, 12, 17, .88);
+    --s-panel-solid: #11161E;
+    --s-ink: #EDF1F6;
+    --s-dim: #8B96A4;
+    --s-faint: #5A636E;
+    --s-rule: #2A323D;
+    --s-gold: #F0B840;
+    --s-red: #FF6156;
+    --s-green: #57D291;
+    --s-blue: #6BA8F5;
+  }
+  /* ── 화면 목업 공통 ── */
+  figure { margin: 0 0 12px; }
+
+  .screen {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--s-bg);
+    border: 1px solid var(--rule-strong);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    color: var(--s-ink);
+    font-size: 13px;
+    line-height: 1.45;
+    container-type: inline-size;
+  }
+
+  .screen canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  figcaption {
+    font-size: 13.5px;
+    color: var(--ink-3);
+    margin-top: 12px;
+    max-width: 68ch;
+  }
+
+  /* 화면 안 글자는 화면 폭에 비례해서 줄어야 한다.
+     고정 px 로 두면 좁은 뷰포트에서 HUD 가 화면을 뚫는다. */
+  @container (max-width: 720px) {
+    .screen { font-size: 11px; }
+  }
+  @container (max-width: 520px) {
+    .screen { font-size: 9px; }
+  }
+
+  .hud { position: absolute; inset: 0; pointer-events: none; }
+
+  .hud-top, .hud-bottom {
+    position: absolute;
+    left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.6em;
+    gap: 1.2em;
+  }
+
+  .hud-top {
+    top: 0;
+    height: 4.3em;
+    background: linear-gradient(to bottom, rgba(6,9,13,.92), rgba(6,9,13,0));
+  }
+
+  .hud-bottom {
+    bottom: 0;
+    height: 7.4em;
+    background: linear-gradient(to top, rgba(6,9,13,.94), rgba(6,9,13,0));
+    align-items: flex-end;
+    padding-bottom: 1.1em;
+  }
+
+  .stat-label {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .78em;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--s-faint);
+    display: block;
+    line-height: 1.3;
+  }
+
+  .stat-value {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 1.35em;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .stat-value.big { font-size: 2.1em; }
+  .stat-value.warn { color: var(--s-red); }
+  .stat-value .den { color: var(--s-faint); font-size: .62em; font-weight: 500; }
+
+  .wave-bar {
+    width: 9em; height: .5em;
+    background: rgba(255,255,255,.13);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-top: .45em;
+  }
+  .wave-bar i { display: block; height: 100%; background: var(--s-blue); border-radius: 99px; }
+
+  .slots { display: flex; gap: .7em; align-items: flex-end; }
+
+  .slot {
+    width: 3.5em; height: 3.5em;
+    border-radius: .55em;
+    background: var(--s-panel-solid);
+    border: 1px solid var(--s-rule);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .1em;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slot .ico { font-size: 1.4em; line-height: 1; }
+  .slot .key {
+    font-family: ui-monospace, monospace;
+    font-size: .68em;
+    color: var(--s-faint);
+  }
+  .slot.ready { border-color: var(--s-gold); }
+  .slot.ready .key { color: var(--s-gold); }
+  .slot .cd {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    background: rgba(4,6,10,.78);
+    text-align: center;
+    font-family: ui-monospace, monospace;
+    font-size: .72em;
+    color: var(--s-dim);
+  }
+  .slot.cooling .ico { opacity: .32; }
+  /* 쿨다운 표시가 키 번호 위에 겹쳐 찍히면 둘 다 못 읽는다. 도는 중엔 키를 감춘다. */
+  .slot.cooling .key { visibility: hidden; }
+
+  .slot-row-label {
+    font-family: ui-monospace, monospace;
+    font-size: .7em;
+    letter-spacing: .08em;
+    color: var(--s-faint);
+    text-transform: uppercase;
+    margin-bottom: .5em;
+  }
+
+  .speed { display: flex; gap: .3em; }
+  .speed span {
+    font-family: ui-monospace, monospace;
+    font-size: .85em;
+    padding: .3em .7em;
+    border-radius: .35em;
+    background: var(--s-panel-solid);
+    border: 1px solid var(--s-rule);
+    color: var(--s-dim);
+  }
+  .speed span.on { background: var(--s-gold); border-color: var(--s-gold); color: #1A1206; font-weight: 700; }
+
+  .combo-pop {
+    position: absolute;
+    right: 1.6em; top: 34%;
+    text-align: right;
+  }
+  .combo-pop .n {
+    font-family: ui-monospace, monospace;
+    font-size: 2.3em;
+    font-weight: 800;
+    color: var(--s-gold);
+    line-height: 1;
+    display: block;
+  }
+  .combo-pop .t {
+    font-family: ui-monospace, monospace;
+    font-size: .75em;
+    letter-spacing: .16em;
+    color: var(--s-gold);
+    opacity: .8;
+  }
+
+  /* 안전 영역 표시 */
+  .safe-zone {
+    position: absolute;
+    left: 0; right: 0;
+    top: 4.3em; bottom: 7.4em;
+    border: 1px dashed rgba(240, 184, 64, .5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .safe-zone span {
+    font-family: ui-monospace, monospace;
+    font-size: .85em;
+    letter-spacing: .1em;
+    color: var(--s-gold);
+    background: rgba(10,13,18,.75);
+    padding: .5em 1em;
+    border-radius: .3em;
+  }
+
+  /* 콜아웃 번호 */
+  .pin {
+    position: absolute;
+    width: 1.9em; height: 1.9em;
+    border-radius: 50%;
+    background: var(--s-gold);
+    color: #1A1206;
+    font-family: ui-monospace, monospace;
+    font-size: .82em;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 .28em rgba(10,13,18,.85);
+    z-index: 5;
+  }
+
+  .pin-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+    gap: 14px 26px;
+  }
+
+  .pin-list li {
+    display: flex;
+    gap: 11px;
+    align-items: flex-start;
+    font-size: 14.5px;
+    color: var(--ink-2);
+    line-height: 1.55;
+  }
+
+  .pin-list b {
+    flex: 0 0 auto;
+    width: 21px; height: 21px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-family: ui-monospace, monospace;
+    font-size: 11.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  /* ── 준비 단계 화면 ── */
+  .prep { position: absolute; inset: 0; display: flex; flex-direction: column; }
+
+  .prep-top {
+    height: 3.4em;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.4em;
+    border-bottom: 1px solid var(--s-rule);
+    background: var(--s-panel-solid);
+  }
+
+  .prep-body { flex: 1; display: flex; min-height: 0; }
+
+  .prep-list {
+    width: 15em;
+    flex: 0 0 auto;
+    border-right: 1px solid var(--s-rule);
+    background: var(--s-panel-solid);
+    padding: .9em;
+    display: flex;
+    flex-direction: column;
+    gap: .45em;
+    overflow: hidden;
+  }
+
+  .unit {
+    display: flex;
+    align-items: center;
+    gap: .6em;
+    padding: .5em .6em;
+    border-radius: .4em;
+    background: rgba(255,255,255,.035);
+    border: 1px solid transparent;
+  }
+  .unit.sel { border-color: var(--s-gold); background: rgba(240,184,64,.1); }
+  .unit .ico { font-size: 1.15em; }
+  .unit .nm { flex: 1; font-size: .92em; }
+  .unit .pr {
+    font-family: ui-monospace, monospace;
+    font-size: .85em;
+    color: var(--s-gold);
+  }
+  .unit.locked { opacity: .38; }
+  .unit.locked .pr { color: var(--s-faint); }
+
+  .prep-map { flex: 1; position: relative; min-width: 0; }
+
+  .prep-bottom {
+    flex: 0 0 auto;
+    height: 3.6em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.4em;
+    border-top: 1px solid var(--s-rule);
+    background: var(--s-panel-solid);
+    gap: 1em;
+  }
+
+  .cta {
+    font-family: ui-monospace, monospace;
+    font-size: .95em;
+    font-weight: 700;
+    padding: .6em 1.5em;
+    border-radius: .4em;
+    background: var(--s-gold);
+    color: #1A1206;
+    white-space: nowrap;
+  }
+
+  .cond {
+    display: flex;
+    align-items: center;
+    gap: .5em;
+    font-size: .9em;
+    color: var(--s-dim);
+  }
+  .cond .dot { width: .55em; height: .55em; border-radius: 50%; background: var(--s-gold); flex: 0 0 auto; }
+
+  /* ── 하단 띠 (Run Upgrade) ── */
+  .upgrade-strip {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    background: var(--s-panel);
+    border-top: 1px solid var(--s-gold);
+    padding: 1.1em 1.6em 1.3em;
+    backdrop-filter: blur(2px);
+  }
+
+  .upgrade-strip h4 {
+    margin: 0 0 .8em;
+    font-family: ui-monospace, monospace;
+    font-size: .8em;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--s-gold);
+    font-weight: 700;
+  }
+
+  .cards { display: flex; gap: .9em; }
+
+  .card {
+    flex: 1;
+    background: var(--s-panel-solid);
+    border: 1px solid var(--s-rule);
+    border-radius: .5em;
+    padding: .8em .95em;
+    min-width: 0;
+  }
+  .card.hot { border-color: var(--s-gold); }
+  .card .ct {
+    font-weight: 700;
+    font-size: 1em;
+    margin-bottom: .25em;
+    display: flex;
+    align-items: center;
+    gap: .4em;
+  }
+  .card .cd2 { font-size: .88em; color: var(--s-dim); line-height: 1.4; }
+
+  /* ── 결과 화면 ── */
+  .result { position: absolute; inset: 0; padding: 1.6em 2em; display: flex; flex-direction: column; justify-content: center; }
+  .result-head { display: flex; align-items: baseline; gap: .8em; margin-bottom: .2em; }
+  .result-head .verdict {
+    font-family: ui-monospace, monospace;
+    font-size: 1.7em;
+    font-weight: 800;
+    color: var(--s-green);
+  }
+  .result-head .sub { font-size: .9em; color: var(--s-dim); }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 1.4em;
+    /* flex:1 로 늘리면 내용은 위에 붙고 아래가 빈다. 내용 크기만 차지하게 둔다. */
+    flex: 0 0 auto;
+    margin-top: 1.2em;
+  }
+
+  .checklist { display: flex; flex-direction: column; gap: .5em; }
+  .check {
+    display: flex;
+    align-items: center;
+    gap: .6em;
+    font-size: .95em;
+  }
+  .check .mk {
+    font-family: ui-monospace, monospace;
+    width: 1.35em; height: 1.35em;
+    border-radius: .25em;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .82em;
+    flex: 0 0 auto;
+  }
+  .check.ok .mk { background: rgba(87,210,145,.18); color: var(--s-green); }
+  .check.no .mk { background: rgba(255,97,86,.15); color: var(--s-red); }
+  .check.no { color: var(--s-dim); }
+
+  .currency { display: flex; flex-direction: column; gap: .55em; }
+  .cur {
+    display: flex;
+    align-items: center;
+    gap: .6em;
+    font-size: .95em;
+  }
+  .cur .swatch { width: .7em; height: .7em; border-radius: 2px; flex: 0 0 auto; }
+  .cur .nm { flex: 1; color: var(--s-dim); }
+  .cur .v { font-family: ui-monospace, monospace; font-weight: 700; }
+
+  .nudge {
+    margin-top: 1em;
+    padding: .7em 1em;
+    border-left: 2px solid var(--s-gold);
+    background: rgba(240,184,64,.08);
+    font-size: .92em;
+    color: var(--s-ink);
+  }
+
+  /* ── 대사창 ── */
+  .dialogue {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 3.2em;
+    width: min(78%, 46em);
+    background: rgba(6,8,12,.93);
+    border: 1px solid var(--s-rule);
+    border-radius: .5em;
+    padding: 1.1em 1.5em 1.2em;
+  }
+  .dialogue .who {
+    font-family: ui-monospace, monospace;
+    font-size: .85em;
+    font-weight: 700;
+    color: var(--s-gold);
+    margin-bottom: .35em;
+  }
+  .dialogue .line { font-size: 1.25em; line-height: 1.5; }
+  .dialogue .caret { color: var(--s-gold); }
+  .dlg-hint {
+    position: absolute;
+    right: 0; bottom: -1.9em;
+    font-family: ui-monospace, monospace;
+    font-size: .78em;
+    color: var(--s-faint);
+  }
+  .title-drop {
+    position: absolute;
+    left: 0; right: 0;
+    top: 26%;
+    text-align: center;
+    font-size: 3.1em;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    text-shadow: 0 .06em .3em rgba(0,0,0,.7);
+  }
+
+  /* ── 스킬트리 ── */
+  .tree { position: absolute; inset: 0; padding: 1.3em 1.6em; display: flex; flex-direction: column; }
+  .tree-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1em; }
+  .purse { display: flex; gap: 1.1em; }
+  .purse .p { display: flex; align-items: center; gap: .35em; font-family: ui-monospace, monospace; font-size: .92em; }
+  .purse .p i { width: .65em; height: .65em; border-radius: 2px; display: block; }
+
+  .branches { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: .8em; min-height: 0; }
+  .branch {
+    background: var(--s-panel-solid);
+    border: 1px solid var(--s-rule);
+    border-radius: .5em;
+    padding: .75em .7em;
+    display: flex;
+    flex-direction: column;
+    gap: .45em;
+    min-width: 0;
+  }
+  /* Ultimate 는 브랜치의 끝이다. 맨 아래로 밀어 둔다. */
+  .branch .node.ult { margin-top: auto; }
+  .branch h5 {
+    margin: 0 0 .2em;
+    font-family: ui-monospace, monospace;
+    font-size: .78em;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--s-dim);
+    font-weight: 700;
+  }
+  .node {
+    border: 1px solid var(--s-rule);
+    border-radius: .35em;
+    padding: .4em .5em;
+    font-size: .84em;
+    line-height: 1.35;
+  }
+  .node .nn { display: block; }
+  .node .cost {
+    font-family: ui-monospace, monospace;
+    font-size: .88em;
+    color: var(--s-faint);
+    display: flex;
+    gap: .7em;
+    margin-top: .15em;
+  }
+  .node.owned { border-color: rgba(87,210,145,.5); background: rgba(87,210,145,.07); }
+  .node.owned .cost { color: var(--s-green); }
+  .node.open { border-color: var(--s-gold); }
+  .node.open .cost { color: var(--s-gold); }
+  .node.shut { opacity: .4; }
+  .node.ult { border-color: rgba(240,184,64,.55); background: rgba(240,184,64,.09); }
+
+  /* ── 맵 선택 ── */
+  .picker { position: absolute; inset: 0; padding: 1.3em 1.6em; display: flex; flex-direction: column; }
+  .picker-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .9em; }
+
+  .maps { display: flex; flex-direction: column; gap: .32em; }
+
+  .map-row {
+    display: flex;
+    align-items: center;
+    gap: .9em;
+    padding: .38em .8em;
+    border: 1px solid var(--s-rule);
+    border-radius: .45em;
+    background: var(--s-panel-solid);
+  }
+  .map-row.shut { opacity: .42; }
+  .map-row.now { border-color: var(--s-gold); }
+
+  .map-no {
+    font-family: ui-monospace, monospace;
+    font-size: .82em;
+    color: var(--s-faint);
+    width: 2.6em;
+    flex: 0 0 auto;
+  }
+  .map-nm { flex: 1; font-size: .95em; min-width: 0; }
+  .map-teach { font-size: .82em; color: var(--s-faint); }
+
+  .stage-cells { display: flex; gap: .35em; flex: 0 0 auto; }
+
+  .cell {
+    width: 4.4em;
+    text-align: center;
+    padding: .3em 0;
+    border-radius: .3em;
+    border: 1px solid var(--s-rule);
+    font-family: ui-monospace, monospace;
+    font-size: .78em;
+    color: var(--s-faint);
+    position: relative;
+  }
+  .cell.done { border-color: rgba(87,210,145,.55); background: rgba(87,210,145,.10); color: var(--s-green); }
+  .cell.next { border-color: var(--s-gold); background: rgba(240,184,64,.10); color: var(--s-gold); }
+  /* Golden Paw 표시. 이모지는 폰트에 기대는데 게임 안에서도 아이콘으로 갈 것이라
+     여기서는 폰트 없이 그린다. */
+  .cell .paw {
+    position: absolute;
+    top: -.35em; right: -.3em;
+    width: .7em; height: .7em;
+    border-radius: 50%;
+    background: var(--s-gold);
+    box-shadow: 0 0 0 .18em var(--s-panel-solid);
+  }
+
+  .picker-foot {
+    margin-top: auto;
+    padding-top: .8em;
+    border-top: 1px solid var(--s-rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: .85em;
+    color: var(--s-dim);
+  }
+
+
+  /* ── 맵 개략도 (GDD 25, 74) ── */
+  .maps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .map-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 9px;
+    overflow: hidden;
+  }
+
+  .map-card svg { display: block; width: 100%; height: auto; background: #0A0D12; }
+
+  .map-card .cap { padding: 10px 13px 12px; }
+
+  .map-card .cap b {
+    font-size: 14px;
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+  }
+
+  .map-card .cap b i {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-style: normal;
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+
+  .map-card .cap p {
+    margin: 3px 0 0;
+    font-size: 12.5px;
+    color: var(--ink-3);
+    line-height: 1.5;
+    max-width: none;
+  }
+
+  .map-card .cap .io {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    margin-top: 6px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .map-card .cap .io span:first-child { color: #4A8FE0; }
+  .map-card .cap .io span:last-child { color: #C4463C; }
+
+  .map-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 0 0 14px;
+    font-size: 12.5px;
+    color: var(--ink-3);
+  }
+  .map-legend b {
+    display: inline-block;
+    width: 11px; height: 11px;
+    border-radius: 2px;
+    margin-right: 5px;
+    vertical-align: -1px;
+  }
+
+  /* 79장 — 로고 팔레트와 사용 규칙 */
+  .logo-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .logo-swatches div {
+    flex: 1 1 92px;
+    min-width: 92px;
+    border: 1px solid rgba(0,0,0,.18);
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .logo-swatches i {
+    display: block;
+    height: 46px;
+  }
+  .logo-swatches span {
+    display: block;
+    padding: 5px 7px 6px;
+    font-size: 11.5px;
+    line-height: 1.35;
+    color: #333;
+  }
+  .logo-swatches code {
+    display: block;
+    font-size: 10.5px;
+    color: #777;
+    letter-spacing: .02em;
+  }
+  .logo-rules {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .logo-rules p {
+    margin: 0;
+    padding: 9px 11px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 1.5;
+    background: #f2f3f5;
+    color: #2b2b2b;
+  }
+  .logo-rules p.no {
+    background: #fdeaec;
+    color: #7a1f2b;
+  }
+  /* 금지가 아니라 할 일이다. 같은 색으로 칠하면 훑을 때 금지로 읽힌다. */
+  .logo-rules p.todo {
+    background: #fdf2dd;
+    color: #6d4a10;
+  }
+  .logo-rules b {
+    display: block;
+    font-size: 11px;
+    letter-spacing: .04em;
+    margin-bottom: 3px;
+    opacity: .7;
+  }
+
+
+
+  /* ── 좁은 화면 ── */
+  .nav-toggle {
+    display: none;
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 20;
+    border: 1px solid var(--rule-strong);
+    background: var(--surface);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 10px 18px;
+    font: inherit;
+    font-size: 14px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+  }
+
+  @media (max-width: 900px) {
+    .shell { display: block; }
+
+    nav {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 15;
+      transform: translateX(-100%);
+      transition: transform .18s ease;
+      box-shadow: var(--shadow);
+    }
+    nav.open { transform: none; }
+
+    main { max-width: none; padding: 0 22px 120px; }
+    .nav-toggle { display: block; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    nav { transition: none; }
+  }
+</style>
+
+<div class="shell">
+
+<nav id="nav">
+  <div class="brand">
+    <b>고양이가 너무 많아!</b>
+    <span>GDD v0.9.5</span>
+  </div>
+  <div class="nav-group"><h3>개요<small>무엇을 만드는가</small></h3><ul><li><a href="#s0"><span class="n">0</span><span class="t">문서 정보</span><span class="fig"></span></a></li><li><a href="#s1"><span class="n">1</span><span class="t">게임 개요</span><span class="fig"></span></a></li><li><a href="#s2"><span class="n">2</span><span class="t">핵심 판타지</span><span class="fig"></span></a></li><li><a href="#s3"><span class="n">3</span><span class="t">디자인 원칙</span><span class="fig"></span></a></li><li><a href="#s4"><span class="n">4</span><span class="t">기본 게임 루프</span><span class="fig"></span></a></li><li><a href="#s5"><span class="n">5</span><span class="t">Run 구조</span><span class="fig"></span></a></li><li><a href="#s6"><span class="n">6</span><span class="t">자원</span><span class="fig"></span></a></li></ul></div>
+<div class="nav-group"><h3>고양이<small>무리가 어떻게 움직이는가</small></h3><ul><li><a href="#s7"><span class="n">7</span><span class="t">고양이 데이터</span><span class="fig"></span></a></li><li><a href="#s8"><span class="n">8</span><span class="t">Cat State Machine</span><span class="fig"></span></a></li><li><a href="#s9"><span class="n">9</span><span class="t">고양이 이동 시스템</span><span class="fig"></span></a></li><li><a href="#s10"><span class="n">10</span><span class="t">Flow Field</span><span class="fig"></span></a></li><li><a href="#s11"><span class="n">11</span><span class="t">Attraction System</span><span class="fig"></span></a></li><li><a href="#s12"><span class="n">12</span><span class="t">Separation / Crowd</span><span class="fig"></span></a></li><li><a href="#s13"><span class="n">13</span><span class="t">기본 고양이 종류</span><span class="fig"></span></a></li><li><a href="#s14"><span class="n">14</span><span class="t">특수 고양이</span><span class="fig"></span></a></li><li><a href="#s15"><span class="n">15</span><span class="t">Wave 시스템</span><span class="fig"></span></a></li></ul></div>
+<div class="nav-group"><h3>구조<small>무엇으로 걷어 올리는가</small></h3><ul><li><a href="#s16"><span class="n">16</span><span class="t">구조 시스템</span><span class="fig"></span></a></li><li><a href="#s17"><span class="n">17</span><span class="t">구조 장비</span><span class="fig"></span></a></li><li><a href="#s18"><span class="n">18</span><span class="t">장비 배치</span><span class="fig"></span></a></li><li><a href="#s19"><span class="n">19</span><span class="t">업그레이드</span><span class="fig"></span></a></li><li><a href="#s20"><span class="n">20</span><span class="t">Run Upgrade</span><span class="fig"></span></a></li><li><a href="#s21"><span class="n">21</span><span class="t">Permanent Skill Tree</span><span class="fig"></span></a></li><li><a href="#s22"><span class="n">22</span><span class="t">Combo System</span><span class="fig"></span></a></li><li><a href="#s23"><span class="n">23</span><span class="t">대량 구조 연출</span><span class="fig"></span></a></li></ul></div>
+<div class="nav-group"><h3>맵<small>어디서 하는가</small></h3><ul><li><a href="#s24"><span class="n">24</span><span class="t">맵 디자인 철학</span><span class="fig"></span></a></li><li><a href="#s25"><span class="n">25</span><span class="t">맵 구성</span><span class="fig"> ◆</span></a></li></ul></div>
+<div class="nav-group"><h3>아트<small>어떻게 보이는가</small></h3><ul><li><a href="#s26"><span class="n">26</span><span class="t">Pixel Art 방향</span><span class="fig"></span></a></li><li><a href="#s27"><span class="n">27</span><span class="t">PixelLab Pipeline</span><span class="fig"></span></a></li><li><a href="#s28"><span class="n">28</span><span class="t">Animation</span><span class="fig"></span></a></li><li><a href="#s29"><span class="n">29</span><span class="t">Unity Import</span><span class="fig"></span></a></li></ul></div>
+<div class="nav-group"><h3>기술<small>어떻게 돌리는가</small></h3><ul><li><a href="#s30"><span class="n">30</span><span class="t">기술 스택</span><span class="fig"></span></a></li><li><a href="#s31"><span class="n">31</span><span class="t">성능 목표</span><span class="fig"></span></a></li><li><a href="#s32"><span class="n">32</span><span class="t">피해야 할 구조</span><span class="fig"></span></a></li><li><a href="#s33"><span class="n">33</span><span class="t">Simulation 구조</span><span class="fig"></span></a></li><li><a href="#s34"><span class="n">34</span><span class="t">Spatial Grid</span><span class="fig"></span></a></li><li><a href="#s35"><span class="n">35</span><span class="t">Update Frequency</span><span class="fig"></span></a></li><li><a href="#s36"><span class="n">36</span><span class="t">Rendering</span><span class="fig"></span></a></li><li><a href="#s37"><span class="n">37</span><span class="t">Animation 최적화</span><span class="fig"></span></a></li><li><a href="#s38"><span class="n">38</span><span class="t">Unity 주요 시스템</span><span class="fig"></span></a></li><li><a href="#s39"><span class="n">39</span><span class="t">ScriptableObject</span><span class="fig"></span></a></li><li><a href="#s40"><span class="n">40</span><span class="t">Save Data</span><span class="fig"></span></a></li><li><a href="#s41"><span class="n">41</span><span class="t">Folder Structure</span><span class="fig"></span></a></li></ul></div>
+<div class="nav-group"><h3>UI · 연출<small>무엇을 보여주는가</small></h3><ul><li><a href="#s42"><span class="n">42</span><span class="t">UI</span><span class="fig"></span></a></li><li><a href="#s43"><span class="n">43</span><span class="t">Run Result</span><span class="fig"></span></a></li><li><a href="#s44"><span class="n">44</span><span class="t">Audio</span><span class="fig"></span></a></li><li><a href="#s45"><span class="n">45</span><span class="t">VFX</span><span class="fig"></span></a></li></ul></div>
+<div class="nav-group"><h3>범위<small>어디까지 만드는가</small></h3><ul><li><a href="#s46"><span class="n">46</span><span class="t">Prototype Roadmap</span><span class="fig"></span></a></li><li><a href="#s47"><span class="n">47</span><span class="t">Vertical Slice</span><span class="fig"></span></a></li><li><a href="#s48"><span class="n">48</span><span class="t">MVP</span><span class="fig"></span></a></li><li><a href="#s49"><span class="n">49</span><span class="t">Steam 출시 범위 후보</span><span class="fig"></span></a></li><li><a href="#s50"><span class="n">50</span><span class="t">현재 개발 우선순위</span><span class="fig"></span></a></li><li><a href="#s51"><span class="n">51</span><span class="t">Master Cat 기준</span><span class="fig"></span></a></li><li><a href="#s52"><span class="n">52</span><span class="t">핵심 Gameplay Test</span><span class="fig"></span></a></li><li><a href="#s53"><span class="n">53</span><span class="t">핵심 기술 위험</span><span class="fig"></span></a></li></ul></div>
+<div class="nav-group"><h3>확장<small>그 다음</small></h3><ul><li><a href="#s54"><span class="n">54</span><span class="t">Build 방향</span><span class="fig"></span></a></li><li><a href="#s55"><span class="n">55</span><span class="t">Skill Synergy 예</span><span class="fig"></span></a></li><li><a href="#s56"><span class="n">56</span><span class="t">Special Wave 후보</span><span class="fig"></span></a></li><li><a href="#s57"><span class="n">57</span><span class="t">Endless Mode</span><span class="fig"></span></a></li><li><a href="#s58"><span class="n">58</span><span class="t">접근성</span><span class="fig"></span></a></li><li><a href="#s59"><span class="n">59</span><span class="t">Steam Trailer 핵심 장면</span><span class="fig"></span></a></li><li><a href="#s60"><span class="n">60</span><span class="t">Steam Store 문장 후보</span><span class="fig"></span></a></li><li><a href="#s61"><span class="n">61</span><span class="t">프로젝트 식별자</span><span class="fig"></span></a></li><li><a href="#s62"><span class="n">62</span><span class="t">프로젝트 핵심 문장</span><span class="fig"></span></a></li><li><a href="#s63"><span class="n">63</span><span class="t">개발 철학</span><span class="fig"></span></a></li></ul></div>
+<div class="nav-group"><h3>v0.5+<small>나중에 정한 것들</small></h3><ul><li><a href="#s64"><span class="n">64</span><span class="t">세계관</span><span class="fig"></span></a></li><li><a href="#s65"><span class="n">65</span><span class="t">사람 유닛</span><span class="fig"></span></a></li><li><a href="#s66"><span class="n">66</span><span class="t">광역 구조 원칙</span><span class="fig"></span></a></li><li><a href="#s67"><span class="n">67</span><span class="t">클리어 평가와 재화 배분</span><span class="fig"></span></a></li><li><a href="#s68"><span class="n">68</span><span class="t">특수 고양이 등장 순서</span><span class="fig"></span></a></li><li><a href="#s69"><span class="n">69</span><span class="t">준비 단계와 실행 중 개입</span><span class="fig"></span></a></li><li><a href="#s70"><span class="n">70</span><span class="t">고양이 외형 설계</span><span class="fig"></span></a></li><li><a href="#s71"><span class="n">71</span><span class="t">오프닝과 스토리</span><span class="fig"> ◆</span></a></li><li><a href="#s72"><span class="n">72</span><span class="t">게임 화면 UI</span><span class="fig"> ◆</span></a></li><li><a href="#s73"><span class="n">73</span><span class="t">스테이지 난이도</span><span class="fig"></span></a></li><li><a href="#s74"><span class="n">74</span><span class="t">맵 출입 방향</span><span class="fig"></span></a></li><li><a href="#s75"><span class="n">75</span><span class="t">길과 건물</span><span class="fig"></span></a></li><li><a href="#s76"><span class="n">76</span><span class="t">측정된 것</span><span class="fig"></span></a></li><li><a href="#s77"><span class="n">77</span><span class="t">유인과 정지</span><span class="fig"></span></a></li><li><a href="#s78"><span class="n">78</span><span class="t">사거리와 배치 프리뷰</span><span class="fig"></span></a></li><li><a href="#s79"><span class="n">79</span><span class="t">타이틀 로고</span><span class="fig"> ◆</span></a></li></ul></div>
+<div class="nav-group"><h3>문서<small>이력과 끝</small></h3><ul><li><a href="#end-of-document"><span class="n"></span><span class="t">End of Document</span><span class="fig"></span></a></li><li><a href="#변경-이력"><span class="n"></span><span class="t">변경 이력</span><span class="fig"></span></a></li></ul></div>
+</nav>
+
+<main>
+  <header>
+    <p class="eyebrow">Game Design Document v0.9.5</p>
+    <h1>고양이가 너무 많아!</h1>
+    <p>
+      외계 고양이 행성에서 쳐들어온 고양이 떼를 구조해 로켓에 태워 돌려보내는
+      점증형 무리 구조 전략 게임. 기획서 전체를 한 화면에서 본다 — 목업도 여기 있다.
+    </p>
+    <div class="chips">
+      <span class="chip gold">◆ 표시된 장에 목업이 있다</span>
+      <span class="chip">docs/GDD.md 에서 생성됨</span>
+      <span class="chip">Core 테스트 260개</span>
+    </div>
+  </header>
+
+  <section class="chapter" id="s0">
+<h2>0. 문서 정보</h2>
+<ul>
+<li>Project Name: TooManyCats</li>
+<li>Game Title: Too Many Cats!</li>
+<li>Korean Working Title: 고양이가 너무 많아!</li>
+<li>Genre: Incremental Horde Rescue Strategy</li>
+<li>Platform: PC / Steam / Windows</li>
+<li>Engine: Unity</li>
+<li>Language: C#</li>
+<li>Art Style: 2D Pixel Art</li>
+<li>Primary Art Tool: PixelLab</li>
+<li>Development Style: Solo + AI Assisted</li>
+<li>Document Version: 0.7</li>
+</ul>
+<hr />
+</section>
+<section class="chapter" id="s1">
+<h2>1. 게임 개요</h2>
+<p>외계 고양이 행성에서 수천 마리의 고양이가 도시로 쏟아진다.</p>
+<p>플레이어는 구조원, 수의사, 집사를 배치하고 츄르, 참치, 캣닢, 고양이 장난감으로 무리를 유인해,
+구조망과 헬기와 드론으로 한 번에 쓸어 담는다.
+구조한 고양이는 로켓에 태워 고향 행성으로 돌려보낸다.</p>
+<p>핵심은 다음 세 가지다.
+1. 엄청난 수의 고양이
+2. 고양이 군집의 흐름 조작
+3. 한 번에 대량으로 구조하는 쾌감</p>
+<p>세계관은 64장, 사람 유닛은 65장을 본다.</p>
+</section>
+<section class="chapter" id="s2">
+<h2>2. 핵심 판타지</h2>
+<p>처음에는 고양이 몇십 마리가 나타난다.
+조금 지나면 수백 마리가 몰려온다.
+후반에는 길 전체가 고양이로 뒤덮인다.</p>
+<p>플레이어가 캣닢을 던지면 수천 마리의 고양이가 동시에 방향을 바꾼다.
+좁은 골목에 고양이가 몰려들고 구조 차량이 진입하면서 수백 마리가 순식간에 구조된다.</p>
+<p>MEGA RESCUE!
+x742</p>
+</section>
+<section class="chapter" id="s3">
+<h2>3. 디자인 원칙</h2>
+<ul>
+<li>고양이가 많을수록 재미있어야 한다.</li>
+<li>고양이를 죽이지 않는다. 침략자여도 돌려보낼 뿐이다.</li>
+<li>고양이는 액체처럼 움직인다.</li>
+<li>업그레이드는 플레이 방식을 바꿔야 한다.</li>
+<li>맵은 배경이 아니라 흐름을 만드는 Gameplay Geometry다.</li>
+<li><strong>광역기는 피해 범위가 아니라 영향 범위다.</strong> 흩어진 고양이는 광역기로도 못 건진다. (66장)</li>
+<li><strong>유인이 주도권을 갖고 구조는 그 결과다.</strong> 유인 없이 구조만으로 충분해지면 이 게임은 죽는다.</li>
+</ul>
+</section>
+<section class="chapter" id="s4">
+<h2>4. 기본 게임 루프</h2>
+<ol>
+<li>Run 시작</li>
+<li>Map 진입</li>
+<li><strong>준비 단계</strong> — 사람과 설치형 장비를 배치한다 (69장)</li>
+<li><strong>구조 시작</strong> — 플레이어가 직접 시작을 누른다</li>
+<li>고양이 Spawn</li>
+<li>기본 Flow를 따라 이동</li>
+<li><strong>실행 중 개입</strong> — 참치 · 캣닢 · 레이저로 흐름을 튼다 (69장)</li>
+<li>고양이를 한곳에 집결</li>
+<li>대량 구조</li>
+<li>Rescue Points 획득</li>
+<li>Wave 종료 · 클리어 조건 평가 (67장)</li>
+<li>Run Upgrade</li>
+<li>다음 Wave — 준비 단계로 돌아간다</li>
+<li>더 많은 고양이 등장</li>
+<li>Run 종료</li>
+<li>재화 획득 — 기본 포인트 · 3종 해금 재화 · Golden Paw (6장)</li>
+<li>Permanent Skill Tree 해금과 강화</li>
+<li>신규 Map / Equipment / Cat 해금</li>
+</ol>
+<p>v0.7 에서 6·7번이 갈라졌다. 배치는 Wave 전에 끝내고, Wave 중에는 던지고 조준하는 것만 남는다.
+왜 전부 사전 배치가 아닌지는 69장을 본다.</p>
+<p>목록으로는 <strong>어디가 되돌아오는 고리인지</strong>가 안 보인다.</p>
+<pre class="mermaid">flowchart LR
+  Start([Run 시작]) --> Prep[준비 단계<br/>배치 · 69장]
+  Prep -->|구조 시작| Wave[Wave 진행<br/>Spawn · 흐름 · 집결]
+  Wave --> Live[실행 중 개입<br/>투척 · 조준 · 69장]
+  Live --> Wave
+  Wave --> Judge{Wave 종료<br/>클리어 평가 · 67장}
+  Judge -->|남은 Wave 있음| Upgrade[Run Upgrade<br/>20장]
+  Upgrade --> Prep
+  Judge -->|마지막 Wave| Result[결과 화면<br/>재화 획득 · 6장]
+  Result --> Tree[스킬트리<br/>해금 · 21장]
+  Tree --> Start
+
+  classDef loop fill:#F0B840,stroke:#B8831F,color:#1A1206
+  class Live,Upgrade loop</pre>
+<p>노란 두 칸이 <strong>Run 안에서 도는 고리</strong>다. 나머지는 Run 을 넘나든다.</p>
+</section>
+<section class="chapter" id="s5">
+<h2>5. Run 구조</h2>
+<ul>
+<li>목표 시간: 15~30분</li>
+<li>초기 버전: 10~15 Wave</li>
+<li>추후 Endless Mode 가능</li>
+</ul>
+<p>승리 조건:
+- 최종 Wave 완료
+- Mega Horde Wave 완료</p>
+<p>실패 조건 후보:
+- 고양이가 Map Exit으로 탈출하면 Missed Cat
+- Missed Cat이 허용량 초과 시 실패</p>
+</section>
+<section class="chapter" id="s6">
+<h2>6. 자원</h2>
+<h2>Rescue Points</h2>
+<p>현재 Run에서 장비 구매 및 강화에 사용. Run 이 끝나면 사라진다.</p>
+<h2>Research Points — 기본 포인트</h2>
+<p>Run 종료 후 얻는 공용 영구 재화. <strong>이미 열려 있는 스킬을 키우는 데 쓴다.</strong></p>
+<p>브랜치를 가리지 않는다. 어떤 판을 하든 원하는 곳에 쓸 수 있다.</p>
+<h2>해금 재화 3종 (v0.7)</h2>
+<p><strong>잠긴 노드를 여는 데만</strong> 쓴다. 레벨업에는 쓰지 않는다.</p>
+<table>
+<thead>
+<tr>
+<th>재화</th>
+<th>여는 것</th>
+<th>스킬 브랜치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>인력 재화</strong></td>
+<td>사람 유닛 — 구조원 / 수의사 / 집사 (65장)</td>
+<td>Rescue</td>
+</tr>
+<tr>
+<td><strong>유인 재화</strong></td>
+<td>CC기 — 츄르 / 참치 / 캣닢 / 장난감 / 레이저</td>
+<td>Attraction</td>
+</tr>
+<tr>
+<td><strong>장비 재화</strong></td>
+<td>기계 — 구조망 / 헬기 / 드론 / 차량</td>
+<td>Automation</td>
+</tr>
+</tbody>
+</table>
+<p>플레이어가 배치하는 모든 것이 정확히 이 셋으로 갈린다.</p>
+<p>Economy 브랜치는 <strong>세 재화 중 아무거나</strong> 받는다.
+원래 다른 셋을 빨리 굴리기 위한 브랜치라 성격상 중립이고,
+한쪽 재화가 남을 때 태울 곳이 된다.</p>
+<h2>해금은 2단계다</h2>
+<pre><code>해금 재화로 노드를 연다  →  기본 포인트로 키운다
+</code></pre>
+<p>이 분리가 중요한 이유가 둘 있다.</p>
+<p><strong>첫째, "이번 판 헛수고" 를 막는다.</strong> 레벨업까지 카테고리별 재화로 잠그면,
+유인 재화만 나온 판은 Rescue 브랜치가 통째로 멈춘다.
+기본 포인트가 모든 강화를 담당하면 어떤 판이든 원하는 곳에 쓸 수 있고,
+특화 재화는 가끔 있는 해금에만 필요해서 "잘못 받았다" 는 느낌이 옅어진다.</p>
+<p><strong>둘째, 스킬 트리에 잠긴 노드가 보이게 된다.</strong>
+"저걸 열려면 유인 재화가 필요하구나" 가 다음 판의 목표가 된다.
+트리에 있는 것이 전부이면 동기가 약하다.</p>
+<h2>총량과 배분 (67장)</h2>
+<pre><code>얼마나 버는가   ←  구조한 고양이 수
+어디에 쌓이는가 ←  어떻게 클리어했는가
+</code></pre>
+<p>실패한 Run 도 구조한 만큼은 적립된다 — 다음 판을 시작할 마음이 들어야 한다.</p>
+<h2>Golden Paw</h2>
+<p>가장 희귀한 재화. <strong>Ultimate 해금 전용이다.</strong></p>
+<p>21장의 브랜치별 Ultimate — 전광석화 구조, 고양이 천국, 드론 군단 — 을 여는 데만 쓴다.
+게임에서 가장 판을 뒤집는 것들이고, 완전 구조는 가장 어려운 성취다. 짝이 맞는다.</p>
+<p>획득 경로:
+- <strong>완전 구조 클리어</strong> — 놓친 고양이 0 (67장)
+- 황금 고양이 구조 (14장)
+- 업적</p>
+<h2>세 재화의 역할 정리</h2>
+<pre><code>기본 포인트   →  가진 것을 키운다
+해금 재화 3종 →  선택지를 늘린다
+Golden Paw    →  판을 뒤집는 것을 연다
+</code></pre>
+<h2>구현 상태</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SaveData.PersonnelTokens</code> 외 2</td>
+<td>해금 재화 3종</td>
+</tr>
+<tr>
+<td><code>SaveData.UnlockedSkills</code></td>
+<td>연 노드. 레벨과 <b>따로</b> 둔다 — 0레벨로 열려만 있는 노드가 있다</td>
+</tr>
+<tr>
+<td><code>SkillTree.TryUnlock</code></td>
+<td>1단계. <code>SkillDefinition.UnlockCost</code> 만큼 해금 재화를 쓴다</td>
+</tr>
+<tr>
+<td><code>SkillTree.TryPurchase</code></td>
+<td>2단계. 안 열린 노드는 <code>NotUnlocked</code> 로 막힌다</td>
+</tr>
+<tr>
+<td><code>SkillTree.CollectLocked</code></td>
+<td>트리 화면이 "저걸 열려면 뭐가 필요한지" 를 읽는 목록</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Economy 브랜치는 잔액이 가장 많은 재화로 낸다.</strong> 남는 재화를 태울 곳이라는 게
+이 브랜치의 존재 이유라, 셋 중 아무거나 받되 남아도는 쪽부터 쓴다.</p>
+<p><strong>Ultimate 은 Golden Paw 로만 열린다.</strong> 유인 재화를 9999개 모아도 안 열린다.</p>
+<p><strong>옛 세이브 처리</strong> — 해금 2단계 이전 세이브에는 <code>unlockedSkills</code> 키가 없다.
+그걸 잠긴 것으로 처리하면 이미 키워 둔 스킬이 갑자기 잠기므로,
+<strong>레벨이 1 이상이면 열린 것으로 본다.</strong></p>
+</section>
+<section class="chapter" id="s7">
+<h2>7. 고양이 데이터</h2>
+<ul>
+<li>Position</li>
+<li>Velocity</li>
+<li>Direction</li>
+<li>Speed</li>
+<li>CatType</li>
+<li>State</li>
+<li>Target</li>
+<li>AttractionTarget</li>
+<li>SpawnGroup</li>
+<li>AnimationFrame</li>
+</ul>
+</section>
+<section class="chapter" id="s8">
+<h2>8. Cat State Machine</h2>
+<pre class="mermaid">stateDiagram-v2
+  [*] --> Spawning
+  Spawning --> Flowing
+  Flowing --> Attracted: 유인원 사거리 안
+  Attracted --> Flowing: 유인 끊김
+  Attracted --> Gathering: 유인원 도착
+  Gathering --> Flowing: 유인 끊김
+  Gathering --> Rescuing: 구조 장비 사거리 안
+  Flowing --> Rescuing: 구조 장비 사거리 안
+  Rescuing --> Rescued
+  Flowing --> Escaped: Map Exit 도달
+  Rescued --> [*]
+  Escaped --> [*]</pre>
+<p><code>Escaped</code> 만 나쁜 끝이다 — Missed Cat 으로 집계되고, 이 게임의 유일한 실패 조건이다. (5장)
+<code>Attracted</code> 와 <code>Gathering</code> 에서 빠져나가는 화살표가 있는 게 중요하다.
+유인은 붙잡아 두는 게 아니라 <strong>끌어당기는 동안만</strong> 유효하다.</p>
+<p>추가 후보:
+- Eating
+- Panic
+- FollowingLeader
+- Escaping
+- Waiting
+- Special</p>
+</section>
+<section class="chapter" id="s9">
+<h2>9. 고양이 이동 시스템</h2>
+<p>개별 NavMeshAgent를 사용하지 않는다.</p>
+<p>FinalDirection =
+FlowDirection
++ AttractionDirection
++ SeparationDirection
++ ObstacleAvoidanceDirection
++ SpecialBehaviourDirection</p>
+<p>예:
+FlowDirection * 1.0
++ AttractionDirection * 0.8
++ SeparationDirection * 0.25
++ ObstacleDirection * 1.2</p>
+</section>
+<section class="chapter" id="s10">
+<h2>10. Flow Field</h2>
+<p>맵 전체를 Grid로 나눈다.</p>
+<p>각 Cell:
+- Walkable
+- Cost
+- FlowDirection
+- Obstacle
+- TerrainType</p>
+<p>하나의 Flow Field를 수천 마리가 공유한다.</p>
+</section>
+<section class="chapter" id="s11">
+<h2>11. Attraction System</h2>
+<p>유인 Source:
+- Churu Dispenser
+- Tuna
+- Catnip
+- Laser Pointer
+- Leader Cat
+- Food Store
+- Special Event</p>
+<p>Attraction Source Data:
+- Position
+- Radius
+- Strength
+- Priority
+- Duration
+- Type
+- MaxAffectedCats</p>
+<p>DistanceFactor = 1 - Distance / AttractionRadius</p>
+<p>AttractionForce =
+DirectionToSource
+* AttractionStrength
+* DistanceFactor</p>
+</section>
+<section class="chapter" id="s12">
+<h2>12. Separation / Crowd</h2>
+<p>Collider 기반 개별 충돌 대신 Spatial Grid 사용.</p>
+<p>목표:
+고양이가 완전히 겹치지는 않지만 큰 무리를 유지하게 한다.</p>
+</section>
+<section class="chapter" id="s13">
+<h2>13. 기본 고양이 종류</h2>
+<p>일반 고양이가 굴리는 무늬 6종. 게임플레이 의미는 전혀 없다.
+색조가 아니라 <strong>명도</strong>로 벌려 놓는다 — 무리 속에서 구분되는 건 밝기다. (70장)</p>
+<ul>
+<li>Black — 가장 어두움</li>
+<li>Tuxedo — 어두움 + 흰 덩어리</li>
+<li>Gray Tabby — 중간</li>
+<li>Orange Tabby — 중간, 유일한 유채색</li>
+<li>Calico — 얼룩</li>
+<li>White — 가장 밝음</li>
+</ul>
+<p>가능하면 동일한 체형과 Animation을 공유한다.</p>
+<p><strong>특수 고양이는 이 무늬를 굴리지 않는다.</strong> 타입마다 고정 외형이 따로 있다. (70장)</p>
+</section>
+<section class="chapter" id="s14">
+<h2>14. 특수 고양이</h2>
+<ul>
+<li>겁쟁이 고양이: 사람/차량을 피함</li>
+<li>먹보 고양이: 음식 Attraction 강함</li>
+<li>빠른 고양이: 이동 속도 빠름</li>
+<li>뚱냥이: 느리지만 보상 높음</li>
+<li>대장 고양이: 주변 고양이가 따라감</li>
+<li>황금 고양이: 희귀, Meta Currency 보너스</li>
+</ul>
+<h2>v0.5 추가 — 치료가 필요한 고양이</h2>
+<p>위 6종은 전부 변형이다. 빠르거나, 뚱뚱하거나, 비싸다.
+플레이어를 실제로 곤란하게 만드는 고양이가 없다. 아래 둘이 그 자리를 맡는다.
+둘 다 수의사(65장)로 되돌릴 수 있다.</p>
+<h3>광란 고양이</h3>
+<p>주변 고양이를 밀어낸다. 대장 고양이의 정확한 거울이다 — 대장은 끌어당기고 광란은 밀어낸다.</p>
+<p>이 게임이 하는 일을 정면으로 공격하는 위협이라는 점이 중요하다.
+겨우 모아 놓은 무리를 광란 하나가 터뜨린다. 무시할 수가 없다.</p>
+<p>수의사가 진정시키면 일반 고양이로 돌아온다.</p>
+<h3>돌연변이 고양이</h3>
+<p>구조 저항이 크다. 구조에 아주 오래 걸린다.
+방치하면 주변 일반 고양이를 돌연변이로 물들인다 — 늦게 대응할수록 비싸진다.</p>
+<p>수의사가 치료하면 즉시 일반 고양이가 되고 Rescue Points 보너스를 준다.
+치료가 구조보다 이득이 되는 상황을 만들어, 수의사를 놓을 이유를 수치로 만든다.</p>
+</section>
+<section class="chapter" id="s15">
+<h2>15. Wave 시스템</h2>
+<p>Wave Data:
+- WaveNumber
+- TotalCats
+- SpawnRate
+- SpawnPoints
+- CatTypes
+- SpecialCatRatio
+- WaveDuration
+- RewardMultiplier</p>
+<p>난이도 증가 요소:
+- 고양이 수
+- Spawn Rate
+- Spawn Point 수
+- Spawn 방향
+- 특수 고양이
+- 흐름 분기
+- 동시 관리 지역</p>
+</section>
+<section class="chapter" id="s16">
+<h2>16. 구조 시스템</h2>
+<p>장비 공통 데이터:
+- Range
+- RescueRate
+- Capacity
+- Cooldown
+- TargetCount
+- Cost
+- UpgradeLevel</p>
+</section>
+<section class="chapter" id="s17">
+<h2>17. 구조 장비</h2>
+<h2>구조대원</h2>
+<p>Early Game / Single Target / Reliable Rescue</p>
+<p>업그레이드:
+- Rescue Speed
+- Range
+- Max Target
+- Auto Move</p>
+<p>Transformation:
+베테랑 구조대원</p>
+<h2>츄르 디스펜서</h2>
+<p>Gathering / Flow Control</p>
+<p>Parameters:
+- AttractionRadius
+- AttractionStrength
+- Duration
+- Cooldown
+- MaxAffectedCats
+- Cost</p>
+<p>Transformation:
+맛집 소문
+- 츄르에 도착한 고양이가 주변 고양이에게 추가 Attraction Source 역할</p>
+<h2>참치 런처</h2>
+<p>Remote Flow Manipulation</p>
+<p>활용:
+- 방향 변경
+- 골목 유도
+- 구조망 준비
+- 위험 지역 회피
+- 군집 분리</p>
+<p>Transformation:
+참치 폭우
+- 착탄 후 작은 참치가 주변에 추가로 떨어짐</p>
+<h2>구조망</h2>
+<p>Burst Rescue</p>
+<p>Parameters:
+- Radius
+- Capacity
+- Cooldown
+- CastTime
+- Cost</p>
+<p>Transformation:
+흡입 구조망
+- 발동 직전 주변 고양이를 중앙으로 끌어당김</p>
+<h2>구조 차량</h2>
+<p>Mass Rescue / Late Game Automation</p>
+<p>Parameters:
+- Speed
+- Capacity
+- RescueRadius
+- Route
+- Cooldown</p>
+<p>Transformation:
+츄르 살포 차량
+- 이동하며 Attraction Trail 생성</p>
+<h2>캣닢 폭탄</h2>
+<p>Mass Gathering</p>
+<p>Transformation:
+고양이 천국
+- 매우 넓은 범위에 강력한 Catnip 반응</p>
+<h2>레이저 포인터</h2>
+<p>Manual Horde Control</p>
+<p>업그레이드:
+- Range
+- Attraction Strength
+- Duration
+- Multi Laser
+- Laser Split</p>
+<h2>구조 드론</h2>
+<p>Automation / Late Game</p>
+<p>업그레이드:
+- Drone Count
+- Speed
+- SearchRadius
+- RescueSpeed
+- Capacity</p>
+<p>Transformation:
+드론 군단</p>
+</section>
+<section class="chapter" id="s18">
+<h2>18. 장비 배치</h2>
+<p>Buildable Zone에만 설치 가능.</p>
+<p>목적:
+- 전략성
+- UI 정리
+- 맵 구조의 의미 강화</p>
+</section>
+<section class="chapter" id="s19">
+<h2>19. 업그레이드</h2>
+<p>Numerical:
+- Range +10%
+- Cooldown -10%
+- Capacity +20%</p>
+<p>Transformative:
+- 구조망 흡입
+- 구조차 츄르 살포
+- 드론 구조 후 유인원 생성</p>
+</section>
+<section class="chapter" id="s20">
+<h2>20. Run Upgrade</h2>
+<p>Run 동안만 유지.</p>
+<p>예:
+- Rescue Speed +20%
+- Attraction Range +30%
+- Drone +1
+- Vehicle +1
+- Net Capacity +50
+- Churu Strength +25%</p>
+<p>Wave 종료 후 3개 중 1개 선택하는 구조 고려.</p>
+</section>
+<section class="chapter" id="s21">
+<h2>21. Permanent Skill Tree</h2>
+<p>4 Branch:
+1. Rescue
+2. Attraction
+3. Automation
+4. Support / Economy</p>
+<h2>브랜치별 해금 재화 (v0.7)</h2>
+<p>노드를 <strong>여는</strong> 데는 브랜치별 재화가, <strong>키우는</strong> 데는 기본 포인트가 쓰인다. (6장)</p>
+<table>
+<thead>
+<tr>
+<th>Branch</th>
+<th>해금 재화</th>
+<th>무엇이 들어 있나</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rescue</td>
+<td>인력 재화</td>
+<td>사람 유닛 (65장)</td>
+</tr>
+<tr>
+<td>Attraction</td>
+<td>유인 재화</td>
+<td>CC기</td>
+</tr>
+<tr>
+<td>Automation</td>
+<td>장비 재화</td>
+<td>기계</td>
+</tr>
+<tr>
+<td>Economy</td>
+<td><strong>아무거나</strong></td>
+<td>나머지 셋을 빨리 굴리는 것</td>
+</tr>
+<tr>
+<td>각 Ultimate</td>
+<td><strong>Golden Paw</strong></td>
+<td>판을 뒤집는 것</td>
+</tr>
+</tbody>
+</table>
+<p>해금을 브랜치별 재화로 잠그면 "무엇을 열지" 가 Run 중의 플레이 방식과 연결된다.
+잘 모은 판은 새 CC기를 열고, 특수 고양이를 잘 처리한 판은 새 사람 유형을 연다. (67장)</p>
+<p>강화는 공용 재화로 두어, 어떤 판을 하든 원하는 브랜치를 키울 수 있게 한다.</p>
+<p>Rescue Ultimate:
+전광석화 구조
+- 일정 시간 All Rescue Speed ×5</p>
+<p>Attraction Ultimate:
+고양이 천국
+- 맵 전체 Catnip 반응</p>
+<p>Automation Ultimate:
+드론 군단
+- 대규모 구조 드론 출동</p>
+<p>Economy:
+- Starting Money
+- Rescue Reward
+- Equipment Discount
+- Wave Reward
+- Rare Cat Bonus
+- Research Multiplier</p>
+</section>
+<section class="chapter" id="s22">
+<h2>22. Combo System</h2>
+<p>짧은 시간에 많은 고양이를 구조할수록 Combo 증가.</p>
+<p>예:
+10 / 25 / 50 / 100 / 250 / 500 / 1000 Rescue</p>
+<p>메시지 후보:
+- NICE RESCUE!
+- MEGA RESCUE!
+- MASS RESCUE!
+- CAT OVERLOAD!
+- PURRFECT!
+- TOO MANY CATS!</p>
+</section>
+<section class="chapter" id="s23">
+<h2>23. 대량 구조 연출</h2>
+<ul>
+<li>Number Pop-up</li>
+<li>약한 Screen Shake</li>
+<li>Rescue Effect</li>
+<li>Combo Sound</li>
+<li>Currency Explosion</li>
+<li>UI Counter 급증</li>
+<li>고양이 군집이 빠르게 사라지는 연출</li>
+</ul>
+</section>
+<section class="chapter" id="s24">
+<h2>24. 맵 디자인 철학</h2>
+<p>맵은 배경이 아니라 흐름을 만드는 시스템.</p>
+<p>중요 요소:
+- 넓은 지역
+- 좁은 통로
+- 갈림길
+- 우회로
+- 장애물
+- Spawn Zone
+- Rescue Zone
+- Build Zone</p>
+<p>그래픽은 과도하게 디테일하지 않는다.</p>
+</section>
+<section class="chapter" id="s25">
+<h2>25. 맵 구성</h2>
+<p><strong>각 맵은 하나의 새로운 흐름 문제를 가르친다.</strong> 두 개를 한 번에 가르치지 않는다.
+새 특수 고양이와 새 장비도 그 문제에 맞춰 여기서 열린다. (68장)</p>
+<p><strong>맵 하나는 쉬움 / 보통 / 어려움 세 스테이지를 갖는다.</strong> 지형은 셋 다 같고 압력만 다르다.
+아래에 적힌 Spawn·Exit 수와 신규 해금은 <strong>보통</strong> 기준이다. 자세한 규칙은 73장을 본다.</p>
+<div class="mockup">  <figure>
+    <div class="map-legend">
+      <span><b style="background:#080B10;outline:1px solid #3A4553"></b>길 — 고양이가 다닌다</span>
+      <span><b style="background:#212A37"></b>건물 — 여기에 배치한다</span>
+      <span><b style="background:#4A8FE0"></b>Spawn</span>
+      <span><b style="background:#C4463C"></b>Exit</span>
+    </div>
+    <div class="maps-grid" id="mapsGrid"></div>
+    <figcaption>
+      개략도다. 실제 격자 치수가 아니라 <strong>흐름 구조</strong>만 표현한다 —
+      어디서 들어와 어디로 나가고 무엇이 막는가. 출입 방향은 74장 표 그대로다.
+    </figcaption>
+  </figure></div>
+
+<h2>Map 1 - 주택가</h2>
+<p><strong>가르치는 것</strong>: 유인은 무리를 <strong>세워 둔다</strong></p>
+<ul>
+<li>Flow: 왼쪽 두 곳 → 가운데 합류 → 오른쪽 Exit 하나. <strong>Y자</strong></li>
+<li>Spawn 2 / Exit 1</li>
+<li>지형: 도로(6칸) 셋. 두 갈래 사이의 블록이 양면이 길에 접한 섬이다</li>
+<li>신규: 기본 고양이 6색 · 구조원 · 츄르 디스펜서</li>
+</ul>
+<p><strong>"꺾인다" 가 아니라 "멈춘다" 다.</strong> 유인은 무리의 진행 방향을 바꾸는 게 아니라
+그 자리에 붙잡아 세운다. 세워 둔 무리를 구조 장비가 수확한다 —
+그게 이 게임의 기본 동작이고(16장), 첫 판은 그것만 가르친다.</p>
+<p>측정 결과다. 고양이 300마리, 합류점에 츄르 하나. (76장)</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>탈출</th>
+<th>남음</th>
+<th>붙잡힌 무리 평균 속력</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>유인 없음</td>
+<td><strong>300</strong></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td>유인 하나</td>
+<td><strong>0</strong></td>
+<td>300</td>
+<td><strong>0.46</strong> (기본 속도 3)</td>
+</tr>
+</tbody>
+</table>
+<p>속력이 3 에서 0.46 으로 떨어진다. <strong>비유가 아니라 실제로 멈춘다.</strong></p>
+<h2>왜 Y 인가</h2>
+<p>Spawn 이 둘이라 두 줄기로 들어오는데 <strong>만나는 곳은 하나</strong>다.
+그래서 유인 하나를 합류점에 놓으면 양쪽을 다 잡는다 — 측정에서 위 150마리, 아래 150마리 전부.</p>
+<p>첫 판에서 "동시에 두 곳을 봐야 한다" 를 가르치려는 게 아니다. 그건 Map 3 몫이다.
+여기서는 <strong>둘로 들어와도 결국 한 곳에서 만난다</strong>는 것, 그러니 그 한 곳을 찾으면 된다는 것을 가르친다.</p>
+<p><strong>처음에는 Spawn 하나에서 갈라지는 모양으로 그렸다가 고쳤다.</strong>
+재 보니 위 갈래로 아무도 가지 않았다 — Flow Field 는 셀마다 제일 싼 길 하나를 고르므로
+갈림길 뒤에서 무리가 저절로 나뉘는 일이 없다. 두 갈래에 고양이가 흐르려면
+들어오는 곳이 둘이어야 한다. (76장)</p>
+<p>가장 단순한 판이어야 한다. 여기서 실패하면 배우는 것이 아니라 헷갈리는 것이다.</p>
+<h2>Map 2 - 전통시장</h2>
+<p><strong>가르치는 것</strong>: 맵에 박힌 유인원이 내 계획과 싸운다</p>
+<ul>
+<li>좁은 세로 골목이 반복되어 무리가 길게 늘어진다</li>
+<li>고정 음식점 2곳이 플레이어 의도와 다른 방향으로 당긴다</li>
+<li>Spawn 1 / Exit 1</li>
+<li>신규: 먹보 고양이 · 참치 런처</li>
+</ul>
+<p>먹보 고양이가 음식점에 반응하는 것을 처음 본다.
+참치 런처는 그 당김을 원거리에서 되돌리는 답으로 같이 준다.</p>
+<h2>Map 3 - 아파트 단지</h2>
+<p><strong>가르치는 것</strong>: 한 번에 다 볼 수 없다</p>
+<ul>
+<li>Spawn 3 (좌측 상·중·하) / Exit 1</li>
+<li>대형 건물이 시야와 경로를 동시에 끊는다</li>
+<li>건물 사이 통로 2개가 사실상의 병목</li>
+<li>신규: 빠른 고양이 · 구조망</li>
+</ul>
+<p>동시 관리 지역이 처음 둘 이상이 된다. (15장 난이도 증가 요소)</p>
+<h2>Map 4 - 지하철역</h2>
+<p><strong>가르치는 것</strong>: 병목은 무기다</p>
+<ul>
+<li>열차 도착 시 Burst Spawn — 수백 마리가 한꺼번에</li>
+<li>플랫폼 → 계단(단일 병목) → 출구</li>
+<li>Spawn 2 (양쪽 플랫폼) / Exit 1</li>
+<li>신규: 겁쟁이 고양이 · 구조 드론</li>
+</ul>
+<p>지형이 이미 무리를 모아 주는 판. 여기서 "모인 곳을 수확한다"의 후반부만 연습한다.
+겁쟁이 고양이 때문에 구조원을 병목 한가운데 두면 오히려 흩어진다.</p>
+<h2>Map 5 - 공장</h2>
+<p><strong>가르치는 것</strong>: 내 의지와 무관한 힘이 있다</p>
+<ul>
+<li>Conveyor 2줄이 서로 반대 방향으로 강제 이동시킨다</li>
+<li>Spawn 2 (둘 다 서쪽) / Exit 1 — 벨트마다 방향이 다르지만 나가는 곳은 하나다</li>
+<li>신규: 뚱냥이 · 구조 차량</li>
+</ul>
+<p>벨트를 거스를지 태워 보낼지가 판단이 된다.
+뚱냥이는 느려서 벨트 위에서 특히 오래 머문다.</p>
+<h2>Map 6 - 침수 지역</h2>
+<p><strong>가르치는 것</strong>: 계획은 Wave 중에 무너진다</p>
+<ul>
+<li>Wave 진행에 따라 침수 영역이 넓어져 경로가 바뀐다</li>
+<li>준비 단계에서 짠 배치가 중반에 무의미해진다 (69장)</li>
+<li>Spawn 2 / Exit 1</li>
+<li>신규: 대장 고양이</li>
+</ul>
+<p>투척·조준 장비가 처음으로 필수가 되는 판.
+사전 배치만으로는 넘길 수 없게 설계한다.</p>
+<h2>Map 7 - 항구</h2>
+<p><strong>가르치는 것</strong>: 모아 놓은 것을 잃을 수 있다</p>
+<ul>
+<li>컨테이너 격자가 미로를 만든다. 좁은 통로 다수</li>
+<li>Spawn 2 / Exit 1</li>
+<li><strong>신규: 광란 고양이 · 수의사</strong></li>
+</ul>
+<p>68장의 원칙대로 광란은 여기서 처음 나온다.
+Map 1~6 에서 대규모 집결의 쾌감을 충분히 겪은 뒤다.
+첫 등장은 한 마리이고, 수의사를 같은 판에서 연다.</p>
+<h2>Map 8 - 도심</h2>
+<p><strong>가르치는 것</strong>: 사방에서 온다</p>
+<ul>
+<li>넓은 광장에 장애 지형이 섬처럼 박혀 있다 (개활형, 75장)</li>
+<li>Spawn 4 (서쪽 둘 · 위 · 아래) / Exit 1 — 동쪽에는 Exit 만 둔다</li>
+<li>신규: 돌연변이 고양이</li>
+</ul>
+<p>돌연변이가 번지기 때문에 넓은 맵에서 방치의 대가가 커진다.
+수의사를 어디에 둘지가 처음으로 어려운 판.</p>
+<h2>Map 9 - 재개발 지역</h2>
+<p><strong>가르치는 것</strong>: 지형 자체가 바뀐다</p>
+<ul>
+<li>Wave 중 게이트가 열리고 닫혀 경로가 재구성된다</li>
+<li>Flow Field 재계산이 게임플레이로 드러나는 판 (10장)</li>
+<li>Spawn 3 / Exit 1</li>
+<li>신규: 없음 — 배운 것을 조합한다</li>
+</ul>
+<p>새 요소를 주지 않는다. 여기는 시험이다.</p>
+<h2>Map 10 - 도시 중심부</h2>
+<p><strong>가르치는 것</strong>: 전부</p>
+<ul>
+<li>최종 대규모 Horde. Spawn 6 / Exit 1</li>
+<li>앞선 아홉 판의 기믹이 섞여 나온다</li>
+<li>신규: 황금 고양이</li>
+</ul>
+<p>Mega Horde Wave 로 끝난다. (5장 승리 조건)</p>
+<h2>공통 규칙</h2>
+<ul>
+<li>모든 맵에 Build Zone 을 둔다. 어디에나 지을 수 있으면 배치가 판단이 아니다 (18장)</li>
+<li>Spawn 과 Exit 은 준비 단계에서 미리 보인다. 예측할 수 없으면 사전 배치는 도박이다 (69장)</li>
+<li>새 특수 고양이는 그 답이 되는 장비·유닛과 같은 판에서 열린다 (68장)</li>
+<li><strong>새 요소는 그 맵의 쉬움에서 처음 나온다.</strong> 어려움에서 처음 보여주면 배울 자리가 없다 (73장)</li>
+</ul>
+</section>
+<section class="chapter" id="s26">
+<h2>26. Pixel Art 방향</h2>
+<p>Simple Low Detail Pixel Art</p>
+<p>고양이 캐릭터:
+- Character Type: Quadruped
+- Source Size: 32px
+- Camera: Low Top-Down
+- 통통한 몸
+- 큰 머리
+- 짧은 다리
+- 삼각 귀
+- 굵고 명확한 꼬리
+- 제한된 색상
+- 최소한의 명암</p>
+<p>Unity 실제 표시 크기:
+약 16~24px도 테스트.</p>
+<p><strong>타이틀 로고는 이 규칙을 따르지 않는다.</strong> 게임 화면 안에 들어가지 않는
+타이틀 전용 에셋이라 픽셀 그리드가 따로 논다. 79장에 따로 적어 뒀다.</p>
+</section>
+<section class="chapter" id="s27">
+<h2>27. PixelLab Pipeline</h2>
+<ol>
+<li>Master Cat 생성</li>
+<li>실루엣 검수</li>
+<li>체형 검수</li>
+<li>축소 테스트</li>
+<li>Color Variant 생성</li>
+<li>Direction 생성</li>
+<li>Idle</li>
+<li>Walk</li>
+<li>Unity Import</li>
+<li>Horde Test</li>
+</ol>
+<p>색상 Variant 지시 원칙:
+- Same Character Design
+- Same Silhouette
+- Same Proportions
+- Same Pose
+- Same Pixel Style
+- Change Only Fur Color</p>
+</section>
+<section class="chapter" id="s28">
+<h2>28. Animation</h2>
+<p>MVP:
+- Idle
+- Walk</p>
+<p>추후:
+- Run
+- Eat
+- Happy
+- Panic
+- Sleep
+- Rescue</p>
+</section>
+<section class="chapter" id="s29">
+<h2>29. Unity Import</h2>
+<ul>
+<li>Texture Type: Sprite</li>
+<li>Filter Mode: Point</li>
+<li>Compression: None</li>
+<li>Mip Maps: Off</li>
+<li>모든 Animation Frame에서 Pivot 동일 유지</li>
+<li>프레임별 개별 Crop으로 인한 흔들림 금지</li>
+</ul>
+</section>
+<section class="chapter" id="s30">
+<h2>30. 기술 스택</h2>
+<ul>
+<li>Unity</li>
+<li>C#</li>
+<li>Git</li>
+<li>ScriptableObject</li>
+<li>JSON</li>
+<li>Unity Jobs</li>
+<li>Burst</li>
+<li>NativeArray</li>
+</ul>
+<p>필요 시:
+- ECS
+- GPU Instancing
+- Custom Rendering
+- Compute Shader</p>
+<p>처음부터 ECS로 시작하지 않는다.</p>
+</section>
+<section class="chapter" id="s31">
+<h2>31. 성능 목표</h2>
+<p>Prototype:
+500~1,000 Cats / 60 FPS Target</p>
+<p>MVP:
+5,000 Cats / 60 FPS Target</p>
+<p>Main Goal:
+10,000 Cats / 60 FPS Desired
+극단 상황 30+ FPS 최소 허용</p>
+<p>Stretch:
+50,000 Cats / Technical Stress Test Only</p>
+</section>
+<section class="chapter" id="s32">
+<h2>32. 피해야 할 구조</h2>
+<p>고양이 10,000마리 각각에:
+- MonoBehaviour Update()
+- Animator
+- Rigidbody2D
+- Collider2D
+- NavMeshAgent
+- Heavy GameObject Hierarchy</p>
+<p>를 붙이지 않는다.</p>
+</section>
+<section class="chapter" id="s33">
+<h2>33. Simulation 구조</h2>
+<p>Array 기반 Cat Data 관리.</p>
+<p>예:</p>
+<pre><code class="language-csharp">struct CatData
+{
+    float2 position;
+    float2 velocity;
+    float speed;
+    int state;
+    int type;
+    int target;
+}
+</code></pre>
+</section>
+<section class="chapter" id="s34">
+<h2>34. Spatial Grid</h2>
+<p>Separation과 주변 검색에 Spatial Hash/Grid 사용.</p>
+<p>전체 비교 O(N²)는 피한다.</p>
+</section>
+<section class="chapter" id="s35">
+<h2>35. Update Frequency</h2>
+<ul>
+<li>Movement = Every Frame</li>
+<li>Flow Field = 필요 시 재계산</li>
+<li>Target Search = 5~10 FPS</li>
+<li>Attraction Refresh = 5~10 FPS</li>
+<li>Special AI = 더 낮은 빈도 가능</li>
+</ul>
+</section>
+<section class="chapter" id="s36">
+<h2>36. Rendering</h2>
+<ul>
+<li>Sprite Atlas</li>
+<li>Shared Materials</li>
+<li>Shared Animation Frames</li>
+<li>Batching</li>
+<li>Object Pooling</li>
+<li>Sorting 변경 최소화</li>
+</ul>
+<p>필요하면 GPU Rendering 검토.</p>
+</section>
+<section class="chapter" id="s37">
+<h2>37. Animation 최적화</h2>
+<p>개별 Animator 대신 Shared Animation Frame 사용.</p>
+<p>CurrentFrame =
+(globalAnimationTime + catOffset) % frameCount</p>
+<p>개체별 Offset으로 걷기 타이밍을 분산한다.</p>
+</section>
+<section class="chapter" id="s38">
+<h2>38. Unity 주요 시스템</h2>
+<ul>
+<li>GameManager</li>
+<li>RunManager</li>
+<li>WaveManager</li>
+<li>CatSimulation</li>
+<li>CatSpawner</li>
+<li>CatMovementSystem</li>
+<li>FlowFieldSystem</li>
+<li>SpatialGridSystem</li>
+<li>AttractionSystem</li>
+<li>RescueSystem</li>
+<li>EquipmentSystem</li>
+<li>UpgradeSystem</li>
+<li>SkillTreeSystem</li>
+<li>MapManager</li>
+<li>SaveSystem</li>
+<li>AudioManager</li>
+<li>VFXManager</li>
+<li>UIManager</li>
+</ul>
+</section>
+<section class="chapter" id="s39">
+<h2>39. ScriptableObject</h2>
+<ul>
+<li>CatDataSO</li>
+<li>EquipmentDataSO</li>
+<li>UpgradeDataSO</li>
+<li>SkillDataSO</li>
+<li>WaveDataSO</li>
+<li>MapDataSO</li>
+</ul>
+</section>
+<section class="chapter" id="s40">
+<h2>40. Save Data</h2>
+<ul>
+<li>ResearchPoints</li>
+<li>GoldenPaws</li>
+<li>UnlockedMaps</li>
+<li>UnlockedEquipment</li>
+<li>SkillLevels</li>
+<li>Settings</li>
+<li>Statistics</li>
+<li>Achievements</li>
+</ul>
+</section>
+<section class="chapter" id="s41">
+<h2>41. Folder Structure</h2>
+<pre><code>Assets/
+  Art/
+    Cats/
+    Equipment/
+    Maps/
+    UI/
+    VFX/
+  Audio/
+  Prefabs/
+  Scripts/
+  Data/
+  Scenes/
+</code></pre>
+</section>
+<section class="chapter" id="s42">
+<h2>42. UI</h2>
+<p><strong>화면 배치와 정보 위계는 72장을 본다.</strong> 아래는 항목 목록이다.</p>
+<p>HUD:
+- Wave
+- Current Cats
+- Rescued Cats
+- Missed Cats
+- Rescue Points
+- Combo
+- Selected Equipment
+- Cooldown
+- Game Speed</p>
+<p>속도:
+- Pause
+- x1
+- x2
+- x3</p>
+</section>
+<section class="chapter" id="s43">
+<h2>43. Run Result</h2>
+<ul>
+<li>Cats Rescued</li>
+<li>Cats Missed</li>
+<li>Largest Combo</li>
+<li>Golden Cats</li>
+<li>Total Rescue Points</li>
+<li>Research Points Earned</li>
+<li>Play Time</li>
+</ul>
+<h2>v0.6 추가</h2>
+<ul>
+<li><strong>달성한 클리어 조건 목록</strong> — 무엇을 해냈고 무엇을 놓쳤는지 (67장)</li>
+<li><strong>재화 3종 획득량</strong> — 인력 / 유인 / 장비 각각</li>
+<li><strong>Golden Paw 획득량</strong></li>
+<li><strong>놓친 조건 안내</strong> — "놓친 고양이 0 이면 Golden Paw" 처럼, 다음 판의 목표가 되게 한다</li>
+<li><strong>로켓 발사 연출</strong> — 이번 Run 에서 돌려보낸 고양이가 로켓에 실려 떠난다 (64장)</li>
+</ul>
+</section>
+<section class="chapter" id="s44">
+<h2>44. Audio</h2>
+<p>고양이마다 개별 Meow를 재생하지 않는다.</p>
+<ul>
+<li>Small Horde: 가끔 단일 Meow</li>
+<li>Medium Horde: 여러 고양이 Ambience</li>
+<li>Huge Horde: 군중형 Cat Sound</li>
+</ul>
+</section>
+<section class="chapter" id="s45">
+<h2>45. VFX</h2>
+<ul>
+<li>Heart</li>
+<li>Paw</li>
+<li>Food Smell</li>
+<li>Catnip Cloud</li>
+<li>Rescue Flash</li>
+<li>Number Pop</li>
+<li>Combo Burst</li>
+</ul>
+</section>
+<section class="chapter" id="s46">
+<h2>46. Prototype Roadmap</h2>
+<p>Prototype 0.1:
+- 100 Cats
+- Spawn / Move / Remove</p>
+<p>Prototype 0.2:
+- 500 Cats
+- Flow Field
+- Spawn Zones
+- Obstacle</p>
+<p>Prototype 0.3:
+- 500~1,000 Cats
+- Churu Attraction</p>
+<p>Prototype 0.4:
+- Rescue Zone
+- Rescue Net
+- Currency
+- Core Loop 검증</p>
+</section>
+<section class="chapter" id="s47">
+<h2>47. Vertical Slice</h2>
+<ul>
+<li>1 Map</li>
+<li>3 Cat Variants</li>
+<li>4 Equipment</li>
+<li>10 Waves</li>
+<li>Run Upgrade</li>
+<li>Basic UI</li>
+<li>Audio</li>
+<li>Basic Meta Progression</li>
+</ul>
+</section>
+<section class="chapter" id="s48">
+<h2>48. MVP</h2>
+<ul>
+<li>Map 2~3개</li>
+<li>Cat Variant 6개</li>
+<li>Equipment 6개</li>
+<li>Skill 약 30개</li>
+<li>Special Cat 3~4종</li>
+<li>Basic Meta Progression</li>
+</ul>
+</section>
+<section class="chapter" id="s49">
+<h2>49. Steam 출시 범위 후보</h2>
+<ul>
+<li>Map 8~10개</li>
+<li>Equipment 8개 이상</li>
+<li>Cat Variants 10종 이상</li>
+<li>Special Cats 6종 이상</li>
+<li>대형 Skill Tree 4 Branch</li>
+<li>다양한 Run Build</li>
+<li>Steam Achievement</li>
+</ul>
+</section>
+<section class="chapter" id="s50">
+<h2>50. 현재 개발 우선순위</h2>
+<ol>
+<li>Master Cat 완성</li>
+<li>Color Variant</li>
+<li>Idle</li>
+<li>Walk</li>
+<li>Unity Project 생성</li>
+<li>Sprite Import</li>
+<li>Cat 100마리 Spawn</li>
+<li>Cat 500마리 Spawn</li>
+<li>Flow Field</li>
+<li>Churu Attraction</li>
+<li>Rescue System</li>
+<li>Wave</li>
+<li>Upgrade</li>
+<li>Map</li>
+<li>Meta Progression</li>
+</ol>
+</section>
+<section class="chapter" id="s51">
+<h2>51. Master Cat 기준</h2>
+<ul>
+<li>통통함</li>
+<li>고양이로 즉시 인식됨</li>
+<li>짧은 다리</li>
+<li>명확한 귀</li>
+<li>명확한 꼬리</li>
+<li>작은 화면에서도 읽힘</li>
+<li>과한 디테일 없음</li>
+<li>Animation 제작 쉬움</li>
+</ul>
+</section>
+<section class="chapter" id="s52">
+<h2>52. 핵심 Gameplay Test</h2>
+<p>조건:
+- Map = Simple Flat Test Map
+- Cats = 500
+- Spawn = 2
+- Rescue Zone = 1
+- Churu = 1
+- Rescue Net = 1</p>
+<p>플레이:
+500마리 Spawn
+→ Flow Field 이동
+→ Churu 설치
+→ 고양이 무리 방향 변경
+→ 한곳에 집결
+→ Rescue Net
+→ 수십~수백 마리 동시 구조
+→ MEGA RESCUE! x128</p>
+<p>이 과정이 재미있으면 Core Gameplay 성공.</p>
+</section>
+<section class="chapter" id="s53">
+<h2>53. 핵심 기술 위험</h2>
+<h2>Risk 1</h2>
+<p>10,000 Cats 성능</p>
+<p>대응:
+Jobs + Burst + NativeArray + Spatial Grid</p>
+<h2>Risk 2</h2>
+<p>고양이가 너무 작아 안 보임</p>
+<p>대응:
+실루엣 강조 + 실제 화면 축소 테스트</p>
+<h2>Risk 3</h2>
+<p>고양이가 많아지면 화면이 노이즈처럼 보임</p>
+<p>대응:
+제한된 Palette, 단순 배경, VFX 절제</p>
+<h2>Risk 4</h2>
+<p>Attraction이 플레이어에게 명확하지 않음</p>
+<p>대응:
+범위 표시 + 방향 변화 Feedback</p>
+<h2>Risk 5</h2>
+<p>자동화 이후 플레이어가 할 일이 없어짐</p>
+<p>대응:
+Laser Pointer, Catnip, Emergency Event, Multi Spawn</p>
+</section>
+<section class="chapter" id="s54">
+<h2>54. Build 방향</h2>
+<ul>
+<li>Attraction Build</li>
+<li>Vehicle Build</li>
+<li>Drone Build</li>
+<li>Net Build</li>
+<li>Economy Build</li>
+</ul>
+</section>
+<section class="chapter" id="s55">
+<h2>55. Skill Synergy 예</h2>
+<p>Churu
++
+Catnip
++
+Vacuum Net</p>
+<p>군집 생성
+→ 위치 고정
+→ 추가 흡입
+→ 대량 Rescue</p>
+</section>
+<section class="chapter" id="s56">
+<h2>56. Special Wave 후보</h2>
+<ul>
+<li>Kitten Rush</li>
+<li>Fat Cat Wave</li>
+<li>Golden Cat Fever</li>
+<li>Black Cat Night</li>
+<li>Leader Cat Horde</li>
+<li>Train Arrival</li>
+<li>Cat Storm</li>
+</ul>
+</section>
+<section class="chapter" id="s57">
+<h2>57. Endless Mode</h2>
+<p>Wave가 끝없이 증가.</p>
+<p>최대 구조 수 경쟁.</p>
+<p>Steam Leaderboard 연결 가능.</p>
+</section>
+<section class="chapter" id="s58">
+<h2>58. 접근성</h2>
+<ul>
+<li>Screen Shake 조절</li>
+<li>Flash Effect 조절</li>
+<li>UI Scale</li>
+<li>Volume Category</li>
+<li>Speed Control</li>
+<li>색상 외의 상태 구분 수단 제공</li>
+</ul>
+</section>
+<section class="chapter" id="s59">
+<h2>59. Steam Trailer 핵심 장면</h2>
+<p>10마리
+→ 100마리
+→ 1,000마리
+→ 화면 전체 고양이
+→ Catnip
+→ 군집 전체 방향 전환
+→ 구조차
+→ MEGA RESCUE x1000
+→ TOO MANY CATS!</p>
+</section>
+<section class="chapter" id="s60">
+<h2>60. Steam Store 문장 후보</h2>
+<p>There are way too many cats.</p>
+<p>Lure them.
+Gather them.
+Rescue them.
+Upgrade everything.</p>
+<p>Then rescue even more cats.</p>
+</section>
+<section class="chapter" id="s61">
+<h2>61. 프로젝트 식별자</h2>
+<p>Unity Project:
+TooManyCats</p>
+<p>Git Repository:
+too-many-cats</p>
+<p>Namespace:
+TooManyCats</p>
+</section>
+<section class="chapter" id="s62">
+<h2>62. 프로젝트 핵심 문장</h2>
+<p>One cat is cute.</p>
+<p>A hundred cats are chaos.</p>
+<p>Ten thousand cats are a strategy game.</p>
+</section>
+<section class="chapter" id="s63">
+<h2>63. 개발 철학</h2>
+<p>완성된 그래픽보다 재미있는 Prototype이 먼저다.</p>
+<p>완벽한 Architecture보다 작동하는 Core Loop가 먼저다.</p>
+<p>10,000마리 최적화보다 500마리 고양이를 몰아보는 재미가 먼저다.</p>
+<p>맵 10개보다 재미있는 맵 1개가 먼저다.</p>
+<p>고양이 100종보다 잘 움직이는 Master Cat 하나가 먼저다.</p>
+<hr />
+</section>
+<section class="chapter" id="s64">
+<h2>64. 세계관</h2>
+<h2>설정</h2>
+<p>외계 고양이 행성에서 고양이가 지구를 침략했다.</p>
+<p>수천 마리가 도시로 쏟아진다. 악의는 없다. 그냥 너무 많이 왔다.</p>
+<p>플레이어는 이들을 잡아 로켓에 태워 고향 행성으로 돌려보낸다.
+죽이지 않는다. 침략자여도 돌려보낼 뿐이다. (3장)</p>
+<h2>이 설정이 해결하는 것</h2>
+<p><strong>"왜 이렇게 많은가"</strong> — 길고양이 문제로는 만 마리가 설명되지 않는다. 침략이면 된다.</p>
+<p><strong>"구조된 고양이는 어디로 가는가"</strong> — v0.4 까지 구조는 추상적이었다.
+고양이가 사라지고 점수가 됐다. 로켓이라는 목적지가 생기면 구조에 도착지가 생긴다.</p>
+<p><strong>"Capacity 가 왜 그 숫자인가"</strong> — 구조망 정원 200에 아무 이유가 없었다.
+로켓 좌석은 그 자체로 이유다.</p>
+<h2>로켓의 기계적 위치</h2>
+<p><strong>로켓은 연출이다. 게임 시스템이 아니다.</strong></p>
+<p>구조는 지금처럼 즉시 제거로 남는다. 운송 단계를 끼워 넣으면
+22·23장의 "수백 마리가 한 번에 사라지는" 쾌감이 흐려진다. 그건 이 게임의 심장이라 건드리지 않는다.</p>
+<p>로켓은 Wave 클리어 팝업과 Run Result(43장)에서 발사 연출로만 등장한다.
+누적 구조 수가 곧 탑승 인원이다.</p>
+<p>코드 비용이 0 이라는 점도 이 선택의 근거다. 이미 만든 결과 화면에 그림을 얹으면 끝난다.</p>
+<h2>톤</h2>
+<p>심각하지 않다. 침략이지만 재난이 아니라 소동이다.
+고양이는 귀엽고, 사람들은 분주하고, 로켓은 어설프다.</p>
+<hr />
+</section>
+<section class="chapter" id="s65">
+<h2>65. 사람 유닛</h2>
+<h2>세 가지 동사</h2>
+<p>유닛은 역할이 아니라 <strong>동사</strong>로 나눈다. 겹치면 하나는 필요 없어진다.</p>
+<table>
+<thead>
+<tr>
+<th>유닛</th>
+<th>동사</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>구조원</td>
+<td><strong>없앤다</strong></td>
+<td>고양이를 직접 구조한다</td>
+</tr>
+<tr>
+<td>집사</td>
+<td><strong>모은다</strong></td>
+<td>주변 유인 장비를 강화한다</td>
+</tr>
+<tr>
+<td>수의사</td>
+<td><strong>고친다</strong></td>
+<td>광란·돌연변이를 일반 고양이로 되돌린다</td>
+</tr>
+</tbody>
+</table>
+<h2>등급</h2>
+<p>각 유닛은 초보 / 중급 / 프로 3등급을 갖는다.
+기존 <code>RescueDevice.UpgradeLevel</code> 필드가 그대로 이 등급이다. 새 시스템이 필요 없다.</p>
+<p>등급이 오르면 수치만 오르는 것이 아니라 한 번은 동작이 바뀐다. (19장 Transformative)</p>
+<h3>구조원</h3>
+<table>
+<thead>
+<tr>
+<th>등급</th>
+<th>변화</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>초보</td>
+<td>제자리에서 사거리 안의 고양이를 구조</td>
+</tr>
+<tr>
+<td>중급</td>
+<td>구조 속도와 사거리 상승</td>
+</tr>
+<tr>
+<td>프로</td>
+<td><strong>Auto Move</strong> — 고양이가 많은 쪽으로 스스로 이동</td>
+</tr>
+</tbody>
+</table>
+<p>프로의 Auto Move 는 이미 구현돼 있다. (17장 구조대원 업그레이드)</p>
+<h3>집사</h3>
+<p>구조를 하지 않는 유닛이다. 직접 이득이 없는데도 놓게 만드는 것이 목적이다.</p>
+<table>
+<thead>
+<tr>
+<th>등급</th>
+<th>변화</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>초보</td>
+<td>반경 안 유인 장비의 반경 소폭 상승</td>
+</tr>
+<tr>
+<td>중급</td>
+<td>반경과 세기 상승</td>
+</tr>
+<tr>
+<td>프로</td>
+<td><strong>맛집 소문 자동 부여</strong> — 반경 안 츄르가 2차 유인원을 만든다</td>
+</tr>
+</tbody>
+</table>
+<p>프로 효과는 17장의 츄르 Transformation 을 유닛으로 옮긴 것이다.</p>
+<h3>수의사</h3>
+<p>반응형 유닛이다. 미리 깔아 두는 것이 아니라 문제가 생긴 곳에 붙인다.</p>
+<table>
+<thead>
+<tr>
+<th>등급</th>
+<th>변화</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>초보</td>
+<td>광란 고양이를 천천히 진정</td>
+</tr>
+<tr>
+<td>중급</td>
+<td>진정 속도 상승, 돌연변이 치료 가능</td>
+</tr>
+<tr>
+<td>프로</td>
+<td><strong>집단 치료</strong> — 반경 안 전체를 동시에 처치</td>
+</tr>
+</tbody>
+</table>
+<p>수의사는 겁쟁이 고양이(14장)의 공포도 완화한다.
+구조원과 차량은 위협으로 취급돼 겁쟁이가 도망치는데, 수의사가 그것을 상쇄한다.</p>
+<h2>배치</h2>
+<p>사람 유닛도 장비와 같은 Build Zone 규칙을 따른다. (18장)</p>
+<hr />
+</section>
+<section class="chapter" id="s66">
+<h2>66. 광역 구조 원칙</h2>
+<h2>원칙</h2>
+<blockquote>
+<p>광역기는 <strong>피해 범위</strong>가 아니라 <strong>영향 범위</strong>다.
+흩어진 고양이는 광역기로도 못 건진다.</p>
+</blockquote>
+<p>헬기 그물의 정원이 100 이어도, 고양이가 흩어져 있으면 20마리만 걸린다.
+정원은 상한일 뿐 보장이 아니다.</p>
+<h2>왜 이 원칙이 필요한가</h2>
+<p>전쟁 게임의 대포·레이저·화염방사기를 그대로 가져오면 이 게임은 죽는다.
+그것들은 개체를 겨냥해 피해를 주는 물건이고, 우리 것은 무리를 다루는 물건이다.</p>
+<p>광역 구조가 혼자서 충분히 세지면 플레이어는 유인을 쓰지 않는다.
+헬기를 놓고 기다리면 되기 때문이다.</p>
+<p>그 순간 2장의 판타지 — 캣닢 하나로 수천 마리가 방향을 트는 것 — 이 사라지고,
+9~12장의 흐름 시뮬레이션 전체가 배경 장식이 된다.
+10,000마리를 돌리는 이유는 <strong>무리의 모양이 퍼즐일 때뿐</strong>이다.</p>
+<h2>강제되는 순서</h2>
+<pre><code>유인으로 모은다  →  모인 곳을 수확한다
+</code></pre>
+<p>두 시스템이 서로를 필요로 해야 한다. 어느 한쪽만으로 완결되면 다른 쪽은 장식이다.</p>
+<h2>검증 방법</h2>
+<p>광역 장비를 추가할 때마다 다음을 재고, 통과하지 못하면 수치를 내린다.</p>
+<ul>
+<li>유인 없이 광역기만으로 Wave 를 넘길 수 있는가 → <strong>넘길 수 있으면 실패다</strong></li>
+<li>유인을 쓴 쪽이 안 쓴 쪽보다 확실히 나은가 → 배수로 확인한다</li>
+</ul>
+<p>이미 흡입 구조망(53 → 72마리)과 맛집 소문(80 → 232마리)을 이 방식으로 검증했다.</p>
+<hr />
+</section>
+<section class="chapter" id="s67">
+<h2>67. 클리어 평가와 재화 배분</h2>
+<h2>원칙</h2>
+<pre><code>총량   ←  구조한 고양이 수
+배분   ←  달성한 클리어 조건
+</code></pre>
+<p>Run 을 어떻게 끝냈든 구조한 만큼은 벌고, <strong>어디에 쌓일지만</strong> 달라진다.
+이 분리가 다중 재화의 "이번 판 헛수고" 를 막는다. (6장)</p>
+<h2>조건과 재화의 대응</h2>
+<p>아무 조건에 아무 재화를 붙이면 플레이어가 외워야 할 표가 된다.
+<strong>그 재화가 강화하는 능력을 증명하는 조건</strong>이어야 외울 필요가 없다.</p>
+<table>
+<thead>
+<tr>
+<th>클리어 조건</th>
+<th>보상</th>
+<th>왜 이 재화인가</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>최대 콤보 N 이상</td>
+<td><strong>유인 재화</strong></td>
+<td>잘 모았다는 증거</td>
+</tr>
+<tr>
+<td>특수 고양이 전원 처리</td>
+<td><strong>인력 재화</strong></td>
+<td>수의사·구조원이 한 일</td>
+</tr>
+<tr>
+<td>제한 시간 내 클리어</td>
+<td><strong>장비 재화</strong></td>
+<td>기계의 효율</td>
+</tr>
+<tr>
+<td><strong>놓친 고양이 0 (완전 구조)</strong></td>
+<td><strong>Golden Paw</strong></td>
+<td>전부 다 잘했을 때만</td>
+</tr>
+</tbody>
+</table>
+<p>조건은 중복 달성할 수 있다. 세 개를 동시에 만족하면 세 재화가 모두 들어온다.</p>
+<h2>두 가지가 따로 돈다</h2>
+<p><strong>기본 포인트는 조건과 무관하게 구조 수만큼 들어온다.</strong>
+어떻게 끝났든 강화는 진행된다. 실패해도 마찬가지다.</p>
+<p><strong>해금 재화는 조건을 달성해야 들어온다.</strong>
+못 달성하면 소량만 들어오거나 들어오지 않는다.
+해금은 매 판 일어나는 일이 아니라 가끔 있는 사건이라 이래도 된다.</p>
+<pre><code>기본 포인트  : 구조 수 × 배율        — 항상
+해금 재화    : 달성한 조건에 해당하는 것만
+Golden Paw   : 완전 구조일 때만
+</code></pre>
+<p>이 분리 덕분에 "필요 없는 재화만 받았다" 가 성립하지 않는다.
+쓸 수 있는 재화는 언제나 들어오고, 특화 재화는 애초에 매 판 쓰는 것이 아니다.</p>
+<h2>완전 구조가 특별한 이유</h2>
+<p>Golden Paw 는 <strong>Ultimate 해금 전용</strong>이다. (6장, 21장)</p>
+<p>일반 노드는 반복으로 열 수 있지만 Ultimate 은 완벽한 판을 요구한다 —
+이 비대칭이 "한 번만 더" 를 만든다.</p>
+<h2>조건 노출</h2>
+<p>클리어 조건은 <strong>Run 시작 전에 보여 준다.</strong> 끝나고 알려주면 목표가 아니라 사후 통보다.
+HUD(42장)에도 현재 달성 여부를 계속 띄운다.</p>
+<p>이미 물 건너간 조건은 <strong>죽은 것으로 표시한다</strong> (<code>ObjectiveStatus.StillPossible</code>).
+달성 불가능한 목표를 계속 띄우면 목표가 아니라 잔소리다.
+콤보만 예외다 — 판이 끝날 때까지 언제든 올릴 수 있다.</p>
+<h2>구현 상태</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Core/Scoring/ClearObjectives.cs</code></td>
+<td>조건 판정과 재화 배분. Run 도중에 불러도 같은 답이 나온다</td>
+</tr>
+<tr>
+<td><code>ClearEvaluation</code></td>
+<td>결과 화면과 HUD 가 읽는 형태</td>
+</tr>
+<tr>
+<td><code>MetaProgression.BeginStage</code></td>
+<td>난이도 하나로 <strong>압력과 조건을 같이</strong> 건다</td>
+</tr>
+<tr>
+<td><code>RunStats.SpecialCats*</code></td>
+<td>"전원 처리" 는 총 마릿수로 판정할 수 없어서 따로 센다</td>
+</tr>
+<tr>
+<td>테스트 25개</td>
+<td>조건별 재화가 실제로 갈라지는지</td>
+</tr>
+</tbody>
+</table>
+<h3>측정</h3>
+<table>
+<thead>
+<tr>
+<th>조건 (어려움 완벽한 판)</th>
+<th>지급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>최대 콤보 40 이상</td>
+<td>유인 재화 3</td>
+</tr>
+<tr>
+<td>특수 고양이 20/20</td>
+<td>인력 재화 3</td>
+</tr>
+<tr>
+<td>180초 이내</td>
+<td>장비 재화 3</td>
+</tr>
+<tr>
+<td>놓침 0</td>
+<td>Golden Paw 1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>콤보만 채운 판</strong> — 유인 재화 2, 나머지 0, 기본 포인트 20.
+같은 판에서 Rescue 브랜치 레벨업은 그대로 된다. 이게 6장이 내건 주장이고, 성립한다.</p>
+<p><strong>한쪽으로 치우친 판이 반대쪽을 열지는 못한다.</strong> 유인 재화만 번 판으로
+Rescue 노드를 열려 하면 <code>NotEnoughCurrency</code> 다. 여기가 막히지 않으면 재화를 셋으로 나눈 의미가 없다.</p>
+<p><strong>쉬움 완벽한 판 5회 → Golden Paw 0.</strong> Ultimate 은 쉬움만 반복해서는 닿지 않는다.
+대신 해금 재화는 나온다 — 쉬움이 무의미한 판은 아니다.</p>
+<h3>이 판정이 잡아낸 것</h3>
+<p><strong>특수 고양이가 없는 판이 인력 재화를 공짜로 주고 있었다.</strong> <code>0 == 0</code> 을 달성으로 치면
+그렇게 된다. 조건이 성립하려면 특수 고양이가 한 마리라도 나와야 한다.</p>
+<p><strong>쉬움에서 완전 구조 조건을 띄우고 보상만 빼려다 되돌렸다.</strong> 그건 거짓말이다.
+쉬움에는 그 조건 자체가 목록에 없다.</p>
+<p><strong>Unity 쪽에서 맵이 난이도를 덮어쓰고 있었다.</strong> <code>MapDataSO.Apply</code> 가 <code>MissedCatLimit</code> 을
+기준값으로 되돌려서, 드라이버가 Run 시작 뒤에 맵을 적용하면 쉬움과 어려움의 허용량이 같아진다.
+맵을 먼저 깔고 난이도를 나중에 거는 순서로 바꿨다. 73장을 물릴 때 놓친 구멍이다.</p>
+<hr />
+</section>
+<section class="chapter" id="s68">
+<h2>68. 특수 고양이 등장 순서</h2>
+<h2>원칙</h2>
+<p><strong>위협은 그 위협이 무엇을 망치는지 플레이어가 알게 된 뒤에 나온다.</strong>
+그리고 <strong>해결책과 같이, 혹은 바로 앞에</strong> 나온다.</p>
+<p>해결책 없는 위협은 학습이 아니라 무력감이다.</p>
+<h2>광란 고양이를 늦게 내보내는 이유</h2>
+<p>광란 고양이(14장)는 모여 있는 무리를 흩어 놓는다.</p>
+<p>플레이어가 아직 제대로 모아 본 적이 없으면 <strong>뭘 잃었는지도 모른다.</strong>
+그냥 "왜 안 모이지" 로 끝난다.</p>
+<p>500마리를 모아 <code>MEGA RESCUE</code> 를 한 번 맛본 뒤에 그게 터져야
+"저놈 때문에" 가 되고, 그때 수의사가 답이 된다.</p>
+<h2>도입 순서</h2>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>등장</th>
+<th>그 전에 배운 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>초반</td>
+<td>일반 고양이만</td>
+<td>흐름과 유인</td>
+</tr>
+<tr>
+<td>초반</td>
+<td>빠른 / 먹보 고양이</td>
+<td>유인이 개체마다 다르게 먹힌다</td>
+</tr>
+<tr>
+<td>중반</td>
+<td>겁쟁이 / 뚱냥이</td>
+<td>배치 위치와 처리 시간</td>
+</tr>
+<tr>
+<td>중반</td>
+<td>대장 고양이</td>
+<td>고양이도 무리를 끌 수 있다</td>
+</tr>
+<tr>
+<td><strong>중후반</strong></td>
+<td><strong>광란 고양이</strong></td>
+<td>큰 집결의 쾌감 — 잃을 것이 생긴 뒤</td>
+</tr>
+<tr>
+<td>중후반</td>
+<td>돌연변이 고양이</td>
+<td>방치의 대가</td>
+</tr>
+<tr>
+<td>후반</td>
+<td>황금 고양이</td>
+<td>놓치면 아까운 것</td>
+</tr>
+</tbody>
+</table>
+<p>광란 고양이는 <strong>수의사가 손에 들어오는 시점 언저리</strong>에 처음 등장한다.
+첫 등장은 한 마리다. 한 번 당해 보고 답을 받는 순서로.</p>
+<h2>구현</h2>
+<p>WaveDataSO(39장)의 SpecialCats 목록에 해당 Wave 부터 넣으면 된다.
+Wave 별 등장 종류가 이미 데이터로 분리돼 있어 코드 변경이 필요 없다.</p>
+<hr />
+</section>
+<section class="chapter" id="s69">
+<h2>69. 준비 단계와 실행 중 개입</h2>
+<h2>구조</h2>
+<p>Wave 는 두 국면으로 나뉜다.</p>
+<pre><code>준비 단계  →  [구조 시작]  →  실행 단계  →  결과
+</code></pre>
+<p>플레이어가 직접 <strong>구조 시작</strong>을 눌러야 Wave 가 흐른다.</p>
+<h2>왜 나누는가</h2>
+<p><strong>예측이 실력이 된다.</strong> 실시간 배치만 있으면 최적 플레이는 "고양이 몰린 데 아무거나 놓기" 다.
+Wave 전에 배치를 끝내야 Spawn 위치와 지형을 읽고 판을 짜게 되고,
+그래야 24장의 "맵은 흐름을 만드는 Gameplay Geometry" 가 실제로 의미를 갖는다.</p>
+<p><strong>클릭 속도 싸움이 아니라 전략이 된다.</strong> 장르는 Strategy 다.</p>
+<p><strong>클리어 조건을 보고 판을 짤 수 있다.</strong> 조건은 준비 단계에서 노출된다. (67장)</p>
+<h2>왜 전부 사전 배치가 아닌가</h2>
+<p><strong>전부 미리 깔고 보기만 하면 플레이어는 자기 세팅의 관객이 된다.</strong></p>
+<p>53장 Risk 5 가 이미 같은 것을 경고한다 — "자동화 이후 플레이어가 할 일이 없어짐" —
+그리고 대응책으로 적어 둔 것이 Laser Pointer, Catnip, Emergency Event 다. 전부 실시간 개입 수단이다.</p>
+<p>2장의 핵심 판타지도 마찬가지다.</p>
+<blockquote>
+<p>플레이어가 <strong>캣닢을 던지면</strong> 수천 마리의 고양이가 동시에 방향을 바꾼다.</p>
+</blockquote>
+<p>던지는 것이 동사다. 이 동사를 잃으면 게임이 아니라 시뮬레이션 관람이 된다.</p>
+<p>광란 고양이(14장)도 실시간 대응이 없으면 성립하지 않는다.
+"저기 날뛰네, 수의사 붙여야지" 가 불가능하면 그것은 위협이 아니라 그냥 손해다.</p>
+<h2>무엇이 어느 단계에 속하는가</h2>
+<p>경계는 <strong>상시 배치하는 것 / 던지고 조준하는 것</strong> 이다.</p>
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th>대상</th>
+<th>성격</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>준비</strong></td>
+<td>구조원 · 수의사 · 집사 (65장)</td>
+<td>사람은 원래 상주시킨다</td>
+</tr>
+<tr>
+<td><strong>준비</strong></td>
+<td>츄르 디스펜서 · 구조망 · 드론 기지 · 차량 경로</td>
+<td>설치물</td>
+</tr>
+<tr>
+<td><strong>실행 중</strong></td>
+<td>참치 · 캣닢 · 고양이 장난감</td>
+<td>던진다. 횟수 제한</td>
+</tr>
+<tr>
+<td><strong>실행 중</strong></td>
+<td>레이저 포인터</td>
+<td>조준한다. 쿨다운</td>
+</tr>
+</tbody>
+</table>
+<p>이 경계는 이미 <code>EquipmentCategory</code> 로 코드에 있다.
+<code>Device</code> / <code>Attraction</code> 은 설치, <code>Throwable</code> / <code>Beam</code> 은 투척·조준이다.
+우연이 아니라 원래 입력 방식부터 다른 물건이라 그렇게 나뉘어 있었다.</p>
+<h2>계획과 즉흥의 긴장</h2>
+<p>준비 단계는 예산을 태워 판을 짜는 시간이고,
+투척물은 계획이 틀어졌을 때 쓰는 <strong>제한된 카드</strong>다.</p>
+<p>캣닢 3개를 언제 쓰느냐가 판단이 된다.
+전부 실시간이면 아무 때나 써도 되니 판단이 아니고,
+전부 사전 배치면 쓸 것이 없으니 역시 판단이 아니다.</p>
+<h2>회수 정책</h2>
+<ul>
+<li><strong>Wave 사이</strong> — 자유롭게 회수하고 다시 배치한다. 비용은 전액 돌려받는다.</li>
+<li><strong>구조 시작 후</strong> — 확정된다. 설치형은 옮길 수 없다.</li>
+</ul>
+<p>준비 단계는 계획을 세우는 시간이지 벌 받는 시간이 아니다.
+실수의 대가는 Wave 안에서 이미 충분히 치른다.</p>
+<h2>부수 효과</h2>
+<p><strong>"다시 하기" 가 자연스러워진다.</strong> 같은 Wave 를 세팅만 바꿔 재시도하는 것이
+배치 게임의 핵심 학습 루프다.</p>
+<p><strong>속도 조절(42장)에 의미가 생긴다.</strong> 계획대로 흘러가면 x3 으로 넘기고,
+틀어지면 x1 로 내려 개입한다.</p>
+<h2>UI</h2>
+<p>준비 단계에는 전용 화면이 필요하다.</p>
+<ul>
+<li>배치 가능한 사람 / 장비 목록과 남은 예산</li>
+<li>Build Zone 표시 (18장)</li>
+<li>Spawn Zone 과 Flow 방향 미리보기 — 예측하려면 흐름이 보여야 한다</li>
+<li>이번 Wave 의 클리어 조건 (67장)</li>
+<li>등장 예정 고양이 종류 — 광란이 나오는 Wave 면 미리 알려 준다 (68장)</li>
+<li><strong>구조 시작</strong> 버튼</li>
+</ul>
+<hr />
+</section>
+<section class="chapter" id="s70">
+<h2>70. 고양이 외형 설계</h2>
+<p>13장은 무늬 6종을 나열만 했다. 문제는 무늬가 아니라 <strong>무늬와 특수 고양이가 같은 채널을 쓴다</strong>는 것이다.</p>
+<h2>문제</h2>
+<p>수천 마리가 화면을 덮는 게임이다. 이때 외형이 해야 하는 일은 두 가지인데, 서로 싸운다.</p>
+<pre><code>다양성  — 무리가 한 덩어리 텍스처로 보이지 않게 한다
+판독성  — 이 무리 안에 황금 고양이가 있다는 걸 알아보게 한다
+</code></pre>
+<p>무늬를 늘리면 다양성은 올라가지만 판독성은 내려간다. 배경 소음이 커지기 때문이다.
+그리고 특수 고양이에게도 무늬를 굴려 주면 <strong>황금 고양이가 검은 고양이 무늬로 나온다.</strong>
+그 순간 황금 고양이는 없는 것과 같다 — 6장이 걸어 놓은 Golden Paw 보상이 통째로 죽는다.</p>
+<h2>규칙: 특수 고양이는 무늬를 굴리지 않는다</h2>
+<pre><code>일반 고양이  →  무늬 6종 중 하나를 굴린다      (게임플레이 의미 0)
+특수 고양이  →  타입마다 정해진 외형 하나       (무늬를 상속하지 않는다)
+</code></pre>
+<p>외형 수가 <code>무늬 × 특수</code> 가 아니라 <code>무늬 + 특수</code> 로 끝난다.
+<code>CatBreeds.Resolve(type, rolledPattern)</code> 이 이 규칙을 강제하고, Spawn 경로에서 검증된다.</p>
+<h2>일반 무늬 — 6종을 유지한다. 단, 명도 축으로</h2>
+<p>고양이 한 마리가 화면에서 차지하는 크기를 생각하면, 무리 속에서 살아남는 정보는
+<strong>색조가 아니라 밝기</strong>다. 줄무늬 방향 같은 건 보이지 않는다.
+그래서 6종을 색조가 아니라 명도로 벌려 놓는다.</p>
+<table>
+<thead>
+<tr>
+<th>Atlas 행</th>
+<th>무늬</th>
+<th>명도</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Black</td>
+<td>가장 어두움</td>
+<td>아래쪽 끝</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Tuxedo</td>
+<td>어두움 + 흰 덩어리</td>
+<td>유일한 고대비 무늬</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Gray Tabby</td>
+<td>중간</td>
+<td>기본값. 가장 흔하다</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Orange Tabby</td>
+<td>중간, 따뜻함</td>
+<td>유일한 유채색</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Calico</td>
+<td>밝음/어두움 혼재</td>
+<td>얼룩</td>
+</tr>
+<tr>
+<td>5</td>
+<td>White</td>
+<td>가장 밝음</td>
+<td>위쪽 끝</td>
+</tr>
+</tbody>
+</table>
+<p><strong>6종이 적당한 이유</strong> — 3종이면 무리가 한 덩어리로 보인다.
+12종을 그려도 이 크기에서는 6종과 구분되지 않는다. 아트 비용만 두 배가 된다.
+6은 명도를 눈에 띄게 나눌 수 있는 마지막 지점이다.</p>
+<p><strong>유채색이 하나뿐인 이유</strong> — 나머지 유채색 슬롯을 특수 고양이에게 남겨 둔다. 아래를 본다.</p>
+<h2>예약 색</h2>
+<p>일반 무늬는 이 세 계열을 쓰지 않는다. 특수 고양이 전용이다.</p>
+<table>
+<thead>
+<tr>
+<th>색</th>
+<th>주인</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>금색 (고채도)</td>
+<td>황금 고양이</td>
+<td>6장의 Golden Paw</td>
+</tr>
+<tr>
+<td>붉은색</td>
+<td>광란 고양이</td>
+<td>14장</td>
+</tr>
+<tr>
+<td>외계 보라 / 청록</td>
+<td>돌연변이 고양이</td>
+<td>14장, 64장</td>
+</tr>
+</tbody>
+</table>
+<p>Orange Tabby 와 금색이 가장 위험한 쌍이다. 둘 다 주황 계열이다.
+그래서 금색은 <strong>채도를 끝까지 올리고 반짝임을 더한다</strong> — 갈주황과 붙여 놓으면 확실히 갈라진다.</p>
+<h2>색만으로 표시하지 않는다</h2>
+<p>예약 색을 정해 놓아도, 작고 빠르게 움직이고 서로 겹치는 대상에서 색 하나는 신뢰할 수 없다.
+<strong>특수 고양이는 반드시 2채널 이상으로 표시한다.</strong></p>
+<table>
+<thead>
+<tr>
+<th>특수 고양이</th>
+<th>1채널</th>
+<th>2채널</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>뚱냥이</td>
+<td>실루엣 — 크다 (×1.35)</td>
+<td>느리다</td>
+</tr>
+<tr>
+<td>빠른 고양이</td>
+<td>실루엣 — 날씬하다 (×0.85)</td>
+<td>속도 자체</td>
+</tr>
+<tr>
+<td>대장 고양이</td>
+<td>실루엣 — 약간 크다 (×1.15)</td>
+<td><strong>주변에 무리가 붙어 있다</strong></td>
+</tr>
+<tr>
+<td>겁쟁이 고양이</td>
+<td>창백한 무채색</td>
+<td><strong>혼자 떨어져 있다</strong></td>
+</tr>
+<tr>
+<td>먹보 고양이</td>
+<td>통통한 삼색</td>
+<td>음식으로 돌진한다</td>
+</tr>
+<tr>
+<td>황금 고양이</td>
+<td>금색 + 반짝임</td>
+<td>머리 위 표식</td>
+</tr>
+<tr>
+<td>광란 고양이</td>
+<td>붉은색</td>
+<td><strong>주변이 비어 있다</strong> (밀어내니까)</td>
+</tr>
+<tr>
+<td>돌연변이 고양이</td>
+<td>외계 보라</td>
+<td>표식</td>
+</tr>
+</tbody>
+</table>
+<p>굵게 표시한 것들은 <strong>행동이 곧 표식</strong>이다. 그리는 비용이 0이고 가장 잘 읽힌다.
+대장 고양이를 찾는 방법은 대장을 보는 게 아니라 무리가 뭉친 곳을 보는 것이다.</p>
+<h2>실루엣은 연출이다</h2>
+<p><code>CatTypeDefinition.DisplayScale</code> 은 렌더러만 읽는다. 시뮬레이션에는 들어가지 않는다.
+Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한 덩어리가 되어 둘 다 못 만진다.</p>
+<h2>공짜 다양성 두 가지</h2>
+<p>무늬를 늘리지 않고 "복제군" 느낌을 없애는 방법. 둘 다 아트 비용이 0 이다.</p>
+<ul>
+<li><strong>크기 편차 ±8%</strong> — 슬롯 번호 해시로 만든다. 난수도, <code>CatData</code> 필드 추가도 필요 없다.</li>
+<li><strong>애니메이션 위상 분산</strong> — 37장. 이미 들어가 있다.</li>
+</ul>
+<p>크기 편차 하나가 무늬 한 종을 더 그리는 것보다 효과가 크다.</p>
+<h2>아트 비용</h2>
+<p>체형은 3종만 그린다. 나머지는 전부 팔레트 스왑이다.</p>
+<pre><code>표준 체형 × 4프레임 = 4장
+뚱뚱 체형 × 4프레임 = 4장   (뚱냥이, 먹보)
+날씬 체형 × 4프레임 = 4장   (빠른 고양이)
+------------------------------
+실제로 그리는 것        12장
+</code></pre>
+<p>Atlas 는 4열(프레임) × 12행(외형) = 48칸. 셀 64×64 기준 256 × 768.</p>
+<table>
+<thead>
+<tr>
+<th>행</th>
+<th>외형</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0-5</td>
+<td>일반 무늬 6종</td>
+<td>굴린다</td>
+</tr>
+<tr>
+<td>6</td>
+<td>겁쟁이</td>
+<td>고정</td>
+</tr>
+<tr>
+<td>7</td>
+<td>먹보</td>
+<td>고정</td>
+</tr>
+<tr>
+<td>8</td>
+<td>빠른 고양이</td>
+<td>고정</td>
+</tr>
+<tr>
+<td>9</td>
+<td>뚱냥이</td>
+<td>고정</td>
+</tr>
+<tr>
+<td>10</td>
+<td>대장</td>
+<td>고정</td>
+</tr>
+<tr>
+<td>11</td>
+<td>황금</td>
+<td>고정</td>
+</tr>
+<tr>
+<td>12-13</td>
+<td><strong>예약</strong> — 광란, 돌연변이</td>
+<td>해당 CatType 이 생길 때</td>
+</tr>
+</tbody>
+</table>
+<p>27장의 규약은 그대로다 — 모든 칸의 크기가 같아야 한다. 뚱냥이도 같은 칸 안에서 그린다.
+화면에서 커지는 건 <code>DisplayScale</code> 이 하는 일이지 칸 크기가 하는 일이 아니다.</p>
+<h2>아직 안 한 것</h2>
+<ul>
+<li>머리 위 표식(황금·돌연변이)은 두 번째 DrawMeshInstanced 패스가 필요하다.
+  특수 고양이는 많아야 수십 마리라 비용은 무시할 수 있다. 무리 위에 그려서 가려지지 않게 한다.</li>
+<li>반짝임 애니메이션은 셰이더 작업이다.</li>
+<li>실제 스프라이트 12장.</li>
+</ul>
+<hr />
+</section>
+<section class="chapter" id="s71">
+<h2>71. 오프닝과 스토리</h2>
+<h2>함정부터</h2>
+<p>쯔꾸르식 오프닝은 <strong>한 번 보는 게임</strong>을 전제한다. 이 게임은 그렇지 않다.</p>
+<ul>
+<li>런 하나가 15~30분이고 10~15 Wave 다 (5장)</li>
+<li><strong>같은 판을 세팅만 바꿔 다시 하는 게 핵심 학습 루프다</strong> (69장)</li>
+</ul>
+<p>두 번째 플레이부터 오프닝은 콘텐츠가 아니라 벽이 된다.
+그래서 규칙 셋을 먼저 못 박고 시작한다.</p>
+<pre><code>1. 전부 스킵 가능하다. 예외 없음.
+2. 끝까지 본 장면은 다시 강제하지 않는다. 세이브에 남긴다.
+3. 끝까지 본 것만 봤다고 친다. 중간에 끄면 다음에 처음부터.
+</code></pre>
+<p>3번이 중요하다. 2번만 있으면 첫 줄만 보고 끈 사람이 오프닝을 영영 못 본다.</p>
+<h2>오프닝이 실제로 해야 할 일</h2>
+<p>스토리 전달이 아니다. <strong>톤 합의</strong>다.</p>
+<p>이 게임의 위기는 침략인데 아무도 다치지 않는다. 원인은 귀여움이다.
+그래서 모든 장비가 피해 범위가 아니라 영향 범위를 갖는다(66장).
+로켓은 처형이 아니라 귀향이다(64장).
+오프닝은 이걸 설명하는 게 아니라 <strong>웃기면서 납득시켜야</strong> 한다.</p>
+<h2>등장인물 = 유닛 로스터</h2>
+<p>새 캐릭터를 만들지 않는다. 65장의 사람 유닛이 그대로 등장인물이다.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>역할</th>
+<th>동사 (65장)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀장</td>
+<td>플레이어</td>
+<td>—</td>
+</tr>
+<tr>
+<td>상황실</td>
+<td>무전 목소리. 플레이어의 질문 상대</td>
+<td>—</td>
+</tr>
+<tr>
+<td>구조원</td>
+<td></td>
+<td>없앤다</td>
+</tr>
+<tr>
+<td>집사</td>
+<td></td>
+<td>모은다</td>
+</tr>
+<tr>
+<td>수의사</td>
+<td></td>
+<td>고친다</td>
+</tr>
+</tbody>
+</table>
+<p><strong>수의사는 오프닝에 없다.</strong> 광란 고양이가 처음 나오는 판에서 합류한다(68장).
+오프닝에서 팀장이 "우리가 할 일은 셋이다 — 모은다, 잡는다, 돌려보낸다" 라고 말하고,
+수의사가 합류할 때 "할 일이 하나 늘었다. 고친다" 로 회수한다.
+<strong>스토리 자체가 해금 보상이 된다.</strong></p>
+<h2>구성</h2>
+<table>
+<thead>
+<tr>
+<th>장면</th>
+<th>시점</th>
+<th>길이</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>오프닝</td>
+<td>게임 최초 1회</td>
+<td>21줄</td>
+</tr>
+<tr>
+<td>수의사 합류</td>
+<td>Level 7 준비 단계 직전</td>
+<td>10줄</td>
+</tr>
+<tr>
+<td>엔딩</td>
+<td>Level 10 클리어 후, 로켓 발사 뒤</td>
+<td>10줄</td>
+</tr>
+</tbody>
+</table>
+<p>세 개뿐이다. 판마다 대사를 붙이지 않는다 —
+25장이 이미 판마다 "가르치는 것 하나" 를 갖고 있고, 그게 진짜 진행감이다.</p>
+<h2>오프닝 구조 — 여섯 박자</h2>
+<pre><code>1. 사건    뉴스 앵커가 화면을 보다가 무너진다
+2. 피해    전원 무사. 그냥 안 움직인다. 쓰다듬고 있다
+3. 규모    &quot;몇 마리까지 셌지&quot; / &quot;만 마리요&quot;          ← 31장의 10,000
+4. 제목    &quot;고양이가 너무 많아.&quot;                      ← 타이틀 드롭
+5. 임무    &quot;모은다. 잡는다. 돌려보낸다.&quot;              ← 65장의 동사, 하나 비움
+6. 태도    &quot;없애는 겁니까?&quot; / &quot;구조다.&quot;               ← 66장·64장의 근거
+</code></pre>
+<p>3번이 제목 드롭의 셋업이고, 동시에 성능 목표(31장)를 서사로 선언한다.
+플레이어는 만 마리를 듣고 시작해서, 실제로 만 마리를 보게 된다.</p>
+<h2>침묵도 대사다</h2>
+<p><code>DialogueLine.HoldSeconds</code> 로 줄마다 뜸을 줄 수 있다.
+"………" 을 빨리 넘겨 버리면 농담이 죽는다.</p>
+<p>단 <strong>스킵은 뜸을 무시한다.</strong> 스킵이 뜸에 막히면 스킵이 아니다.</p>
+<div class="mockup">  <figure>
+    <div class="screen">
+      <canvas data-horde="night"></canvas>
+      <div class="title-drop">고양이가 너무 많아!</div>
+      <div class="dialogue">
+        <div class="who">팀장</div>
+        <div class="line">고양이가 너무 많아.<span class="caret">▌</span></div>
+        <div class="dlg-hint">Space / 클릭 — 다음　　Esc — 건너뛰기</div>
+      </div>
+    </div>
+    <figcaption>
+      제목 드롭 지점. 바로 앞 대사가 "몇 마리까지 셌지." / "만 마리요." 다 —
+      GDD 31 의 성능 목표를 서사로 선언하고 제목으로 받는다.
+    </figcaption>
+  </figure></div>
+
+<h2>구현 상태</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Core/Story/StoryRunner.cs</code></td>
+<td>장면 재생, 스킵, "봤음" 판정</td>
+</tr>
+<tr>
+<td><code>Core/Story/StoryScripts.cs</code></td>
+<td>실제 대사 3장면</td>
+</tr>
+<tr>
+<td><code>SaveData.SeenScenes</code></td>
+<td>저장. 없는 키면 오프닝을 한 번 더 본다</td>
+</tr>
+<tr>
+<td><code>Runtime/UI/DialogueView.cs</code></td>
+<td>IMGUI 프로토타입</td>
+</tr>
+<tr>
+<td>테스트 11개</td>
+<td>대부분 "대사가 <strong>안</strong> 나오는지" 를 본다</td>
+</tr>
+</tbody>
+</table>
+<p>초상화, 한 글자씩 타이핑 연출, 페이드, 배경 일러스트는 Editor 작업이다.</p>
+<hr />
+</section>
+<section class="chapter" id="s72">
+<h2>72. 게임 화면 UI</h2>
+<p>42장은 HUD 항목을 나열만 했다. 어디에 놓이는지, 왜 거기인지, 화면이 몇 개인지가 없었다.</p>
+<h2>최대 제약: 화면을 가리면 안 된다</h2>
+<p>이 게임의 게임플레이는 <strong>무리의 흐름을 읽는 것</strong>이다(24장, 66장).
+흐름이 안 보이면 배치도 개입도 도박이 된다.</p>
+<p>그래서 UI 의 첫 번째 규칙은 정보량이 아니라 면적이다.</p>
+<div class="mockup">  <figure>
+    <div class="screen" id="scr-safe">
+      <canvas data-horde="dense"></canvas>
+      <div class="hud">
+        <div class="hud-top">
+          <span class="stat-label">상태 — 얇게</span>
+          <span class="stat-label">경고</span>
+        </div>
+        <div class="safe-zone"><span>절대 안 가리는 영역</span></div>
+        <div class="hud-bottom">
+          <span class="stat-label">장비 · 소지금</span>
+          <span class="stat-label">속도</span>
+        </div>
+      </div>
+    </div>
+    <figcaption>
+      팝업은 중앙에 띄우지 않는다. Run Upgrade 선택(GDD 20)도 하단에서 올라온다.
+      툴팁은 커서 반대쪽으로 편다. 예외는 대사창(GDD 71) 하나뿐이고, 그때는 시뮬레이션이 멈춰 있다.
+    </figcaption>
+  </figure></div>
+
+<ul>
+<li>팝업은 <strong>중앙에 띄우지 않는다.</strong> Run Upgrade 선택(20장)도 하단에서 올라온다.</li>
+<li>툴팁은 커서 반대쪽으로 편다.</li>
+<li>대사창(71장)만 예외다 — 그때는 시뮬레이션이 멈춰 있다.</li>
+</ul>
+<h2>정보 위계 — 10개를 같은 크기로 보여주지 않는다</h2>
+<p>42장이 나열한 항목을 <strong>보는 빈도</strong>로 나눈다.</p>
+<table>
+<thead>
+<tr>
+<th>등급</th>
+<th>무엇</th>
+<th>어떻게</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. 실패까지 얼마나</strong></td>
+<td>놓친 고양이 / 허용량</td>
+<td>가장 크게. 색으로도 경고</td>
+</tr>
+<tr>
+<td><strong>2. 지금 얼마나 남았나</strong></td>
+<td>남은 고양이, Wave 진행</td>
+<td>상시, 중간 크기</td>
+</tr>
+<tr>
+<td><strong>3. 지금 뭘 쓸 수 있나</strong></td>
+<td>장비 쿨다운, 소지금</td>
+<td>하단 바. 쓸 수 있으면 밝게</td>
+</tr>
+<tr>
+<td><strong>4. 잘하고 있나</strong></td>
+<td>구조 수, 콤보</td>
+<td>작게. 사건이 있을 때만 튄다</td>
+</tr>
+<tr>
+<td><strong>5. 끝나고 본다</strong></td>
+<td>재화 4종, 총점</td>
+<td>HUD 에 없다. 결과 화면(43장)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>놓친 고양이가 1등급인 이유</strong> — 5장의 유일한 실패 조건이다.
+42장 목록에서는 네 번째였는데, 플레이어가 가장 자주 봐야 하는 숫자다.
+<code>3 / 20</code> 처럼 항상 허용량과 함께 보여준다. 분모 없는 숫자는 위기감을 못 준다.</p>
+<p><strong>재화 4종이 HUD 에 없는 이유</strong> — Run 중에 할 수 있는 게 없다(6장).
+해금은 판 사이에 한다. 지금 못 쓰는 숫자는 소음이다.</p>
+<h2>화면 목록과 흐름</h2>
+<pre class="mermaid">flowchart TD
+  Title([타이틀]) -->|최초 1회| Story[오프닝<br/>71장]
+  Title --> Pick
+  Story --> Pick[맵 선택<br/>맵 × 스테이지 3 · 73장]
+  Pick --> Prep[준비 단계<br/>배치 · 69장]
+  Prep -->|구조 시작| Battle[전투]
+  Battle -->|Wave 사이| Upgrade[Run Upgrade · 20장<br/>재배치 · 69장]
+  Upgrade --> Battle
+  Battle --> Result[결과 화면<br/>로켓 발사 · 43장 · 64장]
+  Result --> Tree[스킬트리<br/>21장]
+  Tree --> Pick
+
+  Any[[어디서든]] -.-> Pause[일시정지]
+  Any -.-> Settings[설정 · 58장]</pre>
+<h2>화면별 명세</h2>
+<h3>타이틀</h3>
+<p>로고, 계속하기 / 새 게임 / 설정 / 종료.
+<strong>"스토리 다시 보기"</strong> 를 설정에 둔다(71장) — 스킵한 사람이 되찾을 길이 필요하다.</p>
+<h3>맵 선택</h3>
+<ul>
+<li>맵 1~10 (25장). 잠긴 맵은 무엇을 하면 열리는지 보여준다</li>
+<li>맵마다 <strong>스테이지 3칸</strong> — 쉬움 / 보통 / 어려움. 깬 칸에 표시가 남는다 (73장)</li>
+<li>스테이지마다 <strong>최고 기록</strong>: 구조/놓침, 달성한 클리어 조건(67장)</li>
+<li>등장 예정 특수 고양이 아이콘 (68장) — 광란이 나오면 미리 안다</li>
+</ul>
+<p><strong>다음 맵을 여는 건 보통이다.</strong> 어려움은 잠금 해제 조건이 아니라 재화를 위한 선택이다.</p>
+<div class="mockup">  <figure>
+    <div class="screen">
+      <div class="picker">
+        <div class="picker-top">
+          <strong>맵 선택</strong>
+          <span style="font-size:.85em; color:var(--s-dim)">다음 맵은 <span style="color:var(--s-gold)">보통</span> 클리어로 열린다</span>
+        </div>
+
+        <div class="maps">
+          <div class="map-row">
+            <span class="map-no">01</span>
+            <span class="map-nm">주택가 <span class="map-teach">— 유인 하나로 무리가 꺾인다</span></span>
+            <div class="stage-cells">
+              <div class="cell done">쉬움</div>
+              <div class="cell done">보통</div>
+              <div class="cell done">어려움<i class="paw"></i></div>
+            </div>
+          </div>
+
+          <div class="map-row">
+            <span class="map-no">02</span>
+            <span class="map-nm">전통시장 <span class="map-teach">— 맵에 박힌 유인원이 내 계획과 싸운다</span></span>
+            <div class="stage-cells">
+              <div class="cell done">쉬움</div>
+              <div class="cell done">보통</div>
+              <div class="cell">어려움</div>
+            </div>
+          </div>
+
+          <div class="map-row">
+            <span class="map-no">03</span>
+            <span class="map-nm">아파트 단지 <span class="map-teach">— 한 번에 다 볼 수 없다</span></span>
+            <div class="stage-cells">
+              <div class="cell done">쉬움</div>
+              <div class="cell done">보통</div>
+              <div class="cell">어려움</div>
+            </div>
+          </div>
+
+          <div class="map-row now">
+            <span class="map-no">04</span>
+            <span class="map-nm">지하철역 <span class="map-teach">— 병목은 무기다</span></span>
+            <div class="stage-cells">
+              <div class="cell done">쉬움</div>
+              <div class="cell next">보통</div>
+              <div class="cell">어려움</div>
+            </div>
+          </div>
+
+          <div class="map-row shut">
+            <span class="map-no">05</span>
+            <span class="map-nm">공장 <span class="map-teach">— 맵 4 보통을 깨면 열린다</span></span>
+            <div class="stage-cells">
+              <div class="cell">쉬움</div>
+              <div class="cell">보통</div>
+              <div class="cell">어려움</div>
+            </div>
+          </div>
+
+          <div class="map-row shut">
+            <span class="map-no">06</span>
+            <span class="map-nm">침수 지역 <span class="map-teach">— 잠김</span></span>
+            <div class="stage-cells">
+              <div class="cell">쉬움</div><div class="cell">보통</div><div class="cell">어려움</div>
+            </div>
+          </div>
+
+          <div class="map-row shut">
+            <span class="map-no">07</span>
+            <span class="map-nm">항구 <span class="map-teach">— 잠김</span></span>
+            <div class="stage-cells">
+              <div class="cell">쉬움</div><div class="cell">보통</div><div class="cell">어려움</div>
+            </div>
+          </div>
+
+          <div class="map-row shut">
+            <span class="map-no">08</span>
+            <span class="map-nm">도심 <span class="map-teach">— 잠김</span></span>
+            <div class="stage-cells">
+              <div class="cell">쉬움</div><div class="cell">보통</div><div class="cell">어려움</div>
+            </div>
+          </div>
+
+          <div class="map-row shut">
+            <span class="map-no">09</span>
+            <span class="map-nm">재개발 지역 <span class="map-teach">— 잠김</span></span>
+            <div class="stage-cells">
+              <div class="cell">쉬움</div><div class="cell">보통</div><div class="cell">어려움</div>
+            </div>
+          </div>
+
+          <div class="map-row shut">
+            <span class="map-no">10</span>
+            <span class="map-nm">도시 중심부 <span class="map-teach">— 잠김</span></span>
+            <div class="stage-cells">
+              <div class="cell">쉬움</div><div class="cell">보통</div><div class="cell">어려움</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="picker-foot">
+          <span><i style="display:inline-block;width:.55em;height:.55em;border-radius:50%;background:var(--s-gold);margin-right:.45em"></i>완전 구조 — Golden Paw 획득</span>
+          <span>어려움은 진행이 아니라 <span style="color:var(--s-gold)">재화</span>를 위한 선택이다</span>
+        </div>
+      </div>
+    </div>
+    <figcaption>
+      어려움을 잠금 해제 조건으로 걸면 막힌 사람이 할 수 있는 게 같은 판 반복밖에 없어진다.
+      그래서 진행은 보통이 열고, 어려움은 해금 재화와 Golden Paw 의 주 공급원으로 둔다 (GDD 67, 73).
+    </figcaption>
+  </figure></div>
+
+<h3>준비 단계</h3>
+<p>69장이 목록으로 적어 둔 것의 배치.</p>
+<p><strong>Flow 방향 화살표가 핵심이다.</strong> 예측할 수 없으면 사전 배치는 도박이다(69장).
+회수는 전액 환불이다 — 준비 단계는 계획하는 시간이지 벌 받는 시간이 아니다.</p>
+<div class="mockup">  <figure>
+    <div class="screen">
+      <div class="prep">
+        <div class="prep-top">
+          <div><strong>Level 4</strong> <span style="color:var(--s-dim)">· 지하철역</span></div>
+          <div>
+            <span class="stat-label" style="display:inline">예산</span>
+            <span class="mono" style="color:var(--s-gold); font-weight:700; margin-left:.5em">1,240</span>
+          </div>
+        </div>
+
+        <div class="prep-body">
+          <div class="prep-list">
+            <div class="unit sel"><span class="ico">🧑‍🚒</span><span class="nm">구조원</span><span class="pr">200</span></div>
+            <div class="unit"><span class="ico">🧑‍🍳</span><span class="nm">집사</span><span class="pr">350</span></div>
+            <div class="unit"><span class="ico">🥛</span><span class="nm">츄르 디스펜서</span><span class="pr">120</span></div>
+            <div class="unit"><span class="ico">🕸️</span><span class="nm">구조망</span><span class="pr">280</span></div>
+            <div class="unit"><span class="ico">🚁</span><span class="nm">구조 드론</span><span class="pr">450</span></div>
+            <div class="unit locked"><span class="ico">🩺</span><span class="nm">수의사</span><span class="pr">잠김</span></div>
+          </div>
+
+          <div class="prep-map">
+            <canvas data-horde="prep"></canvas>
+          </div>
+        </div>
+
+        <div class="prep-bottom">
+          <div class="cond"><i class="dot"></i> 클리어 조건 — 놓친 고양이 0 이면 Golden Paw</div>
+          <div style="display:flex; align-items:center; gap:1.2em">
+            <span style="font-size:.9em; color:var(--s-dim)">등장 예정 · 겁쟁이 고양이</span>
+            <span class="cta">구조 시작</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption>
+      회수는 전액 환불이다 — 준비 단계는 계획하는 시간이지 벌 받는 시간이 아니다.
+      등장 예정 특수 고양이를 미리 알려 준다 (GDD 68). 광란이 나오는 판이면 여기서 안다.
+    </figcaption>
+  </figure></div>
+
+<h3>전투 HUD</h3>
+<ul>
+<li>놓친 고양이는 허용량의 50% / 80% 에서 색이 바뀐다. <strong>색만으로 알리지 않는다</strong> — 숫자가 함께 커진다(58장)</li>
+<li>콤보(22장)는 상시 표시가 아니라 <strong>올라갈 때만</strong> 화면 옆에서 튀어나온다</li>
+<li>장비 슬롯은 쿨다운을 링으로. 준비 단계에서 배치한 것과 실행 중 쓰는 것을 <strong>줄로 나눈다</strong>(69장)</li>
+</ul>
+<div class="mockup">  <figure>
+    <div class="screen" id="scr-hud">
+      <canvas data-horde="flow"></canvas>
+      <div class="hud">
+        <div class="hud-top">
+          <div style="display:flex; gap:2.2em; align-items:flex-start;">
+            <div>
+              <span class="stat-label">Wave</span>
+              <span class="stat-value">4<span class="den"> / 10</span></span>
+              <div class="wave-bar"><i style="width:62%"></i></div>
+            </div>
+            <div>
+              <span class="stat-label">남은 고양이</span>
+              <span class="stat-value">312</span>
+            </div>
+            <div>
+              <span class="stat-label">구조</span>
+              <span class="stat-value" style="color:var(--s-green)">1,847</span>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <span class="stat-label">놓친 고양이</span>
+            <span class="stat-value big warn">14<span class="den"> / 20</span></span>
+          </div>
+        </div>
+
+        <div class="combo-pop">
+          <span class="n">×23</span>
+          <span class="t">COMBO</span>
+        </div>
+
+        <div class="hud-bottom">
+          <div>
+            <div class="slot-row-label">투척 · 조준 — 실행 중</div>
+            <div class="slots">
+              <div class="slot ready"><span class="ico">🥫</span><span class="key">1</span></div>
+              <div class="slot cooling"><span class="ico">🌿</span><span class="key">2</span><span class="cd">3.4</span></div>
+              <div class="slot ready"><span class="ico">🔦</span><span class="key">3</span></div>
+              <div class="slot cooling"><span class="ico">🎣</span><span class="key">4</span><span class="cd">11</span></div>
+              <div style="margin-left:.8em">
+                <span class="stat-label">소지금</span>
+                <span class="stat-value" style="color:var(--s-gold)">1,240</span>
+              </div>
+            </div>
+          </div>
+          <div class="speed">
+            <span>‖</span><span class="on">x1</span><span>x2</span><span>x3</span>
+          </div>
+        </div>
+
+        <span class="pin" style="right:1.3em; top:4.8em;">1</span>
+        <span class="pin" style="left:1.3em; top:4.8em;">2</span>
+        <span class="pin" style="left:1.3em; bottom:8.2em;">3</span>
+        <span class="pin" style="right:7.4em; top:36%;">4</span>
+      </div>
+    </div>
+  </figure>
+  <ul class="pin-list">
+    <li><b>1</b><span><strong>놓친 고양이가 가장 큰 숫자다.</strong> 허용량의 50% / 80% 에서 색이 바뀌는데, <em>색만으로 알리지 않는다</em> — 숫자도 함께 커진다 (GDD 58).</span></li>
+    <li><b>2</b><span>Wave 진행과 남은 고양이. 진행 막대가 있어야 "이 판이 언제 끝나나" 가 읽힌다.</span></li>
+    <li><b>3</b><span>장비 슬롯은 <strong>준비 단계에서 배치한 것과 실행 중 쓰는 것을 줄로 나눈다</strong> (GDD 69). 쿨다운은 링이 아니라 남은 초로 — 숫자가 더 정확하다.</span></li>
+    <li><b>4</b><span>콤보는 상시 표시가 아니다. 올라갈 때만 화면 옆에서 튀어나왔다 사라진다 (GDD 22).</span></li>
+  </ul></div>
+
+<h3>Run Upgrade 선택</h3>
+<p>3개 중 1개(20장). <strong>하단에서 올라오는 띠</strong>로 띄우고 맵을 가리지 않는다.
+이때 시간은 멈춘다.</p>
+<div class="mockup">  <figure>
+    <div class="screen">
+      <canvas data-horde="flow"></canvas>
+      <div class="hud">
+        <div class="hud-top">
+          <div><span class="stat-label">Wave 4 완료</span></div>
+          <div style="text-align:right">
+            <span class="stat-label">놓친 고양이</span>
+            <span class="stat-value warn">14<span class="den"> / 20</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="upgrade-strip">
+        <h4>강화 하나를 고른다</h4>
+        <div class="cards">
+          <div class="card hot">
+            <div class="ct"><span>🥫</span> 참치 폭우</div>
+            <div class="cd2">투척 범위 +40%. 지금 병목에 몰린 무리에 바로 먹힌다.</div>
+          </div>
+          <div class="card">
+            <div class="ct"><span>🚁</span> 드론 추가</div>
+            <div class="cd2">구조 드론 1기 무료 배치. 다음 Wave 부터.</div>
+          </div>
+          <div class="card">
+            <div class="ct"><span>💰</span> 장비 할인</div>
+            <div class="cd2">이번 Run 동안 배치 비용 −15%.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </figure></div>
+
+<h3>결과 화면</h3>
+<p>43장 그대로. 순서가 중요하다.</p>
+<pre class="mermaid">flowchart LR
+  R[1 · 로켓 발사<br/>64장] --> S[2 · 구조 / 놓침]
+  S --> C[3 · 클리어 조건<br/>67장]
+  C --> M[4 · 재화 4종<br/>6장]
+  M --> N[5 · 다음 판의 목표<br/>“놓친 고양이 0 이면 Golden Paw”]
+
+  classDef first fill:#F0B840,stroke:#B8831F,color:#1A1206
+  class R first</pre>
+<p>4번을 1번보다 먼저 보여주면 정산서가 된다. 로켓이 먼저다.</p>
+<div class="mockup">  <figure>
+    <div class="screen">
+      <canvas data-horde="rocket"></canvas>
+      <div class="result">
+        <div class="result-head">
+          <span class="verdict">구조 완료</span>
+          <span class="sub">Level 4 · 지하철역 · 8분 12초</span>
+        </div>
+
+        <div class="result-grid">
+          <div>
+            <div class="stat-label" style="margin-bottom:.7em">달성한 조건</div>
+            <div class="checklist">
+              <div class="check ok"><span class="mk">✓</span> 전 Wave 완료</div>
+              <div class="check ok"><span class="mk">✓</span> 특수 고양이 전원 구조</div>
+              <div class="check ok"><span class="mk">✓</span> 콤보 ×20 이상</div>
+              <div class="check no"><span class="mk">✕</span> 놓친 고양이 0 — <strong>14마리 놓침</strong></div>
+            </div>
+            <div class="nudge">놓친 고양이 0 이면 <strong style="color:var(--s-gold)">Golden Paw</strong> 를 받는다. 다음엔 병목을 먼저 막아 보자.</div>
+          </div>
+
+          <div>
+            <div class="stat-label" style="margin-bottom:.7em">획득</div>
+            <div class="currency">
+              <div class="cur"><i class="swatch" style="background:var(--s-blue)"></i><span class="nm">기본 포인트 — 강화</span><span class="v">+412</span></div>
+              <div class="cur"><i class="swatch" style="background:#8B7FD6"></i><span class="nm">인력 재화</span><span class="v">+18</span></div>
+              <div class="cur"><i class="swatch" style="background:var(--s-green)"></i><span class="nm">유인 재화</span><span class="v">+9</span></div>
+              <div class="cur"><i class="swatch" style="background:#D68A4A"></i><span class="nm">장비 재화</span><span class="v">+22</span></div>
+              <div class="cur"><i class="swatch" style="background:var(--s-gold)"></i><span class="nm">Golden Paw</span><span class="v" style="color:var(--s-faint)">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption>
+      마지막 줄이 다음 판의 목표가 된다 (GDD 43, 67). 실패한 조건을 나무라는 게 아니라 다음 판의 이유로 바꾼다.
+    </figcaption>
+  </figure></div>
+
+<h3>스킬트리</h3>
+<p>브랜치 4개(21장)를 탭이 아니라 <strong>한 화면에</strong> 놓는다.
+시너지(55장)가 브랜치를 넘나들기 때문에, 탭으로 자르면 그게 안 보인다.</p>
+<p>노드마다 두 값을 같이 보여준다 — <strong>여는 값</strong>(브랜치 재화)과 <strong>키우는 값</strong>(기본 포인트).</p>
+<div class="mockup">  <figure>
+    <div class="screen">
+      <div class="tree">
+        <div class="tree-top">
+          <strong>영구 스킬트리</strong>
+          <div class="purse">
+            <span class="p"><i style="background:var(--s-blue)"></i>2,140</span>
+            <span class="p"><i style="background:#8B7FD6"></i>18</span>
+            <span class="p"><i style="background:var(--s-green)"></i>9</span>
+            <span class="p"><i style="background:#D68A4A"></i>22</span>
+            <span class="p"><i style="background:var(--s-gold)"></i>3</span>
+          </div>
+        </div>
+
+        <div class="branches">
+          <div class="branch">
+            <h5>Rescue</h5>
+            <div class="node owned"><span class="nn">구조원 · 중급</span><span class="cost"><span>열림</span><span>Lv.3</span></span></div>
+            <div class="node owned"><span class="nn">구조 속도</span><span class="cost"><span>열림</span><span>Lv.2</span></span></div>
+            <div class="node open"><span class="nn">구조원 · 프로</span><span class="cost"><span>인력 12</span><span>+180</span></span></div>
+            <div class="node shut"><span class="nn">집사 · 프로</span><span class="cost"><span>인력 22</span></span></div>
+            <div class="node shut"><span class="nn">수의사</span><span class="cost"><span>인력 30</span></span></div>
+            <div class="node ult"><span class="nn">⚡ 전광석화 구조</span><span class="cost"><span>Golden Paw 2</span></span></div>
+          </div>
+
+          <div class="branch">
+            <h5>Attraction</h5>
+            <div class="node owned"><span class="nn">츄르 강화</span><span class="cost"><span>열림</span><span>Lv.5</span></span></div>
+            <div class="node owned"><span class="nn">유인 반경</span><span class="cost"><span>열림</span><span>Lv.3</span></span></div>
+            <div class="node open"><span class="nn">캣닢 살포</span><span class="cost"><span>유인 8</span><span>+120</span></span></div>
+            <div class="node shut"><span class="nn">고양이 장난감</span><span class="cost"><span>유인 14</span></span></div>
+            <div class="node shut"><span class="nn">맛집 소문</span><span class="cost"><span>유인 20</span></span></div>
+            <div class="node ult"><span class="nn">⚡ 고양이 천국</span><span class="cost"><span>Golden Paw 2</span></span></div>
+          </div>
+
+          <div class="branch">
+            <h5>Automation</h5>
+            <div class="node owned"><span class="nn">구조 드론</span><span class="cost"><span>열림</span><span>Lv.2</span></span></div>
+            <div class="node owned"><span class="nn">드론 용량</span><span class="cost"><span>열림</span><span>Lv.1</span></span></div>
+            <div class="node open"><span class="nn">순찰 차량</span><span class="cost"><span>장비 15</span><span>+240</span></span></div>
+            <div class="node shut"><span class="nn">드론 추가 배치</span><span class="cost"><span>장비 21</span></span></div>
+            <div class="node shut"><span class="nn">자동 조준</span><span class="cost"><span>장비 28</span></span></div>
+            <div class="node ult"><span class="nn">⚡ 드론 군단</span><span class="cost"><span>Golden Paw 3</span></span></div>
+          </div>
+
+          <div class="branch">
+            <h5>Economy</h5>
+            <div class="node owned"><span class="nn">시작 자금</span><span class="cost"><span>열림</span><span>Lv.4</span></span></div>
+            <div class="node owned"><span class="nn">구조 보상</span><span class="cost"><span>열림</span><span>Lv.2</span></span></div>
+            <div class="node open"><span class="nn">장비 할인</span><span class="cost"><span>아무거나 10</span><span>+90</span></span></div>
+            <div class="node open"><span class="nn">희귀 고양이 보너스</span><span class="cost"><span>아무거나 14</span><span>+150</span></span></div>
+            <div class="node shut"><span class="nn">Wave 보상</span><span class="cost"><span>아무거나 19</span></span></div>
+            <div class="node shut"><span class="nn">연구 배율</span><span class="cost"><span>아무거나 25</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption>
+      Economy 브랜치만 <strong>아무 재화로나</strong> 열린다 (GDD 21). 나머지 셋을 빨리 굴리는 브랜치라 병목이 되면 안 된다.
+    </figcaption>
+  </figure></div>
+
+<h3>일시정지</h3>
+<p>계속 / 재시작 / 설정 / 나가기.
+<strong>재시작이 여기 있어야 한다</strong> — 같은 판 다시 하기가 학습 루프다(69장).</p>
+<h2>아직 안 정한 것</h2>
+<ul>
+<li>폰트. 픽셀 아트(26장)와 한글이 같이 가야 하는데 한글 픽셀 폰트는 선택지가 좁다</li>
+<li>장비 슬롯이 몇 개까지 늘어나는가 — 17장이 확정되면 하단 바 너비가 정해진다</li>
+<li>미니맵을 둘지. 3장 이상 Spawn 인 판(25장 Level 3+)에서 필요할 수 있다</li>
+</ul>
+<hr />
+</section>
+<section class="chapter" id="s73">
+<h2>73. 스테이지 난이도</h2>
+<p>25장의 맵 10개는 각각 흐름 문제 하나를 가르친다. 문제는 <strong>한 번 배우면 끝난다</strong>는 것이다.
+그 지형을 다시 쓸 방법이 없으면 맵 하나당 판 하나로 끝나고, 아트 비용 대비 플레이 시간이 짧다.</p>
+<h2>규칙: 맵 = 지형, 스테이지 = 압력</h2>
+<pre><code>맵 하나  →  쉬움 / 보통 / 어려움 세 판
+지형     →  셋 다 완전히 같다
+</code></pre>
+<p><strong>지형이 바뀌면 그건 다른 맵이지 다른 난이도가 아니다.</strong></p>
+<p>이게 규칙인 이유는 아트 비용이 아니라 학습이다.
+플레이어가 쉬움에서 배운 지형 지식 — 병목이 어디고 우회로가 어딘지 — 이
+보통·어려움에서 그대로 쓰여야 맵 하나를 세 번 하는 게 반복이 아니라 숙련이 된다.
+지형을 바꿔 버리면 매번 처음부터 다시 읽어야 하고, 그건 그냥 다른 맵이다.</p>
+<h2>세 판이 각각 하는 일</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>하는 일</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>쉬움</strong></td>
+<td>가르친다</td>
+<td>이 맵의 새 흐름 문제와 신규 해금이 여기서 처음 나온다</td>
+</tr>
+<tr>
+<td><strong>보통</strong></td>
+<td>시험한다</td>
+<td><strong>다음 맵을 여는 기준</strong></td>
+</tr>
+<tr>
+<td><strong>어려움</strong></td>
+<td>숙련을 요구한다</td>
+<td>해금 재화와 Golden Paw 의 주 공급원</td>
+</tr>
+</tbody>
+</table>
+<h2>압력 표</h2>
+<p>배율은 전부 조정 대상이다. <code>Stages.PressureOf</code> 가 이 표다.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>쉬움</th>
+<th>보통</th>
+<th>어려움</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>총 고양이 수</td>
+<td>×1.0</td>
+<td>×1.6</td>
+<td>×2.4</td>
+</tr>
+<tr>
+<td>Spawn 속도</td>
+<td>×1.0</td>
+<td>×1.25</td>
+<td>×1.6</td>
+</tr>
+<tr>
+<td>특수 고양이 비율</td>
+<td>×0.6</td>
+<td>×1.5</td>
+<td>×2.2</td>
+</tr>
+<tr>
+<td><strong>놓침 허용량</strong></td>
+<td>×1.5</td>
+<td>×0.6</td>
+<td><strong>×0.25</strong></td>
+</tr>
+<tr>
+<td>시작 예산</td>
+<td>×1.0</td>
+<td>×0.85</td>
+<td>×0.7</td>
+</tr>
+<tr>
+<td>구조 보상</td>
+<td>×1.0</td>
+<td>×1.4</td>
+<td>×2.0</td>
+</tr>
+<tr>
+<td>Golden Paw</td>
+<td><strong>없음</strong></td>
+<td>완전 구조 시</td>
+<td>완전 구조 시</td>
+</tr>
+</tbody>
+</table>
+<p><strong>놓침 허용량이 가장 크게 조여진다.</strong> 5장의 유일한 실패 조건이고,
+고양이 수를 늘리는 것보다 이쪽이 훨씬 강하게 체감된다.
+같은 지형에서 같은 배치를 하면 어려움에서는 통하지 않는다 — 그게 목적이다.</p>
+<p><strong>쉬움에서는 Golden Paw 가 나오지 않는다.</strong> 가장 쉬운 판에서 가장 귀한 재화가 나오면
+나머지 둘을 할 이유가 없다.</p>
+<p><strong>어려움도 놓침 허용량이 0 은 아니다.</strong> 0 이면 실수 한 번에 판이 끝나고,
+그건 어려운 게 아니라 재시작 버튼을 누르는 게임이다.</p>
+<h2>난이도 곡선 — 톱니다</h2>
+<pre><code>난이도
+  │                                       ╱▔
+  │                          ╱▔▔      ╱▔
+  │             ╱▔▔      ╱▔        
+  │  ╱▔▔     ╱▔
+  └──────────────────────────────────────→
+     맵1        맵2        맵3        맵4
+   쉬 보 어   쉬 보 어   쉬 보 어   쉬 보 어
+</code></pre>
+<p><strong>새 맵의 쉬움은 이전 맵의 어려움보다 살짝 내려간다.</strong> 대신 바닥이 맵마다 올라간다.</p>
+<p>일직선으로 올리면 "쉬움" 이 이름값을 못 한다 — 맵 7 의 쉬움이 맵 1 의 어려움보다
+훨씬 어려우면 그건 쉬운 판이 아니다. 무엇보다 <strong>새 맵은 새 지형이라 배울 게 있다.</strong>
+배우는 판에 압력을 걸면 배우는 게 아니라 헷갈린다 (25장 Map 1 의 원칙).</p>
+<p>내려가는 폭은 작다. 맵 N 의 쉬움은 맵 N-1 의 <strong>보통</strong> 언저리에 놓는다.
+어려움 밑으로는 내려가되 이전 맵의 쉬움보다는 확실히 위다.</p>
+<h2>해금</h2>
+<pre><code>맵 N 의 보통 클리어  →  맵 N+1 이 열린다
+</code></pre>
+<p><strong>어려움은 잠금 해제 조건이 아니다.</strong> 강제하면 벽이 되고,
+막힌 사람이 할 수 있는 게 같은 판 반복밖에 없어진다.
+쉬움만으로 열면 반대로 배우기 전에 넘어간다. 보통이 가운데다.</p>
+<p>어려움을 도는 이유는 진행이 아니라 <strong>재화</strong>다 —
+해금 재화 3종과 Golden Paw 가 여기서 제일 많이 나온다 (6장, 67장).
+스킬트리를 밀고 싶은 사람은 뒤로 가는 대신 옆으로 판다.</p>
+<h2>분량</h2>
+<pre><code>맵 10개 × 스테이지 3개 = 30 판
+</code></pre>
+<p>49장의 "Map 8~10개" 와 맞는다. <strong>지형 아트는 10개 그대로</strong>고 늘어나는 건 튜닝 데이터뿐이다.
+맵 하나에 판 셋이면 아트 비용은 같은데 플레이 시간이 세 배가 된다.</p>
+<p>MVP(48장)는 <strong>맵 3개 × 3 = 9 판</strong>으로 잡는다.
+난이도 곡선이 톱니로 실제로 도는지는 맵 3개면 확인된다.</p>
+<h2>구현 상태</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Core/Stages/Stages.cs</code></td>
+<td>압력 표, 스테이지 Id, 해금 기준</td>
+</tr>
+<tr>
+<td><code>Core/Stages/StagePressure.cs</code></td>
+<td><code>ApplyTo(WaveDefinition)</code> — 원본을 건드리지 않고 사본을 만든다</td>
+</tr>
+<tr>
+<td><code>CatSimulation.StartStage</code></td>
+<td>난이도 하나로 예산·놓침 허용량·Wave 를 한꺼번에 건다</td>
+</tr>
+<tr>
+<td><code>SaveData.ClearedStages</code></td>
+<td><code>map-04-subway#hard</code> 형태로 저장</td>
+</tr>
+<tr>
+<td>테스트 22개</td>
+<td>배율 나열이 아니라 <strong>적용 결과</strong>를 본다</td>
+</tr>
+</tbody>
+</table>
+<p>맵 Id 를 <code>level-NN</code> 에서 <code>map-NN</code> 으로 바꿨다. 코드는 이미 <code>UnlockedMaps</code> / <code>UnlockKind.Map</code> 이었고
+Id 만 옛 이름을 쓰고 있었다.</p>
+<h2>표를 Run 에 물렸다 — 측정</h2>
+<p>표만 있고 아무 데도 안 물려 있으면 세 판이 똑같은 판이다.
+난이도를 거는 입구는 하나다 — <code>StartStage(difficulty, 예산, 놓침허용)</code>.</p>
+<p>같은 맵(64×24, 가운데 5×5 건물 한 채), 같은 Wave 정의(100마리 / 25초),
+같은 배치(건물 서쪽 면에 츄르 하나 + 구조원 하나)로 난이도만 바꿔 80초를 돌렸다.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>쉬움</th>
+<th>보통</th>
+<th>어려움</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>실제 Spawn</td>
+<td>100</td>
+<td>160</td>
+<td>240</td>
+</tr>
+<tr>
+<td>놓침 허용량</td>
+<td>30</td>
+<td>12</td>
+<td><strong>5</strong></td>
+</tr>
+<tr>
+<td>시작 예산</td>
+<td>1000</td>
+<td>850</td>
+<td>700</td>
+</tr>
+<tr>
+<td><strong>놓친 수</strong></td>
+<td>0</td>
+<td>2</td>
+<td><strong>55</strong></td>
+</tr>
+<tr>
+<td><strong>결과</strong></td>
+<td>통과</td>
+<td>통과</td>
+<td><strong>실패</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>같은 배치가 쉬움에서 통하고 어려움에서 안 통한다.</strong> 이게 난이도를 고르는 의미다.
+통과 여부만 보면 경계 한 칸 차이로도 만족하니 새는 양 자체(0 → 2 → 55)도 함께 잠가 뒀다.</p>
+<h3>이 시험이 잡아낸 것</h3>
+<p><strong>처음에는 구조가 0 이었다.</strong> 구조원을 건물 <strong>동쪽</strong> 면에 놓았는데
+츄르는 서쪽 면에 있었다. 무리는 서쪽 벽에 붙어 서고 구조원은 5칸짜리 건물 너머 6.09 만큼
+떨어져 있었다 — 사거리 6 에서 0.09 모자란다. 배치 면이 곧 사거리다 (75장, 78장).</p>
+<p><strong>그다음에는 놓친 고양이가 0 이었다.</strong> 츄르 하나가 오는 족족 전부 붙들어서
+240마리를 보내도 한 마리도 안 샜다. 유인원 정원(<code>MaxAffectedCats</code>)이 있어야
+"정원을 넘긴 고양이는 그냥 지나간다" 가 되고, 그제서야 고양이 수가 결과를 바꾼다.
+<strong>붙드는 장치에 정원이 없으면 스테이지 압력이 통째로 무의미해진다.</strong></p>
+<hr />
+</section>
+<section class="chapter" id="s74">
+<h2>74. 맵 출입 방향</h2>
+<p>25장은 맵마다 Spawn/Exit <strong>개수</strong>만 정했고 방향은 절반만 적혀 있었다.
+방향이 없으면 준비 단계(69장)에서 사전 배치를 할 근거가 없다 — 어디로 흐를지 모르는데 무엇을 어디에 두겠는가.</p>
+<h2>표기</h2>
+<p>절대 좌표가 아니라 <strong>변 + 그 변에서의 자리</strong>로 적는다. 맵 크기를 바꿔도 "왼쪽 위" 는 계속 왼쪽 위다.</p>
+<pre><code>좌0 좌1 좌2   상0 상1 상2
+우0 우1 우2   하0 하1 하2
+       0 = 시작쪽, 1 = 가운데, 2 = 끝쪽
+</code></pre>
+<h2>세 가지 규칙</h2>
+<p><strong>1. Spawn 과 Exit 은 정면으로 마주 보지 않는다.</strong> Map 5 만 예외다.</p>
+<p>마주 보면 최단 경로가 직선이고, 직선 위에서는 지형이 아무 일도 하지 않는다.
+꺾여야 병목이 생기고, 병목이 있어야 배치가 판단이 된다.</p>
+<p>Map 5 는 컨베이어가 직선으로 밀어 주는 게 설계 자체라 예외다.
+Map 1 도 예전엔 직선이었는데 Y 로 바뀌면서 아니게 됐다.</p>
+<p><strong>2. Exit 은 언제나 하나다.</strong> 예외 없다 — 최종 판도 하나다.</p>
+<p>들어오는 길은 하나든 여섯이든 상관없다. <strong>나가는 길만 하나로 묶는다.</strong></p>
+<p>이유가 셋이다.</p>
+<ul>
+<li><strong>무리가 갈라지지 않는다.</strong> 23장의 대량 구조 쾌감은 모여야 나온다.
+  Exit 이 둘이면 무리가 둘로 쪼개지고, 어느 쪽도 "너무 많다" 는 느낌을 못 준다.</li>
+<li><strong>지켜볼 곳이 하나다.</strong> 5장의 실패 조건이 일어나는 자리가 한 군데뿐이라
+  72장의 정보 위계 1등급(놓친 고양이)이 화면 한 곳과 대응된다.</li>
+<li><strong>난이도가 어디서 오는지 분명해진다.</strong> Exit 을 늘려서 어렵게 만들지 않는다.
+  Spawn 수, 지형, 그리고 스테이지 압력(73장) 셋으로만 만든다.</li>
+</ul>
+<p>Spawn 이 늘수록 수렴 압력이 커진다. 최종 판은 <strong>여섯 곳에서 한 곳으로</strong> 쏟아진다.</p>
+<p><strong>3. Spawn 과 Exit 은 같은 변에 두지 않는다.</strong> 예외 없다.</p>
+<p>같은 변에 두면 둘이 사실상 <strong>같은 공간</strong>에 놓인다.
+특히 개활형(75장)에서는 나오자마자 나가는 길이 보인다 — 개입할 시간이 아예 없다.</p>
+<p><strong>4. 가장 짧은 Spawn→Exit 거리가 개입 시간의 하한이다.</strong></p>
+<p>짧으면 손쓸 새가 없다. 고양이 속도 3 기준으로 20 칸이면 약 7초다. 그 아래로 두지 않는다.</p>
+<p>예전에는 Map 8 부터 이 규칙을 예외로 뒀는데, 규칙 3 을 넣고 나니 <strong>예외가 사라졌다</strong> —
+짧은 흐름은 전부 Spawn 과 Exit 이 한 벽에 붙어 있어서 생긴 것이었다.</p>
+<h2>맵별 출입 방향</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>맵</th>
+<th>Spawn</th>
+<th>Exit</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>주택가</td>
+<td>좌2 · 좌0</td>
+<td>우1</td>
+<td>Y. 둘로 들어와 한 곳에서 만난다</td>
+</tr>
+<tr>
+<td>2</td>
+<td>전통시장</td>
+<td>좌2</td>
+<td>우0</td>
+<td>대각선. 세로 골목을 여러 번 건넌다</td>
+</tr>
+<tr>
+<td>3</td>
+<td>아파트 단지</td>
+<td>좌0 · 좌1 · 좌2</td>
+<td>하2</td>
+<td>강하게 수렴</td>
+</tr>
+<tr>
+<td>4</td>
+<td>지하철역</td>
+<td>좌1 · 우1</td>
+<td>상1</td>
+<td>양쪽 플랫폼 → 가운데 계단</td>
+</tr>
+<tr>
+<td>5</td>
+<td>공장</td>
+<td>좌2 · 좌0</td>
+<td>우2</td>
+<td>벨트 두 줄이 서로 반대</td>
+</tr>
+<tr>
+<td>6</td>
+<td>침수 지역</td>
+<td>상0 · 좌0</td>
+<td>우1</td>
+<td>가운데가 잠기며 경로가 갈아엎힌다</td>
+</tr>
+<tr>
+<td>7</td>
+<td>항구</td>
+<td>좌2 · 하0</td>
+<td>우0</td>
+<td>컨테이너 미로를 대각선으로 관통</td>
+</tr>
+<tr>
+<td>8</td>
+<td>도심</td>
+<td>좌2 · 좌0 · 상1 · 하1</td>
+<td>우1</td>
+<td>사방에서 와서 한 곳으로</td>
+</tr>
+<tr>
+<td>9</td>
+<td>재개발 지역</td>
+<td>좌0 · 좌2 · 상1</td>
+<td>우1</td>
+<td>게이트가 열고 닫는다</td>
+</tr>
+<tr>
+<td>10</td>
+<td>도시 중심부</td>
+<td>좌0 · 좌1 · 좌2 · 상0 · 상1 · 상2</td>
+<td>우⅓</td>
+<td>최종 Horde. 6 → 1</td>
+</tr>
+</tbody>
+</table>
+<p>Map 4 에서 Spawn 둘이 정면으로 마주 보지만 Exit 이 위쪽이라 규칙 1 을 어기지 않는다 —
+두 흐름이 가운데서 충돌해 위로 꺾인다. "병목은 무기다" 를 가르치는 배치다.</p>
+<p>Map 10 의 Exit 이 ⅓ 자리인 이유는, Spawn 이 좌·상 두 변의 세 자리를 전부 채워서
+상·중·하 어디에 Exit 을 둬도 어느 Spawn 과 정면으로 마주 보기 때문이다.</p>
+<p>Map 5 는 Exit 이 하나인데 벨트가 둘이다. 위 벨트는 Exit 쪽으로 밀고 아래 벨트는 반대로 민다 —
+<strong>같은 힘이 한쪽에서는 위협이고 다른 쪽에서는 시간을 벌어 준다.</strong>
+Spawn 을 둘 다 서쪽에 둔 이유는 규칙 3 이다. 아래 Spawn 을 동쪽에 두면 Exit 과 같은 벽이 된다.</p>
+<p>Map 8 도 같은 이유로 동쪽 Spawn 을 뺐다. "사방에서 온다" 는 서쪽 둘 · 위 · 아래로 채운다.</p>
+<h2>표가 스스로를 검사한다</h2>
+<p>이 표는 문서에만 있지 않다. <code>MapFlowTests</code> 가 맵 10개에 대고 규칙 셋을 전부 돌린다.
+<strong>처음 돌렸을 때 세 곳이 걸렸다</strong> — Map 3 과 Map 9 의 흐름이 직선이었고,
+Map 10 의 Exit 하나가 Spawn 과 마주 보고 있었다. 표를 손으로 적으면 이렇게 된다.</p>
+<h2>구현</h2>
+<p><code>Core/Maps/EdgeAnchor.cs</code>, <code>MapFlowLayout.cs</code>, <code>MapFlowTable.cs</code>.
+표가 코드에 그대로 들어 있고, 격자 크기를 주면 월드 좌표가 나온다.</p>
+<hr />
+</section>
+<section class="chapter" id="s75">
+<h2>75. 길과 건물</h2>
+<p><strong>고양이는 길로만 다닌다. 플레이어는 길 밖에서 개입한다.</strong></p>
+<p>이 한 줄이 24장의 맵 요소(넓은 지역 / 좁은 통로 / 갈림길 / 우회로)를 실제 판단으로 바꾼다.</p>
+<h2>규칙</h2>
+<pre><code>길    —  고양이가 다닌다.  설치 불가.  던지는 건 여기로
+건물  —  고양이가 못 간다.  설치 가능.  던져 봐야 소용없다
+</code></pre>
+<p>길 한복판에 사람과 장비를 세우면 흐름 자체를 막아 버린다.
+막는 게임이 아니라 <strong>흐르는 것을 걷어 올리는 게임</strong>이다 (66장).</p>
+<h2>건물 가장자리에만 놓는다</h2>
+<p>건물이면서 <strong>길에 닿아 있는 칸</strong>에만 놓을 수 있다. 이유가 둘이다.</p>
+<p><strong>게임 규칙으로서</strong> — 옥상 끝에서 길로 손을 뻗는 그림이 이 게임의 배치다.
+건물 한복판은 아무 데도 닿지 않는다.</p>
+<p><strong>유인 때문에</strong> — 건물 안쪽 깊은 곳에 유인원을 두면 고양이가 그 지점에
+영원히 도달하지 못한다. <code>CatState.Gathering</code> 으로 넘어가지 못하고
+벽에 밀려 있기만 한다. 길에 닿은 칸이면 바로 옆까지는 온다.</p>
+<p>덕분에 배치가 공간 퍼즐이 된다 — <strong>어느 건물의 어느 면이 가장 붐비는 길에 닿아 있는가.</strong></p>
+<h2>무엇이 어디에 놓이는가 — 움직임이 정한다</h2>
+<p>새 분류를 만들지 않는다. <code>DeviceMovement</code> 가 이미 답을 갖고 있다.</p>
+<table>
+<thead>
+<tr>
+<th>움직임</th>
+<th>놓이는 곳</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Static</strong> — 사람, 구조망, 츄르 디스펜서</td>
+<td>건물 가장자리</td>
+<td>길을 막으면 안 된다</td>
+</tr>
+<tr>
+<td><strong>Route</strong> — 구조 차량</td>
+<td><strong>길 위</strong></td>
+<td>길로 다녀야 순찰이 된다</td>
+</tr>
+<tr>
+<td><strong>Seek</strong> — 구조 드론</td>
+<td><strong>아무 데나</strong></td>
+<td>난다</td>
+</tr>
+<tr>
+<td>투척 · 조준 — 참치, 캣닢, 레이저</td>
+<td>길 위</td>
+<td>건물에 던져 봐야 닿지 않는다</td>
+</tr>
+</tbody>
+</table>
+<p><strong>차량이 길 위에 있는 게 중요하다.</strong> 14장의 겁쟁이 고양이가 "사람/차량을 피함" 인데,
+차량이 길 밖에 있으면 그 특성이 성립하지 않는다.
+차량은 순찰하면서 겁쟁이를 밀어내고, 그게 의도한 도구가 되기도 방해가 되기도 한다.</p>
+<h2>Build Zone 의 역할이 바뀐다</h2>
+<p>지형이 이미 "어디에" 를 답하므로, Build Zone 은 <strong>그 위에 얹는 추가 제한</strong>이 된다.
+기본값은 "모든 건물 가장자리" 이고, 특정 구역을 못 쓰게 하고 싶은 맵만 Zone 을 그린다.</p>
+<p>18장의 "어디에나 지을 수 있으면 배치가 판단이 아니다" 는 그대로다 —
+이제 그 제한을 Zone 이 아니라 지형이 건다.</p>
+<h2>지형 구성 두 가지</h2>
+<p>길은 사각형일 필요도, 격자일 필요도 없다. <code>FlowField</code> 는 셀 마스크라 대각선도 곡선도 그대로 된다.
+크게 두 가지 구성이 있고 <strong>둘 다 유효하다.</strong></p>
+<h3>골목형 — 장애 지형이 대부분을 채우고 길이 그 사이를 지난다</h3>
+<p>전통시장, 아파트 단지, 항구. 흐름이 지형에 강하게 묶인다.
+배치 자리는 길에 접한 면 하나뿐이라 <strong>사거리가 한 방향으로만 뻗는다.</strong></p>
+<h3>개활형 — 넓은 통행 구역에 장애 지형이 섬처럼 박혀 있다</h3>
+<p>공장, 도심. 흐름이 자유롭고 무리가 넓게 퍼진다.</p>
+<p><strong>섬은 사방이 가장자리다.</strong> 사거리가 360°로 뻗어서 골목의 한쪽 면보다 훨씬 강한 자리다.
+개활형의 재미가 여기서 나온다 — <strong>좋은 섬을 차지하는 것이 곧 그 구역을 지배하는 것</strong>이고,
+섬이 몇 개뿐이라 어디를 먼저 잡을지가 판단이 된다.</p>
+<p>한 맵에 둘을 섞어도 된다. 골목을 지나 광장으로 나오는 구조가 특히 좋다 —
+좁을 때 통하던 배치가 넓어지는 순간 안 통한다.</p>
+<h2>길 폭 — 숫자로</h2>
+<p>설치형은 건물 가장자리에만 서므로 사거리가 <strong>폭 방향으로만</strong> 뻗는다.
+그래서 길 폭과 사거리의 비가 그 길이 어떤 문제인지를 정한다. (<code>Core/Maps/RoadWidth.cs</code>)</p>
+<p>기본 사거리는 3칸(<code>EquipmentDefinition.Range</code>)이다.</p>
+<table>
+<thead>
+<tr>
+<th>등급</th>
+<th>폭</th>
+<th>기본 사거리로</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>골목</strong></td>
+<td>3칸</td>
+<td>한쪽 하나로 전부 덮인다</td>
+<td>배우는 판. 병목이 강하다</td>
+</tr>
+<tr>
+<td><strong>도로</strong></td>
+<td>6칸</td>
+<td>양쪽에 깔아야 덮인다</td>
+<td>기본값</td>
+</tr>
+<tr>
+<td><strong>대로 · 광장</strong></td>
+<td>10칸+</td>
+<td><strong>가운데 4칸이 사각지대</strong></td>
+<td>투척으로만 닿는다</td>
+</tr>
+</tbody>
+</table>
+<p>개활형에서는 "길 폭" 대신 <strong>섬 사이 거리</strong>를 같은 식으로 읽는다.
+섬끼리 사거리 2배 안이면 광장 전체가 덮이고, 멀면 그 사이가 빈다.</p>
+<p><strong>투척 장비가 존재하는 이유가 여기서 생긴다.</strong> 대로와 광장의 가운데는 설치형이 못 닿는다.
+사각지대를 어디에 얼마나 두느냐가 그 맵의 난이도이고,
+20장의 사거리 업그레이드가 실제로 사각지대를 메우는지도 이 표로 잰다.</p>
+<h2>코드에 반영된 것</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FlowField.IsBuildingEdge</code></td>
+<td>건물이면서 길에 닿은 칸</td>
+</tr>
+<tr>
+<td><code>EquipmentSystem.LandFor</code></td>
+<td>움직임 → 놓이는 곳</td>
+</tr>
+<tr>
+<td><code>PlacementResult.NotOnBuildingEdge</code></td>
+<td>길 위에 설치하려 할 때</td>
+</tr>
+<tr>
+<td><code>PlacementResult.OnObstacle</code></td>
+<td>이제 <strong>투척 전용</strong> — 건물 위로 던졌을 때</td>
+</tr>
+</tbody>
+</table>
+<p><strong>규칙이 뒤집혔다.</strong> 이전 코드는 건물 위 배치를 거부했다.
+테스트 16개가 깨졌고 전부 새 규칙에 맞춰 고쳤다.
+그 과정에서 테스트의 "드론" 이 <code>Movement</code> 를 안 정해서 사실은 고정 장비였다는 것도 드러났다.</p>
+<hr />
+</section>
+<section class="chapter" id="s76">
+<h2>76. 측정된 것</h2>
+<p>기획서의 나머지는 전부 주장이다. 이 장만 측정이다.</p>
+<p>기준은 <strong>"구현했다" 가 아니라 "실제로 이득이다"</strong> 다.
+같은 조건에서 기능만 켜고 껐을 때 결과가 달라지지 않으면 그 기능은 없는 것이다.</p>
+<h2>이 기준이 잡아낸 것</h2>
+<p>두 기능이 <strong>코드에는 있는데 아무 일도 하지 않고 있었다.</strong> 켜고 꺼 보지 않았으면 몰랐다.
+그리고 맵 하나는 <strong>길을 그려 놨는데 아무도 안 다녔다.</strong></p>
+<table>
+<thead>
+<tr>
+<th>기능</th>
+<th>끔 → 켬</th>
+<th>무엇이 잘못됐었나</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>맛집 소문 (17장)</td>
+<td>80 → 80 → <strong>232</strong></td>
+<td>2차 유인원 자격을 <code>Gathering</code> 상태로 제한했는데, 무리가 커질수록 Separation 이 고양이를 유인원 중심 밖으로 밀어내서 <strong>정작 몰려든 순간에 자격자가 사라졌다.</strong> 지금은 가장 바깥쪽 고양이를 골라 사거리를 넓힌다</td>
+</tr>
+<tr>
+<td>Run Upgrade (20장)</td>
+<td>24 → 24 → <strong>50</strong></td>
+<td>업그레이드 적용을 <code>EquipmentSystem</code> 경로에만 달아 둬서 <code>RescueSystem.Add</code> 로 만든 장비에는 안 먹었다. 지금은 장비 생성의 유일한 관문인 <code>Add</code> 가 처리한다</td>
+</tr>
+</tbody>
+</table>
+<p>단위는 30초 시뮬레이션 동안 구조한 고양이 수다.</p>
+<h2>유인이 하는 일 — Map 1</h2>
+<p>문서에는 "무리가 꺾인다" 라고 적혀 있었는데, 재 보니 <strong>꺾는 게 아니라 세우는 것</strong>이었다.</p>
+<p>Map 1 지형을 그대로 만들고 고양이 300마리를 흘려 보냈다. (<code>LureHoldTests</code>)</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>탈출</th>
+<th>남음</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>유인 없음</td>
+<td><strong>300</strong></td>
+<td>0</td>
+</tr>
+<tr>
+<td>합류점에 츄르 하나</td>
+<td><strong>0</strong></td>
+<td>300</td>
+</tr>
+</tbody>
+</table>
+<p>붙잡힌 무리의 평균 속력은 <strong>0.46</strong> — 기본 속도 3 의 15% 다.
+"얼려 놓는다" 가 비유가 아니라 실제 동작이다. 25장의 설명을 이 결과에 맞춰 고쳤다.</p>
+<p><strong>같은 측정이 죽은 길도 찾아냈다.</strong> Map 1 을 Spawn 하나에서 갈라지는 Y 로 그렸더니
+갈림길 통과 후 <strong>위 갈래 0마리 / 아래 갈래 300마리</strong> 였다.
+Flow Field 는 셀마다 제일 싼 길 하나를 고르므로 갈림길 뒤에서 무리가 저절로 나뉘지 않는다.
+Spawn 을 둘로 바꾸니 150 / 150 이 됐다.</p>
+<h2>성능 — 31장 / 53장 Risk 1</h2>
+<p>GDD 가 1순위 기술 위험으로 꼽고 Jobs + Burst 를 대응책으로 적어 둔 항목이다.
+<strong>실측 결과 아직 필요 없다.</strong></p>
+<table>
+<thead>
+<tr>
+<th>고양이 수</th>
+<th>빈 맵</th>
+<th>건물 25%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1,000</td>
+<td>0.18 ms</td>
+<td>0.29 ms</td>
+</tr>
+<tr>
+<td>5,000</td>
+<td>0.89 ms</td>
+<td>1.48 ms</td>
+</tr>
+<tr>
+<td><strong>10,000</strong></td>
+<td><strong>1.78 ms</strong></td>
+<td><strong>2.99 ms</strong></td>
+</tr>
+</tbody>
+</table>
+<p>60 FPS 예산은 16.6 ms 다. 10,000마리에 2.99 ms 면 <strong>18%</strong> 다.
+단일 스레드, Burst 없음, 4코어 기준.</p>
+<p><strong>렌더링이 빠진 시뮬레이션 루프만의 비용이라 실제 게임 FPS 가 아니다.</strong></p>
+<h3>어디에 시간이 가나</h3>
+<p>Movement 85% / Grid 0.15 ms. 그래서 최적화는 이동 단계에만 했다.</p>
+<p>인접 8칸 장애물 검사를 매번 하지 않고 <strong>지형이 바뀔 때 한 번 구워 두고 <code>bool</code> 하나로 거르게</strong> 바꾸니
+10,000마리가 2.41 → 1.78 ms 가 됐다. (<code>FlowField._nearObstacle</code>)</p>
+<p>그 최적화가 Wave 중 지형 변화(Map 9)에서 낡지 않는지는 테스트로 잡아 둔다 —
+<code>ObstacleAvoidance_FollowsTerrainChangesWithoutRecalculate</code>.</p>
+<h3>하지 않은 것</h3>
+<p><strong>Jobs / Burst 는 아직 안 한다.</strong> 목표를 이미 여유 있게 넘겼고,
+이동 단계를 병렬화하려면 위치 배열을 이중 버퍼로 나눠야 한다.
+존재하지 않는 문제에 실제 복잡도를 사는 셈이다.</p>
+<h2>아직 측정되지 않은 것</h2>
+<p><strong>문서는 v0.8, 코드는 대부분 v0.4 기준이다.</strong> 설계 가설 여럿이 아직 한 번도 돌아가지 않았다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>규모</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>~~준비 단계 / 실행 단계 분리~~</td>
+<td>—</td>
+<td><strong>완료.</strong> <code>RunPhase</code> 로 강제한다</td>
+</tr>
+<tr>
+<td>광란 고양이</td>
+<td>작음</td>
+<td>대장 고양이 코드의 거울 (14장)</td>
+</tr>
+<tr>
+<td>수의사 · 집사</td>
+<td>중간</td>
+<td>신규 장비 카테고리 (65장)</td>
+</tr>
+<tr>
+<td>돌연변이 + 전염</td>
+<td>중간</td>
+<td>상태 전이 신규 (14장)</td>
+</tr>
+<tr>
+<td>~~재화 4종 + 해금 2단계~~</td>
+<td>—</td>
+<td><strong>완료.</strong> <code>SkillTree.TryUnlock</code> (6장)</td>
+</tr>
+<tr>
+<td>~~클리어 조건 판정~~</td>
+<td>—</td>
+<td><strong>완료.</strong> <code>ClearObjectives</code> (67장)</td>
+</tr>
+<tr>
+<td>로켓 연출</td>
+<td>작음</td>
+<td>RunResultView (64장)</td>
+</tr>
+<tr>
+<td>~~스테이지 압력 적용~~</td>
+<td>—</td>
+<td><strong>완료.</strong> <code>StartStage</code> 로 물렸다 (73장)</td>
+</tr>
+<tr>
+<td>Master Cat 스프라이트</td>
+<td>—</td>
+<td>PixelLab · 사람 손 (26장, 70장)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Map 6(침수 지역)이 준비 단계 설계의 시험대다.</strong> 경로가 Wave 중에 바뀌니
+사전 배치만으로 못 넘기게 만든 판인데, 이게 실제로 성립하는지는 돌려봐야 안다.
+지금은 종이 위의 주장일 뿐이다.</p>
+<h2>준비 단계 / 실행 단계 — 구현됨</h2>
+<p>69장이 문서로만 있던 것을 <code>RunPhase</code> 상태 기계로 옮겼다.
+문서로만 두면 "Wave 도중에 구조원을 놓을 수 있나" 가 구현자마다 달라진다.</p>
+<pre><code>Idle → Prep → Live → WaveCleared → Prep → … → Finished
+        ↑배치·회수   ↑투척·조준
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>규칙</th>
+<th>어떻게 강제되나</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>설치는 준비 단계에만</td>
+<td><code>PlacementResult.WrongPhase</code></td>
+</tr>
+<tr>
+<td>투척·조준은 실행 단계에만</td>
+<td>같음. 준비 단계엔 던질 대상이 없다</td>
+</tr>
+<tr>
+<td>회수는 준비 단계에만, 전액 환불</td>
+<td><code>EquipmentSystem.TryRefund</code></td>
+</tr>
+<tr>
+<td>Wave 종료 판정</td>
+<td><code>Tick</code> 이 스스로 감지해 단계를 넘긴다</td>
+</tr>
+</tbody>
+</table>
+<p><strong>단계가 <code>Tick</code> 자체를 막지는 않는다.</strong> 한 번 그렇게 짰다가 되돌렸다 —
+준비 단계에는 애초에 고양이가 없어서 돌려도 아무 일이 없고,
+막아 두면 직접 Spawn 한 고양이를 굴려 보는 샌드박스와 테스트가 통째로 불가능해진다.
+단계는 <strong>무엇을 놓을 수 있는가</strong>와 <strong>Wave 가 도는가</strong>만 통제한다.</p>
+<p>환불은 <strong>할인가로</strong> 돌려준다. 정가로 돌려주면 할인 업그레이드가 무한 증식이 된다.</p>
+<h2>검증 범위</h2>
+<p>Unity Editor 없이 돌아가는 것과 아닌 것을 갈라 둔다.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>어떻게 검증되나</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TooManyCats.Core</code></td>
+<td>테스트 328개 + netstandard2.1 컴파일. <strong>CI 에서 매 push</strong></td>
+</tr>
+<tr>
+<td><code>TooManyCats.Runtime</code></td>
+<td>레퍼런스 어셈블리 대고 컴파일만. API 오타는 잡히고 동작은 안 잡힌다</td>
+</tr>
+<tr>
+<td>셰이더 · 렌더링</td>
+<td><strong>검증 안 됨.</strong> Editor 몫이다</td>
+</tr>
+<tr>
+<td>아트 · 사운드</td>
+<td>없음</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</section>
+<section class="chapter" id="s77">
+<h2>77. 유인과 정지</h2>
+<p><strong>유인원은 두 부류다. 하는 일이 정반대다.</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>음식</strong> — 츄르 · 참치 · 캣닢 · 음식점</td>
+<td>고양이가 <strong>멈춰서 먹는다</strong></td>
+<td>자리를 만들고 붙든다</td>
+</tr>
+<tr>
+<td><strong>장난감</strong> — 낚시대 · 레이저</td>
+<td>고양이가 <strong>쫓아간다</strong></td>
+<td>붙들지 못하는 대신 끌고 다닌다</td>
+</tr>
+</tbody>
+</table>
+<p>전에는 둘을 한 덩어리로 "Attraction" 이라고 불렀고, 그래서 츄르 하나가
+무리를 영원히 붙잡아 두는 무적기였다. 실제로 재 보니 <strong>탈출 300 → 0</strong> 이었다. (76장)</p>
+<h2>장난감은 움직여야 한다</h2>
+<p>가만히 둔 장난감은 고양이가 쳐다보지 않는다. <code>AttractionKinds.ToyPatience</code> (1.5초)를 넘겨
+멈춰 있으면 유인이 풀린다. 측정: 흔드는 동안 <strong>140마리</strong>가 따라오다가, 손을 떼자 <strong>0마리</strong>.</p>
+<p>이게 69장의 준비 단계 / 실행 중 개입과 그대로 겹친다.</p>
+<pre><code>음식   →  준비 단계에 미리 깔아 둔다.  설치형, 건물 가장자리 (75장)
+장난감 →  판이 도는 동안 손으로 끈다.  조준형, 길 위
+</code></pre>
+<p>레이저가 이미 <code>Beam</code> 카테고리로 드래그해 움직이는 장비였다 — 구조가 먼저 있었고
+이름만 유인에 뭉뚱그려져 있었다.</p>
+<h2>붙드는 거리는 절대값이다</h2>
+<p><code>HoldRadius</code> 를 유인 반경의 비율로 잡았다가 고쳤다.
+반경 25짜리 유인원 앞에서 고양이가 <strong>7칸 떨어진 채로 얼어붙었다.</strong>
+붙드는 건 음식 바로 앞(2.5칸)이다.</p>
+<p>뒤에 밀린 고양이는 <code>Held</code> 가 아니지만 앞이 막혀서 어차피 못 움직인다 —
+<strong>멈춘 무리는 Separation 이 만든다.</strong> 붙드는 판정은 맨 앞줄만 하면 된다.</p>
+<h2>세 동사</h2>
+<pre><code>끌고 온다  (장난감)  →  세운다  (음식)  →  수확한다  (구조 장비)
+</code></pre>
+<p>66장이 "유인으로 모은다 → 모인 곳을 수확한다" 였는데, 가운데가 갈라져 셋이 됐다.</p>
+<h2>그런데 Map 1 에서는 장난감이 쓸모없다</h2>
+<p>이 셋을 다 쓰면 더 낫겠거니 하고 쟀다가 반대 결과가 나왔다.</p>
+<table>
+<thead>
+<tr>
+<th>Map 1, 고양이 240마리, 구조원 하나</th>
+<th>구조한 수</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>음식만</td>
+<td><strong>115</strong></td>
+</tr>
+<tr>
+<td>장난감만</td>
+<td>0</td>
+</tr>
+<tr>
+<td>둘 다</td>
+<td><strong>58</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>장난감을 더하면 오히려 나빠진다.</strong> Map 1 은 어차피 모든 고양이가 합류점을 지난다 —
+데려올 것이 없는 판에서 장난감은 무리를 제 속도(초당 1.2칸)로 끌고 다니며 흐름을 늦추고,
+음식 쪽으로 갈 고양이를 가로챌 뿐이다.</p>
+<p>그래서 <strong>Map 1 의 신규 해금은 구조원과 츄르뿐이다.</strong> 장난감은 뒤에 준다 —
+흐름이 내 배치를 비껴가는 판이 나와야 쓸 데가 생긴다.</p>
+<p>세 동사를 다 준다고 세 동사를 다 쓰는 판이 되는 게 아니다.
+<strong>도구는 그 도구가 풀 문제가 있는 판에서 준다.</strong> (25장, 68장)</p>
+<h2>코드</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Core/Attraction/AttractionKinds.cs</code></td>
+<td>어느 타입이 붙드는가 / 움직여야 하는가</td>
+</tr>
+<tr>
+<td><code>AttractionSource.HoldRadius</code></td>
+<td>붙드는 거리. 음식만 0 보다 크다</td>
+</tr>
+<tr>
+<td><code>AttractionSource.StillFor</code></td>
+<td>장난감이 가만히 있은 시간</td>
+</tr>
+<tr>
+<td><code>CatState.Held</code></td>
+<td>음식에 붙들려 멈춘 상태</td>
+</tr>
+<tr>
+<td><code>CatStates.IsGathered</code></td>
+<td>"모였다" 를 세는 곳은 Gathering 과 Held 둘 다 세야 한다</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</section>
+<section class="chapter" id="s78">
+<h2>78. 사거리와 배치 프리뷰</h2>
+<p><strong>모든 배치형은 범위를 갖고, 그 범위는 스킬트리로 늘어난다.</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>무엇의 범위</th>
+<th>조절</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>구조원 · 구조망 · 드론 · 차량</td>
+<td>구조 사거리</td>
+<td>Rescue 브랜치</td>
+</tr>
+<tr>
+<td>츄르 · 참치 · 캣닢 (음식)</td>
+<td><strong>부르는 반경</strong> / <strong>세우는 반경</strong> — 별개 둘</td>
+<td>Attraction 브랜치</td>
+</tr>
+<tr>
+<td>낚시대 · 레이저 (장난감)</td>
+<td>부르는 반경</td>
+<td>Attraction 브랜치</td>
+</tr>
+<tr>
+<td>사람 유닛 (65장)</td>
+<td>그 사람이 든 장비의 사거리</td>
+<td>해당 브랜치</td>
+</tr>
+</tbody>
+</table>
+<h2>사거리 업그레이드의 문장</h2>
+<p>"+30%" 는 플레이어에게 아무 말도 하지 않는다.
+이 업그레이드가 실제로 바꾸는 건 <strong>어느 등급의 길까지 덮느냐</strong>다. (75장)</p>
+<table>
+<thead>
+<tr>
+<th>기본 사거리 3</th>
+<th></th>
+<th>사거리 +70%</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>골목 3칸</td>
+<td>한쪽으로 덮음</td>
+<td>골목</td>
+<td>한쪽으로 덮음</td>
+</tr>
+<tr>
+<td>도로 6칸</td>
+<td>양쪽 필요</td>
+<td>도로</td>
+<td><strong>한쪽으로 덮음</strong></td>
+</tr>
+<tr>
+<td>대로 10칸</td>
+<td><strong>가운데 사각지대</strong></td>
+<td>대로</td>
+<td><strong>양쪽으로 덮음</strong></td>
+</tr>
+</tbody>
+</table>
+<p>배치 화면과 스킬트리 화면이 <strong>같은 문장</strong>을 쓴다 — "이제 대로를 덮는다".
+<code>EquipmentSystem.CoverageOf(index, roadWidth)</code> 가 이 판정이다.</p>
+<h2>프리뷰는 원을 둘 그린다</h2>
+<p>음식은 <strong>부르는 범위</strong>와 <strong>세우는 범위</strong>가 다르다. (77장)
+하나만 그리면 "왜 유인 반경 안에 있는데 안 멈추지" 가 된다.</p>
+<pre><code>바깥 원  부르는 반경   8칸   — 여기 들어오면 이쪽으로 온다
+안쪽 원  세우는 반경  2.5칸  — 여기 닿으면 멈춘다
+</code></pre>
+<p>둘은 <strong>따로 업그레이드된다.</strong> 부르는 반경은 "얼마나 멀리서 끌어오나",
+세우는 반경은 "한 번에 몇 마리를 세우나" 라서 원하는 판이 다르다.
+Spawn 이 멀리 흩어진 판은 앞쪽을, 무리가 한 곳에 쏟아지는 판은 뒤쪽을 키운다.</p>
+<h2>프리뷰가 거짓말하면 안 된다</h2>
+<p><code>EffectiveRangeOf</code> 는 정의에 적힌 값이 아니라 <strong>업그레이드(20장)와 스킬트리(21장)를 먹인 값</strong>을 돌려준다.
+프리뷰 원이 실제 사거리와 다르면 배치가 판단이 아니라 도박이 된다. (72장)</p>
+<h2>코드</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EquipmentSystem.EffectiveRangeOf</code></td>
+<td>지금 놓으면 실제로 미치는 반경</td>
+</tr>
+<tr>
+<td><code>EquipmentSystem.EffectiveHoldRadiusOf</code></td>
+<td>세우는 반경. 붙들지 않는 장비면 0</td>
+</tr>
+<tr>
+<td><code>EquipmentSystem.CoverageOf</code></td>
+<td>그 사거리로 어느 등급 길을 덮는가</td>
+</tr>
+<tr>
+<td><code>UpgradeStat.HoldRange</code></td>
+<td>세우는 반경 전용 업그레이드</td>
+</tr>
+<tr>
+<td><code>AttractionSource.BaseHoldRadius</code></td>
+<td>기준값. 20장의 기준값 패턴과 같다</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</section>
+<section class="chapter" id="s79">
+<h2>79. 타이틀 로고</h2>
+<p><strong>확정.</strong> 파일은 <code>docs/art/logo-primary.png</code>.</p>
+<div class="mockup">  <figure>
+    <div class="logo-swatches">
+      <div><i style="background:#FFFFFF"></i><span>윗줄 본체<code>#FFFFFF</code></span></div>
+      <div><i style="background:#C9C9CF"></i><span>윗줄 그림자<code>#C9C9CF</code></span></div>
+      <div><i style="background:#FFC01F"></i><span>아랫줄 위 · 임팩트<code>#FFC01F</code></span></div>
+      <div><i style="background:#F26B1E"></i><span>아랫줄 아래<code>#F26B1E</code></span></div>
+      <div><i style="background:#F4657E"></i><span>발바닥<code>#F4657E</code></span></div>
+      <div><i style="background:#F98CA0"></i><span>발바닥 밝은 면<code>#F98CA0</code></span></div>
+      <div><i style="background:#000000"></i><span>외곽선<code>#000000</code></span></div>
+    </div>
+
+    <div class="logo-rules">
+      <p><b>마크</b>분홍 발바닥 느낌표. 글자를 다 지워도 남는 것</p>
+      <p><b>최소 크기</b>아랫줄 글자 높이 24px. 그 밑은 발바닥만</p>
+      <p><b>여백</b>사방으로 <code>!</code> 폭. 임팩트 선은 여백에 안 넣는다</p>
+      <p class="no"><b>금지</b>회전 · 기울임 · 색 교체</p>
+      <p class="no"><b>금지</b>흰 스티커 테두리 제거 — 배경에서 뜨는 유일한 장치</p>
+      <p class="todo"><b>고칠 것</b><code>A</code> 안쪽 발바닥. 마크가 둘이면 어느 쪽도 마크가 아니다</p>
+    </div>
+
+    <figcaption>
+      색은 렌더된 이미지에서 눈으로 뽑은 근사값이다. 원본 파일에서 확정한다.
+      금 · 주황 계열은 재화(6장), 분홍은 고양이 쪽 색이다 — UI(72장)에서 둘을 섞지 않는다.
+    </figcaption>
+  </figure></div>
+
+<h2>무엇이 이 로고의 마크인가</h2>
+<pre><code>느낌표 = 분홍 발바닥
+</code></pre>
+<p>글자를 다 지워도 남는 건 이거 하나다. 아이콘·파비콘·굿즈로 잘라 쓸 때 이걸 쓴다.</p>
+<p><strong>발바닥은 로고에 하나만 둔다.</strong> 지금 <code>A</code> 안쪽에도 발바닥이 하나 더 있는데,
+같은 모티프가 둘이면 어느 쪽도 마크가 되지 못하고 작게 줄였을 때 <code>A</code> 안쪽은
+검은 얼룩으로 뭉갠다. <strong>다음 수정 때 <code>A</code> 안쪽을 뺀다.</strong></p>
+<h2>구조</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>윗줄 <code>TOO MANY</code></td>
+<td>흰색, 작게. 수식어다</td>
+</tr>
+<tr>
+<td>아랫줄 <code>CATS!</code></td>
+<td>금→주황 그라디언트, 크게. <strong>이게 제목이다</strong></td>
+</tr>
+<tr>
+<td>외곽</td>
+<td>검은 두꺼운 선 + 흰 스티커 테두리</td>
+</tr>
+<tr>
+<td>장식</td>
+<td>좌우 노란 임팩트 선</td>
+</tr>
+</tbody>
+</table>
+<p>2단으로 나눈 덕에 작게 줄여도 <code>CATS</code> 가 먼저 읽힌다.
+스티커 테두리 때문에 밝은 배경에서도 어두운 배경에서도 뜬다 — 타이틀 화면 배경(키 아트)이
+바뀌어도 로고를 다시 만들 필요가 없다는 뜻이다.</p>
+<h2>색</h2>
+<p>원본에서 확정할 값이고, 아래는 렌더된 이미지에서 눈으로 뽑은 <strong>근사값</strong>이다.</p>
+<table>
+<thead>
+<tr>
+<th>역할</th>
+<th>근사값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>윗줄 본체</td>
+<td><code>#FFFFFF</code> / 그림자 <code>#C9C9CF</code></td>
+</tr>
+<tr>
+<td>아랫줄 위</td>
+<td><code>#FFC01F</code></td>
+</tr>
+<tr>
+<td>아랫줄 아래</td>
+<td><code>#F26B1E</code></td>
+</tr>
+<tr>
+<td>외곽선</td>
+<td><code>#000000</code></td>
+</tr>
+<tr>
+<td>스티커 테두리</td>
+<td><code>#FFFFFF</code></td>
+</tr>
+<tr>
+<td>발바닥</td>
+<td><code>#F4657E</code> / 밝은 면 <code>#F98CA0</code></td>
+</tr>
+<tr>
+<td>임팩트 선</td>
+<td><code>#FFC01F</code></td>
+</tr>
+</tbody>
+</table>
+<p>금·주황은 <strong>구조 재화(Rescue Points)와 Golden Paw 쪽 색</strong>이고, 분홍은 고양이 쪽 색이다.
+UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
+<h2>쓰는 규칙</h2>
+<ul>
+<li><strong>최소 크기는 아랫줄 글자 높이 24px.</strong> 그 밑으로는 발바닥 느낌표만 쓴다.</li>
+<li>여백은 사방으로 <code>!</code> 폭만큼 비운다. 임팩트 선은 여백에 포함하지 않는다.</li>
+<li>회전·기울임·색 교체 금지. 스티커 테두리를 지우는 것도 금지 — 배경 위에서 뜨는 유일한 장치다.</li>
+</ul>
+<h2>아직 아닌 것</h2>
+<p><strong>한글 락업이 없다.</strong> 기획서도 스토리(71장)도 한국어가 기본인데 로고만 영문이면
+오프닝에서 톤이 끊긴다. 「고양이가 너무 많아!」 락업이 필요하고,
+이건 아직 미정인 <strong>한글 픽셀 폰트</strong> 결정과 같이 가야 한다 (76장).</p>
+<p><strong>픽셀 그리드가 하나가 아니다.</strong> 윗줄과 아랫줄의 픽셀 크기가 다르고 바깥 테두리는
+계단이 아니라 매끄러운 곡선이다. 26장의 진짜 픽셀 아트 옆에 놓으면 차이가 보인다.
+<strong>게임 화면 안에 로고가 들어가는 자리는 없으므로</strong>(타이틀 화면 전용) 지금은 미룬다.
+스토어 페이지와 게임 화면을 나란히 놓는 순간 다시 볼 것.</p>
+<hr />
+</section>
+<section class="chapter" id="end-of-document">
+<h2>End of Document</h2>
+<p><strong>Too Many Cats! — Game Design Document v0.9.5 FULL</strong></p>
+</section>
+<section class="chapter" id="변경-이력">
+<h2>변경 이력</h2>
+<h2>v0.9.5 — 타이틀 로고 확정</h2>
+<ul>
+<li><strong>79장 신설</strong> — 로고를 확정하고 마크·구조·색·사용 규칙을 적었다.
+  마크는 <strong>분홍 발바닥 느낌표</strong> 하나다.</li>
+<li><code>A</code> 안쪽 발바닥은 다음 수정 때 뺀다. 같은 모티프가 둘이면 어느 쪽도 마크가 못 된다.</li>
+<li><strong>한글 락업은 아직 없다.</strong> 한글 픽셀 폰트 결정에 묶여 있다.</li>
+<li>픽셀 그리드 불일치는 알고 미룬다 — 타이틀 전용 에셋이라 게임 화면 옆에 서지 않는다.</li>
+</ul>
+<h2>v0.9.4 — 클리어 조건과 해금 2단계</h2>
+<ul>
+<li><strong><code>ClearObjectives</code> (67장)</strong> — 조건 4종을 판정하고 재화를 배분한다.
+  콤보→유인 / 특수 고양이→인력 / 제한 시간→장비 / 완전 구조→Golden Paw.</li>
+<li><strong>해금 2단계 (6장)</strong> — 해금 재화로 노드를 열고 기본 포인트로 키운다.
+  안 연 노드는 돈이 아무리 많아도 <code>NotUnlocked</code> 다.</li>
+<li><strong>측정: 콤보만 채운 판도 헛수고가 아니다.</strong> 유인 재화 2 + 기본 포인트 20,
+  그 판으로 Rescue 브랜치 레벨업이 그대로 된다. 다만 Rescue 노드를 <b>열지는</b> 못한다.</li>
+<li><strong><code>MetaProgression.BeginStage</code></strong> — 압력과 클리어 조건을 같은 난이도에서 건다.
+  따로 걸면 "압력은 어려움인데 조건은 쉬움" 이 표현 가능해진다.</li>
+<li><strong>Unity 에서 맵이 난이도를 덮어쓰고 있었다.</strong> <code>MapDataSO.Apply</code> 가 놓침 허용량을
+  기준값으로 되돌린다. 맵을 먼저 깔고 난이도를 나중에 거는 순서로 바꿨다.</li>
+<li>특수 고양이가 없는 판은 "전원 처리" 를 달성으로 치지 않는다. <code>0 == 0</code> 은 공짜다.</li>
+</ul>
+<h2>v0.9.3 — 스테이지 압력을 Run 에 물렸다</h2>
+<ul>
+<li><strong><code>CatSimulation.StartStage</code> (73장)</strong> — 난이도 하나로 예산·놓침 허용량·Wave 배율을
+  한꺼번에 건다. 입구가 하나여야 화면마다 다르게 거는 일이 안 생긴다.</li>
+<li><strong>측정: 같은 배치, 쉬움 통과 / 보통 통과 / 어려움 실패</strong> (놓친 수 0 → 2 → 55).
+  표만 있고 안 물려 있으면 세 판이 똑같은 판이다.</li>
+<li><strong>유인원 정원이 압력의 전제였다.</strong> 츄르가 무한히 붙들면 240마리를 보내도
+  한 마리도 안 새서 난이도가 결과를 못 바꾼다.</li>
+<li><strong>구조원을 건물 반대 면에 놓으면 구조가 0 이다</strong> — 5칸 건물 너머 6.09,
+  사거리 6 에서 0.09 모자랐다. 배치 면이 곧 사거리다.</li>
+<li><code>StartRun</code> 은 압력을 지운다. 샌드박스와 테스트가 조용히 쉬워지면 안 된다.</li>
+</ul>
+<h2>v0.9.2 — 준비 단계 / 실행 단계 구현</h2>
+<ul>
+<li><strong><code>RunPhase</code> 상태 기계 (69장)</strong> — Idle / Prep / Live / WaveCleared / Finished.
+  설치는 준비 단계에만, 투척·조준은 실행 단계에만. <code>PlacementResult.WrongPhase</code> 로 막는다.</li>
+<li><strong>회수와 전액 환불 (69장)</strong> — <code>EquipmentSystem.TryRefund</code>. 준비 단계에서만 되고
+  <strong>할인가로</strong> 돌려준다 — 정가로 주면 할인 업그레이드가 무한 증식이 된다.</li>
+<li><strong>Wave 종료 판정을 Core 로.</strong> <code>Tick</code> 이 스스로 감지해 단계를 넘긴다.
+  호출하는 쪽마다 다르게 판정하던 것을 없앴다.</li>
+<li>단계가 <code>Tick</code> 을 막지는 않는다. 막았더니 샌드박스와 테스트가 통째로 불가능해졌다.</li>
+</ul>
+<h2>v0.9.1 — 사거리와 배치 프리뷰</h2>
+<ul>
+<li><strong>사거리 조회를 Core 에 (78장)</strong> — <code>EffectiveRangeOf</code> 는 업그레이드와 스킬트리를
+  먹인 값을 돌려준다. 프리뷰 원이 실제 사거리와 다르면 배치가 도박이 된다.</li>
+<li><strong>부르는 반경과 세우는 반경을 갈랐다.</strong> 프리뷰는 원을 둘 그린다.
+  따로 업그레이드된다 — <code>UpgradeStat.HoldRange</code> 신설.</li>
+<li><strong>사거리 업그레이드를 길 폭 등급으로 읽는다 (75장).</strong> "+30%" 가 아니라
+  "이제 대로를 덮는다" 로 말한다. <code>CoverageOf</code> 가 그 판정이다.</li>
+</ul>
+<h2>v0.9 — 유인과 정지를 나눈다</h2>
+<ul>
+<li><strong>유인원을 두 부류로 (77장)</strong> — 음식(츄르·참치·캣닢)은 <strong>세우고</strong>,
+  장난감(낚시대·레이저)은 <strong>쫓게 한다</strong>. 전에는 한 덩어리라 츄르 하나가 무적기였다.</li>
+<li><strong>장난감은 움직여야 한다.</strong> 1.5초 넘게 멈춰 있으면 유인이 풀린다.
+  측정: 흔드는 동안 140마리 → 손 떼면 0마리.</li>
+<li>이 구분이 69장의 준비 단계(음식 설치) / 실행 중 개입(장난감 조준)과 그대로 겹친다.</li>
+<li><strong>Map 1 에서는 장난감이 오히려 손해다</strong> (음식만 115 / 둘 다 58).
+  도구는 그 도구가 풀 문제가 있는 판에서 준다.</li>
+<li>Map 5 아래 벨트 방향을 뒤집었다. Exit 반대로 밀면 그 절반이 죽은 판이 된다.</li>
+</ul>
+<h2>v0.8.8 — Spawn 과 Exit 은 같은 변에 두지 않는다</h2>
+<ul>
+<li><strong>규칙 추가 (74장)</strong> — Map 5 는 우0 Spawn 과 우2 Exit 이, Map 8 은 우1 과 우2 가
+  같은 동쪽 벽에 붙어 있었다. 개활형이라 사실상 같은 공간이고, 나오자마자 나가는 길이 보인다.</li>
+<li>Map 5 는 Spawn 둘을 서쪽으로, Map 8 은 동쪽 Spawn 을 빼고 서쪽을 둘로 늘렸다.</li>
+<li><strong>흐름 길이 예외가 통째로 사라졌다.</strong> Map 8~10 이 짧았던 이유가 전부 같은 벽이었다.</li>
+</ul>
+<h2>v0.8.7 — 유인은 꺾는 게 아니라 세운다</h2>
+<ul>
+<li><strong>Map 1 의 교육 목표를 측정에 맞춰 고쳤다 (25장)</strong> — "무리가 꺾인다" 가 아니라
+  "무리를 세워 둔다". 재 보니 탈출 300 → 0, 붙잡힌 무리 속력 3 → 0.46 이다.</li>
+<li><strong>Map 1 을 Spawn 2 의 합류 Y 로 (25장, 74장)</strong> — 갈라지는 Y 는 위 갈래에 아무도
+  가지 않았다. Flow Field 는 셀마다 싼 길 하나를 고르므로 저절로 나뉘지 않는다.
+  둘로 들어와 한 곳에서 만나는 형태라야 두 갈래가 다 산다.</li>
+<li>측정을 76장에 남겼다.</li>
+</ul>
+<h2>v0.8.6 — Map 1 에 갈림길</h2>
+<ul>
+<li><strong>Map 1 을 Y자로 (25장)</strong> — 외길이면 "유인 하나로 무리가 꺾인다" 를 가르칠 수 없다.
+  꺾일 데가 없으면 유인은 경로를 안 바꾸고 잠깐 멈추기만 한다.</li>
+<li>두 갈래의 <strong>길이를 다르게</strong> 뒀다. 놔두면 지름길로 빨리 빠지고, 우회로로 꺾으면 시간이 생긴다.
+  틀린 선택은 없다 — 두 길 다 같은 Exit 이라 갈림길 자체로는 실패하지 않는다.</li>
+</ul>
+<h2>v0.8.5 — 지형 구성과 길 폭</h2>
+<ul>
+<li><strong>지형 구성 두 가지 명문화 (75장)</strong> — 골목형(장애물이 채우고 길이 그 사이)과
+  개활형(넓은 구역에 섬처럼 박힌 장애물). 둘 다 유효하고 섞어도 된다.</li>
+<li><strong>섬은 사방이 가장자리라 사거리가 360°로 뻗는다.</strong> 개활형에서 좋은 섬을 차지하는 것이
+  곧 그 구역을 지배하는 것이다.</li>
+<li><strong>길 폭을 숫자로 (75장)</strong> — 골목 3칸 / 도로 6칸 / 대로 10칸+.
+  기본 사거리 3 기준으로 한쪽·양쪽·사각지대가 갈린다. <code>RoadWidth.CoverageOf</code> 로 잰다.</li>
+<li>개략도의 길을 &lt;중심선 + 폭&gt;으로 바꿨다. 사각형일 이유가 없다 — 대각선도 곡선도 된다.</li>
+</ul>
+<h2>v0.8.4 — Exit 은 하나</h2>
+<ul>
+<li><strong>모든 맵의 Exit 을 하나로 고정 (74장)</strong> — 들어오는 길은 몇 개든 상관없고, 나가는 길만 묶는다.
+  Exit 이 둘이면 무리가 갈라져서 23장의 대량 구조 쾌감이 사라진다.</li>
+<li>Map 5 · 8 · 9 · 10 의 Exit 을 줄였다. 최종 판은 <strong>여섯 곳에서 한 곳으로</strong> 쏟아진다.</li>
+<li>난이도는 Exit 수가 아니라 Spawn 수 · 지형 · 스테이지 압력(73장)으로만 만든다.</li>
+</ul>
+<h2>v0.8.3 — 그림을 그림답게</h2>
+<ul>
+<li><strong>ASCII 그림을 종류별로 갈랐다.</strong> 구조가 그래프인 것은 mermaid 로(4장 게임 루프,
+  8장 상태 기계, 72장 화면 흐름·결과 순서), 화면 배치인 것은 목업이 이미 있으니 지웠다.
+  화살표 한두 줄짜리는 그대로 뒀다 — 그건 그림이 아니라 문장이다.</li>
+<li><strong>맵 개략도 10장 복원 (25장)</strong> — 길만 정의하고 나머지를 전부 건물로 둔다.
+  Spawn/Exit 은 74장 표에서 계산하고, 길 위에 있는지 그림 그리는 쪽에서 검증한다.</li>
+<li><strong>목업의 고양이가 건물 위를 걷고 있었다.</strong> 75장을 쓰고도 그림이 규칙과 어긋나 있었다.
+  길을 파내는 방식으로 뒤집고, 설치형 장비는 길 밖에서만 그린다.</li>
+</ul>
+<h2>v0.8.2 — 문서 통합</h2>
+<ul>
+<li><strong>측정된 것 (76장)</strong> — 흩어져 있던 실측치를 기획서 안으로 들였다.
+  성능 수치, 켜고 꺼서 잡아낸 무효 기능 둘, 아직 한 번도 안 돌아간 항목 목록.</li>
+<li><strong>기획서를 한 화면으로 합쳤다.</strong> <code>docs/GDD.md</code> 가 유일한 원본이고
+  <code>tools/build-gdd-html.py</code> 가 목업을 끼워 넣어 <code>docs/gdd.html</code> 을 만든다.
+  손으로 복사하지 않는 이유는 하나다 — 복사하면 즉시 갈라진다.</li>
+<li>따로 놀던 <code>design-brief.html</code> 과 <code>ui-mockup.html</code> 을 없앴다.
+  목업 그림은 <code>docs/parts/mockups.html</code> 로 옮겨 GDD 장에 붙는다.</li>
+</ul>
+<h2>v0.8.1 — 맵 출입 방향과 배치 지형</h2>
+<ul>
+<li><strong>맵 출입 방향 확정 (74장)</strong> — 맵 10개의 Spawn/Exit 을 변 기준으로 전부 적었다.
+  Spawn 과 Exit 은 마주 보지 않고(Map 1 제외), Exit 개수는 Spawn 이하다 — 무리가 모여야 한다.</li>
+<li><strong>길과 건물 규칙 (75장)</strong> — 고양이는 길로만 다니고, 설치형은 건물 가장자리에만 놓는다.
+  <strong>기존 규칙이 뒤집혔다.</strong> 이전에는 건물 위 배치를 거부했다.</li>
+<li>어디에 놓이는지는 <code>DeviceMovement</code> 가 정한다 — Static 은 건물, Route(차량)는 길, Seek(드론)은 아무 데나.
+  차량이 길 위에 있어야 14장의 겁쟁이 고양이가 성립한다.</li>
+<li>Build Zone 은 지형 위에 얹는 추가 제한으로 역할이 바뀌었다 (18장).</li>
+</ul>
+<h2>v0.8 — 맵과 스테이지</h2>
+<ul>
+<li><strong>레벨 → 맵으로 용어 변경 (25장)</strong> — 코드는 이미 <code>UnlockedMaps</code> 였고 문서만 "레벨" 이었다.</li>
+<li><strong>스테이지 난이도 추가 (73장)</strong> — 맵 하나에 쉬움 / 보통 / 어려움 세 판.
+  <strong>지형은 셋 다 같다</strong> — 쉬움에서 배운 지형 지식이 그대로 쓰여야 반복이 아니라 숙련이 된다.</li>
+<li>난이도 곡선은 톱니다. 새 맵의 쉬움은 이전 맵의 어려움보다 내려간다 — 배우는 판이기 때문이다.</li>
+<li>다음 맵은 <strong>보통</strong> 클리어로 열린다. 어려움은 진행이 아니라 재화를 위한 선택이다.</li>
+<li>맵 10개 × 3 = 30 판. 지형 아트는 그대로고 늘어나는 건 튜닝 데이터뿐이다.</li>
+</ul>
+<h2>v0.7.3 — 게임 화면 UI</h2>
+<ul>
+<li><strong>화면 UI 추가 (72장)</strong> — 42장에 없던 화면 목록·흐름·배치·정보 위계.</li>
+<li>최대 제약은 정보량이 아니라 <strong>면적</strong>이다 — 화면 중앙 70% 는 무리 몫이다(24장, 66장).</li>
+<li>놓친 고양이를 1등급 정보로 올렸다. 5장의 유일한 실패 조건인데 42장에서는 네 번째였다.</li>
+<li>재화 4종은 HUD 에서 뺐다. Run 중에 쓸 수 없는 숫자다(6장).</li>
+</ul>
+<h2>v0.7.2 — 오프닝과 스토리</h2>
+<ul>
+<li><strong>스토리 추가 (71장)</strong> — 오프닝 / 수의사 합류 / 엔딩 세 장면.
+  전부 스킵 가능하고, 끝까지 본 장면은 다시 강제하지 않는다 —
+  재시도가 학습 루프인 게임(69장)에서 이걸 안 지키면 스토리가 벌이 된다.</li>
+<li>등장인물은 65장의 사람 유닛뿐. 수의사는 광란 고양이와 함께 합류한다(68장).</li>
+<li>오프닝이 66장(영향 범위)과 64장(귀향)의 정서적 근거를 깐다.</li>
+</ul>
+<h2>v0.7.1 — 고양이 외형 설계</h2>
+<ul>
+<li><strong>외형 설계 추가 (70장)</strong> — 무늬(다양성)와 특수 고양이(판독성)를 다른 채널로 분리한다.
+  특수 고양이는 무늬를 굴리지 않는다 — 굴리면 황금 고양이가 검은 고양이로 나온다.</li>
+<li>13장의 무늬 6종을 명도 축으로 다시 정렬하고, 금·적·보라를 특수 고양이 전용으로 예약.</li>
+<li>실루엣(<code>DisplayScale</code>)을 판독 채널로 추가. 시뮬레이션에는 영향이 없다.</li>
+</ul>
+<h2>v0.7 — 준비 단계, 재화 4종 재편, 레벨 상세</h2>
+<ul>
+<li><strong>준비 단계 추가 (69장)</strong> — 사람과 설치형 장비는 Wave 전에 배치하고,
+  투척·조준 장비만 실행 중에 쓴다. 4장 게임 루프에 반영.</li>
+<li><strong>재화 4종으로 재편 (6장)</strong> — 기본 포인트는 <strong>강화</strong>, 3종 재화는 <strong>해금</strong>,
+  Golden Paw 는 <strong>Ultimate 해금</strong>. v0.6 처럼 레벨업까지 카테고리별로 잠그지 않는다.</li>
+<li>21장(브랜치별 해금 재화), 67장(두 재화가 따로 도는 방식)에 반영.</li>
+<li><strong>레벨 1~10 상세화 (25장)</strong> — 각 판이 가르치는 것 하나, Spawn·Exit 수, 신규 해금.
+  Figma <code>02 UI 목업</code> 페이지에 Level 1~5 레이아웃 스케치.</li>
+</ul>
+<h2>v0.6 — 재화 분화와 클리어 평가</h2>
+<ul>
+<li><strong>Research Points 를 3종으로 분화 (6장)</strong> — 인력 / 유인 / 장비 연구. 강화 대상별로 나뉜다.</li>
+<li><strong>Golden Paw 역할 확정 (6장)</strong> — 수치 강화가 아니라 <strong>선택지 확장</strong> 전용. 완전 구조로 얻는다.</li>
+<li><strong>클리어 평가 추가 (67장)</strong> — 총량은 구조 수가, 배분은 클리어 방식이 정한다.</li>
+<li><strong>특수 고양이 등장 순서 추가 (68장)</strong> — 광란 고양이는 중후반, 수의사와 함께.</li>
+<li>21장(브랜치별 재화), 43장(결과 화면)에 반영.</li>
+</ul>
+<h2>v0.5 — 세계관과 사람 유닛</h2>
+<ul>
+<li><strong>세계관 추가 (64장)</strong> — 외계 고양이 행성의 침략. 구조한 고양이는 로켓에 태워 고향으로 돌려보낸다.</li>
+<li><strong>사람 유닛 추가 (65장)</strong> — 구조원 / 수의사 / 집사, 각 초보·중급·프로 3등급.</li>
+<li><strong>광역 구조 원칙 명문화 (66장)</strong> — 광역기는 피해 범위가 아니라 영향 범위다.</li>
+<li>1장, 3장, 23장, 43장에 위 내용을 반영.</li>
+</ul>
+<p><strong>번호를 다시 매기지 않은 이유</strong>: 코드 주석 258곳이 <code>GDD 17장</code> 형태로 섹션 번호를 인용하고 있다.
+0~63장 번호를 그대로 두고 새 내용은 64장부터 붙인다.</p>
+<hr />
+</section>
+</main>
+
+</div>
+
+<button class="nav-toggle" id="navToggle" aria-label="목차 열기">목차</button>
+
+<script>
+  // 목차 토글 (좁은 화면)
+  var nav = document.getElementById('nav');
+  var toggle = document.getElementById('navToggle');
+
+  toggle.addEventListener('click', function () {
+    nav.classList.toggle('open');
+    toggle.textContent = nav.classList.contains('open') ? '닫기' : '목차';
+  });
+
+  nav.addEventListener('click', function (e) {
+    if (e.target.closest('a') && window.matchMedia('(max-width: 900px)').matches) {
+      nav.classList.remove('open');
+      toggle.textContent = '목차';
+    }
+  });
+
+  // 지금 읽는 장을 목차에서 표시한다. 79개짜리 문서에서 위치를 잃으면 못 돌아온다.
+  (function () {
+    var links = {};
+    Array.prototype.forEach.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+      links[a.getAttribute('href').slice(1)] = a;
+    });
+
+    var current = null;
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+
+        var link = links[entry.target.id];
+        if (!link || link === current) return;
+
+        if (current) current.classList.remove('here');
+        link.classList.add('here');
+        current = link;
+
+        // 목차가 길어서 현재 위치가 화면 밖으로 나간다.
+        var box = nav.getBoundingClientRect();
+        var at = link.getBoundingClientRect();
+        if (at.top < box.top + 40 || at.bottom > box.bottom - 40) {
+          link.scrollIntoView({ block: 'center' });
+        }
+      });
+    }, { rootMargin: '-10% 0px -75% 0px' });
+
+    Array.prototype.forEach.call(document.querySelectorAll('.chapter'), function (s) {
+      observer.observe(s);
+    });
+  })();
+
+
+  // 화면 안의 "무리" 는 장식이 아니라 논증이다 —
+  // HUD 가 어디를 가리는지 보려면 가려질 것이 실제로 그려져 있어야 한다.
+  //
+  // 난수는 시드로 고정한다. 다시 그릴 때마다 배치가 달라지면
+  // 이 문서를 두 번 열었을 때 같은 화면이 아니게 된다.
+  function seeded(seed) {
+    var s = seed >>> 0;
+    return function () {
+      s ^= s << 13; s >>>= 0;
+      s ^= s >> 17;
+      s ^= s << 5;  s >>>= 0;
+      return s / 4294967296;
+    };
+  }
+
+  // 일반 무늬는 명도로 벌린다 (GDD 70). 금·적은 특수 고양이 예약색이라 여기 안 쓴다.
+  var COAT = ['#2A2E36', '#3C424C', '#6E7681', '#A8642E', '#9AA2AC', '#DDE2E8'];
+
+  // GDD 75. 길을 정의하고 나머지를 전부 건물로 둔다.
+  //
+  // 반대로 하면 — 빈 벌판에 건물 몇 채를 놓으면 — 건물 사이가 전부 뚫린 공터가 되고
+  // 고양이가 거기로 샌다. 그건 길이 아니다. 길은 좁아야 병목이 생긴다.
+  var ROADS = {
+    flow: [
+      [0, .155, 1, .10], [0, .44, 1, .11], [0, .715, 1, .10],
+      [.20, .155, .075, .66], [.50, .155, .075, .66], [.78, .155, .075, .66]
+    ],
+    dense: [
+      [0, .155, 1, .10], [0, .44, 1, .11], [0, .715, 1, .10],
+      [.20, .155, .075, .66], [.50, .155, .075, .66], [.78, .155, .075, .66]
+    ],
+    prep: [
+      [0, .20, 1, .11], [0, .46, 1, .12], [0, .72, 1, .11],
+      [.30, .20, .085, .63], [.66, .20, .085, .63]
+    ]
+  };
+
+  // 유인원이 서는 자리와 무리가 뭉치는 곳. 교차로다 — 길이 만나는 곳에 사람이 몰린다.
+  var LURES = {
+    flow:  [[.238, .495], [.538, .765], [.818, .205]],
+    dense: [[.238, .495], [.538, .765], [.818, .205]],
+    prep:  [[.343, .52], [.703, .775]]
+  };
+
+  function drawHorde(canvas, mode) {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return;
+
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+
+    var g = canvas.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, w, h);
+
+    var rand = seeded(mode.length * 7919 + 13);
+
+    if (mode === 'night' || mode === 'rocket') {
+      drawSky(g, w, h, rand, mode === 'rocket');
+      return;
+    }
+
+    var roads = ROADS[mode] || ROADS.flow;
+    var lures = LURES[mode] || LURES.flow;
+
+    function onRoad(px, py) {
+      for (var i = 0; i < roads.length; i++) {
+        var r = roads[i];
+        if (px >= r[0] * w && px <= (r[0] + r[2]) * w
+            && py >= r[1] * h && py <= (r[1] + r[3]) * h) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // 1. 전부 건물로 덮는다
+    g.fillStyle = '#212A37';
+    g.fillRect(0, 0, w, h);
+
+    // 2. 블록 경계선. 없으면 한 덩어리 회색으로 보인다
+    g.strokeStyle = 'rgba(255,255,255,.055)';
+    g.lineWidth = 1;
+    for (var gx = 0; gx < w; gx += 26) {
+      g.beginPath(); g.moveTo(gx, 0); g.lineTo(gx, h); g.stroke();
+    }
+    for (var gy = 0; gy < h; gy += 26) {
+      g.beginPath(); g.moveTo(0, gy); g.lineTo(w, gy); g.stroke();
+    }
+
+    // 3. 길을 파낸다. 건물과 확실히 갈라져야 "길" 로 읽힌다.
+    g.fillStyle = '#080B10';
+    roads.forEach(function (r) {
+      g.fillRect(r[0] * w, r[1] * h, r[2] * w, r[3] * h);
+    });
+
+    // 4. 길 가장자리 — 여기가 설치 가능한 선이다 (GDD 75)
+    g.strokeStyle = 'rgba(140,152,170,.30)';
+    g.lineWidth = 1;
+    roads.forEach(function (r) {
+      g.strokeRect(r[0] * w, r[1] * h, r[2] * w, r[3] * h);
+    });
+
+    // 5. 무리. 길 위에만 찍는다.
+    var count = mode === 'dense' ? 780 : 640;
+
+    for (var i = 0; i < count; i++) {
+      var x = 0, y = 0, placed = false;
+
+      for (var t = 0; t < 14 && !placed; t++) {
+        if (rand() < 0.34) {
+          // 아직 흘러오는 중 — 왼쪽에서 넓게
+          x = rand() * w * 0.42;
+          y = rand() * h;
+        } else {
+          // 교차로에 뭉친다
+          var L = lures[Math.floor(rand() * lures.length)];
+          var ang = rand() * Math.PI * 2;
+          var rr = Math.pow(rand(), 0.5) * w * 0.10;
+          x = L[0] * w + Math.cos(ang) * rr;
+          y = L[1] * h + Math.sin(ang) * rr * 0.8;
+        }
+
+        placed = x >= 0 && x <= w && y >= 0 && y <= h && onRoad(x, y);
+      }
+
+      if (!placed) continue;
+
+      g.fillStyle = COAT[Math.floor(rand() * COAT.length)];
+      g.globalAlpha = 0.9;
+      g.fillRect(x, y, 2.8, 2.8);
+    }
+    g.globalAlpha = 1;
+
+    // 6. 특수 고양이. 예약색이라 소음 속에서도 보인다 (GDD 70). 얘들도 길 위다.
+    function special(fx, fy, color, big) {
+      var px = fx * w, py = fy * h;
+      if (!onRoad(px, py)) return;
+
+      var sz = big ? 5.4 : 4.2;
+      g.fillStyle = color;
+      g.fillRect(px - sz / 2, py - sz / 2, sz, sz);
+      g.strokeStyle = color;
+      g.globalAlpha = 0.4;
+      g.lineWidth = 1;
+      g.beginPath();
+      g.arc(px, py, sz * 1.9, 0, Math.PI * 2);
+      g.stroke();
+      g.globalAlpha = 1;
+    }
+
+    special(0.30, 0.49, '#F0B840', false);          // 황금
+    special(0.56, 0.77, '#DDE2E8', true);           // 뚱냥이 — 크다
+    if (mode !== 'prep') special(0.83, 0.21, '#FF6156', false);  // 광란
+
+    // 7. 설치형 장비. 길에 닿은 건물 칸에 선다 (GDD 75).
+    function placedUnit(fx, fy, reach) {
+      var px = fx * w, py = fy * h;
+
+      // GDD 75. 길 위에 서면 규칙 위반이다. 그리지 않는 편이 낫다 —
+      // 틀린 그림은 없는 그림보다 나쁘다.
+      if (onRoad(px, py)) return;
+
+      g.strokeStyle = 'rgba(87,210,145,.26)';
+      g.lineWidth = 1;
+      g.beginPath();
+      g.arc(px, py, reach * w, 0, Math.PI * 2);
+      g.stroke();
+
+      g.fillStyle = '#57D291';
+      g.fillRect(px - 3, py - 3, 6, 6);
+      g.strokeStyle = 'rgba(10,13,18,.9)';
+      g.lineWidth = 1.5;
+      g.strokeRect(px - 3, py - 3, 6, 6);
+    }
+
+    // 전부 길 밖이다. 길 가장자리에 딱 붙어 사거리가 길을 덮는다.
+    if (mode === 'prep') {
+      placedUnit(0.50, 0.335, 0.085);
+      placedUnit(0.50, 0.605, 0.085);
+    } else {
+      placedUnit(0.35, 0.565, 0.085);
+      placedUnit(0.62, 0.565, 0.085);
+      placedUnit(0.62, 0.272, 0.075);
+    }
+
+    if (mode === 'prep') {
+      drawPrepOverlay(g, w, h);
+    }
+  }
+
+  // 준비 단계에만 있는 것 — Flow 방향, Build Zone, Exit. (GDD 69, 74)
+  function drawPrepOverlay(g, w, h) {
+    g.strokeStyle = 'rgba(107,168,245,.6)';
+    g.fillStyle = 'rgba(107,168,245,.6)';
+    g.lineWidth = 1.6;
+
+    [.255, .52, .775].forEach(function (fy) {
+      var y = fy * h, x1 = w * .06, x2 = w * .90;
+      g.beginPath(); g.moveTo(x1, y); g.lineTo(x2, y); g.stroke();
+      g.beginPath();
+      g.moveTo(x2, y);
+      g.lineTo(x2 - 9, y - 4);
+      g.lineTo(x2 - 9, y + 4);
+      g.closePath();
+      g.fill();
+    });
+
+    g.strokeStyle = 'rgba(87,210,145,.55)';
+    g.setLineDash([5, 4]);
+    g.lineWidth = 1.4;
+    g.strokeRect(w * 0.26, h * 0.14, w * 0.32, h * 0.72);
+    g.setLineDash([]);
+    g.fillStyle = 'rgba(87,210,145,.85)';
+    g.font = '10px ui-monospace, monospace';
+    g.fillText('BUILD ZONE', w * 0.265, h * 0.125);
+
+    g.fillStyle = 'rgba(255,97,86,.75)';
+    g.fillRect(w * 0.955, h * 0.20, w * 0.045, h * 0.63);
+    g.save();
+    g.translate(w * 0.978, h * 0.515);
+    g.rotate(Math.PI / 2);
+    g.fillStyle = '#0A0D12';
+    g.font = 'bold 9px ui-monospace, monospace';
+    g.textAlign = 'center';
+    g.fillText('EXIT', 0, 3);
+    g.restore();
+  }
+
+  // 밤하늘 — 대사창과 결과 화면 배경
+  function drawSky(g, w, h, rand, rocket) {
+    var sky = g.createLinearGradient(0, 0, 0, h);
+    sky.addColorStop(0, '#0B1220');
+    sky.addColorStop(1, '#080A0F');
+    g.fillStyle = sky;
+    g.fillRect(0, 0, w, h);
+
+    if (rocket) {
+      g.strokeStyle = 'rgba(240,184,64,.30)';
+      g.lineWidth = 2;
+      g.beginPath();
+      g.moveTo(w * 0.18, h * 1.02);
+      g.quadraticCurveTo(w * 0.52, h * 0.62, w * 0.86, h * -0.05);
+      g.stroke();
+
+      var rx = w * 0.855, ry = h * 0.02;
+      var glow = g.createRadialGradient(rx, ry, 0, rx, ry, 26);
+      glow.addColorStop(0, 'rgba(255, 226, 160, .9)');
+      glow.addColorStop(1, 'rgba(255, 226, 160, 0)');
+      g.fillStyle = glow;
+      g.beginPath();
+      g.arc(rx, ry, 26, 0, Math.PI * 2);
+      g.fill();
+
+      g.fillStyle = 'rgba(255,255,255,.5)';
+      for (var s = 0; s < 60; s++) {
+        g.fillRect(rand() * w, rand() * h * 0.7, 1.2, 1.2);
+      }
+      return;
+    }
+
+    g.fillStyle = 'rgba(255,255,255,.42)';
+    for (var s2 = 0; s2 < 90; s2++) {
+      var sz = rand() < .12 ? 2 : 1.1;
+      g.fillRect(rand() * w, rand() * h * 0.8, sz, sz);
+    }
+
+    g.fillStyle = 'rgba(160,170,185,.35)';
+    for (var c = 0; c < 260; c++) {
+      g.fillRect(rand() * w, h * (0.78 + rand() * 0.2), 2.4, 2.4);
+    }
+  }
+
+
+  // ── 맵 개략도 (GDD 25 / 74 / 75) ──────────────────────────────────
+  //
+  // 길은 사각형이 아니다. FlowField 는 셀 마스크라 대각선이든 꺾인 길이든 상관없다.
+  // 그래서 길을 <중심선 + 폭> 으로 적는다 — 폭이 곧 75장의 골목/도로/대로 등급이다.
+  //
+  // 좌표 단위는 실제 격자 칸(64 × 40)이다. 개략도가 치수까지 정직해야
+  // "이 길은 사거리 3 으로 덮이나" 를 그림에서 셀 수 있다.
+  var CELLS_X = 64, CELLS_Y = 40, PX = 5;
+  var MAP_W = CELLS_X * PX, MAP_H = CELLS_Y * PX;
+  var INSET = 1.5;
+
+  // 75장 길 폭 등급 (칸)
+  var ALLEY = 3, STREET = 6, AVENUE = 10;
+
+  var ALONG = { 0: 0.22, 1: 0.5, 2: 0.78 };
+
+  // 격자 y 는 위가 +다(월드와 같다). SVG 는 아래가 +라 여기서 한 번만 뒤집는다.
+  function anchor(edge, slot) {
+    var a = Number.isInteger(slot) ? ALONG[slot] : slot;
+    var spanX = CELLS_X - INSET * 2, spanY = CELLS_Y - INSET * 2;
+
+    if (edge === 'W') return [INSET, CELLS_Y - INSET - spanY * a];
+    if (edge === 'E') return [CELLS_X - INSET, CELLS_Y - INSET - spanY * a];
+    if (edge === 'N') return [INSET + spanX * a, INSET];
+    return [INSET + spanX * a, CELLS_Y - INSET];
+  }
+
+  // 점과 선분 사이 거리. 길 위인지 판정하는 데 쓴다.
+  function distToSegment(px, py, ax, ay, bx, by) {
+    var dx = bx - ax, dy = by - ay;
+    var len2 = dx * dx + dy * dy;
+    var t = len2 === 0 ? 0 : ((px - ax) * dx + (py - ay) * dy) / len2;
+    t = Math.max(0, Math.min(1, t));
+    var cx = ax + dx * t, cy = ay + dy * t;
+    return Math.hypot(px - cx, py - cy);
+  }
+
+  // 다각형 안인지 (섬 판정)
+  function inPolygon(px, py, poly) {
+    var hit = false;
+    for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      var xi = poly[i][0], yi = poly[i][1], xj = poly[j][0], yj = poly[j][1];
+      if ((yi > py) !== (yj > py) && px < (xj - xi) * (py - yi) / (yj - yi) + xi) {
+        hit = !hit;
+      }
+    }
+    return hit;
+  }
+
+  function onRoadCells(px, py, roads, slack, islands) {
+    if (islands) {
+      for (var k = 0; k < islands.length; k++) {
+        if (inPolygon(px, py, islands[k])) return false;
+      }
+    }
+
+    for (var i = 0; i < roads.length; i++) {
+      var r = roads[i], pts = r.pts, half = r.w / 2 + (slack || 0);
+      for (var j = 0; j < pts.length - 1; j++) {
+        if (distToSegment(px, py, pts[j][0], pts[j][1], pts[j + 1][0], pts[j + 1][1]) <= half) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  var MAPS = [
+    { n: 1, name: '주택가', teach: '유인은 무리를 세워 둔다 — 합류점 하나로 둘 다 잡는다',
+      roads: [
+        { pts: [[0,9.6],[20,9.6],[34,16],[47,20]], w: STREET },   // 위 갈래
+        { pts: [[0,30.4],[20,30.4],[34,24],[47,20]], w: STREET }, // 아래 갈래
+        { pts: [[47,20],[64,20]], w: STREET }                     // 합류 후 줄기
+      ],
+      fork: [47,20],
+      spawns: [['W',2],['W',0]], exits: [['E',1]] },
+
+    { n: 2, name: '전통시장', teach: '맵에 박힌 유인원이 내 계획과 싸운다',
+      roads: [
+        { pts: [[0,9.6],[16,9.6],[25,15],[25,25],[34,30.4],[64,30.4]], w: ALLEY },
+        { pts: [[25,20],[40,20],[46,14],[58,14]], w: ALLEY },
+        { pts: [[10,9.6],[10,22]], w: ALLEY }
+      ],
+      spawns: [['W',2]], exits: [['E',0]] },
+
+    { n: 3, name: '아파트 단지', teach: '한 번에 다 볼 수 없다',
+      roads: [
+        { pts: [[0,9.6],[38,9.6],[47,16]], w: STREET },
+        { pts: [[0,20],[40,20],[47,23]], w: STREET },
+        { pts: [[0,30.4],[40,30.4],[47,29]], w: STREET },
+        { pts: [[47,14],[47,40]], w: STREET }
+      ],
+      spawns: [['W',2],['W',1],['W',0]], exits: [['S',2]] },
+
+    { n: 4, name: '지하철역', teach: '병목은 무기다',
+      roads: [
+        { pts: [[0,20],[64,20]], w: AVENUE },
+        { pts: [[32,20],[32,0]], w: ALLEY }
+      ],
+      spawns: [['W',1],['E',1]], exits: [['N',1]] },
+
+    { n: 5, name: '공장', teach: '내 의지와 무관한 힘이 있다',
+      open: true,
+      roads: [{ pts: [[0,20],[64,20]], w: 34 }],
+      islands: [
+        [[12,15],[22,13],[24,19],[14,21]],
+        [[30,24],[44,26],[42,33],[28,31]],
+        [[46,10],[57,9],[58,16],[47,17]]
+      ],
+      belts: [[0,9.6,64,-1],[0,30.4,64,1]],
+      spawns: [['W',2],['W',0]], exits: [['E',2]] },
+
+    { n: 6, name: '침수 지역', teach: '계획은 Wave 중에 무너진다',
+      roads: [
+        { pts: [[14.9,0],[14.9,22],[23,30.4]], w: STREET },
+        { pts: [[0,30.4],[44,30.4],[54,20],[64,20]], w: AVENUE }
+      ],
+      flood: [[26,22],[46,22],[52,32],[24,34]],
+      spawns: [['N',0],['W',0]], exits: [['E',1]] },
+
+    { n: 7, name: '항구', teach: '모아 놓은 것을 잃을 수 있다',
+      roads: [
+        { pts: [[0,9.6],[17,9.6],[25,15],[41,15],[49,22],[49,30.4],[64,30.4]], w: ALLEY },
+        { pts: [[14.9,40],[14.9,27],[24,23],[34,23],[42,29],[49,30.4]], w: ALLEY },
+        { pts: [[25,15],[25,6]], w: ALLEY }
+      ],
+      spawns: [['W',2],['S',0]], exits: [['E',0]] },
+
+    { n: 8, name: '도심', teach: '사방에서 온다',
+      open: true,
+      roads: [
+        { pts: [[0,20],[64,20]], w: 26 },
+        { pts: [[32,0],[32,40]], w: 26 }
+      ],
+      islands: [
+        [[24,13],[40,12],[41,27],[23,28]],
+        [[6,6],[16,5],[17,13],[7,14]],
+        [[48,26],[59,27],[57,35],[46,34]]
+      ],
+      spawns: [['W',2],['W',0],['N',1],['S',1]], exits: [['E',1]] },
+
+    { n: 9, name: '재개발 지역', teach: '지형 자체가 바뀐다',
+      roads: [
+        { pts: [[0,9.6],[24,9.6],[32,15]], w: STREET },
+        { pts: [[0,30.4],[24,30.4],[32,25]], w: STREET },
+        { pts: [[32,0],[32,32]], w: STREET },
+        { pts: [[32,20],[64,20]], w: STREET }
+      ],
+      gates: [[32,15],[46,20]],
+      spawns: [['W',2],['W',0],['N',1]], exits: [['E',1]] },
+
+    { n: 10, name: '도시 중심부', teach: '전부 — 여섯 곳에서 한 곳으로',
+      roads: [
+        { pts: [[0,9.6],[18,9.6],[28,17]], w: STREET },
+        { pts: [[0,20],[24,20],[30,21]], w: STREET },
+        { pts: [[0,30.4],[24,30.4],[30,27]], w: STREET },
+        { pts: [[14.9,0],[14.9,6],[22,13]], w: ALLEY },
+        { pts: [[32,0],[32,10],[30,18]], w: ALLEY },
+        { pts: [[49.1,0],[49.1,10],[38,18]], w: ALLEY },
+        { pts: [[27,20],[42,25.6],[64,25.6]], w: 20 }
+      ],
+      islands: [
+        [[36,28],[46,29],[45,35],[35,34]],
+        [[48,19],[57,20],[56,25],[47,24]]
+      ],
+      spawns: [['W',2],['W',1],['W',0],['N',0],['N',1],['N',2]],
+      exits: [['E',0.35]] }
+  ];
+
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  function edgeName(e) {
+    return e === 'W' ? '좌' : e === 'E' ? '우' : e === 'N' ? '상' : '하';
+  }
+
+  function slotName(sl) {
+    if (Number.isInteger(sl)) return String(sl);
+    if (Math.abs(sl - 1 / 3) < 0.05) return '⅓';
+    if (Math.abs(sl - 2 / 3) < 0.05) return '⅔';
+    return String(Math.round(sl * 100) / 100).replace('0.', '.');
+  }
+
+  function widthName(w) {
+    return w <= ALLEY ? '골목' : w <= STREET ? '도로' : '대로';
+  }
+
+  function pointsAttr(pts) {
+    return pts.map(function (p) { return (p[0] * PX) + ',' + (p[1] * PX); }).join(' ');
+  }
+
+  function buildMapCard(m) {
+    var card = document.createElement('div');
+    card.className = 'map-card';
+
+    var svg = svgEl('svg', { viewBox: '0 0 ' + MAP_W + ' ' + MAP_H, role: 'img' });
+    svg.setAttribute('aria-label', m.n + '번 맵 ' + m.name + ' 개략도');
+
+    svg.appendChild(svgEl('rect', { x: 0, y: 0, width: MAP_W, height: MAP_H, fill: '#212A37' }));
+
+    for (var gx = 5 * PX; gx < MAP_W; gx += 5 * PX) {
+      svg.appendChild(svgEl('line', { x1: gx, y1: 0, x2: gx, y2: MAP_H, stroke: 'rgba(255,255,255,.05)', 'stroke-width': 1 }));
+    }
+    for (var gy = 5 * PX; gy < MAP_H; gy += 5 * PX) {
+      svg.appendChild(svgEl('line', { x1: 0, y1: gy, x2: MAP_W, y2: gy, stroke: 'rgba(255,255,255,.05)', 'stroke-width': 1 }));
+    }
+
+    // 길을 파낸다. 중심선을 굵게 그으면 곡선도 대각선도 그대로 나온다.
+    //
+    // 테두리는 조금 더 굵게 한 번 깔고 그 위에 길 색을 덮어서 만든다.
+    // 같은 굵기로 반투명 선을 겹치면 테두리가 아니라 길 전체가 밝아진다 —
+    // 그러면 길과 건물의 명암이 뒤집힌다.
+    m.roads.forEach(function (r) {
+      svg.appendChild(svgEl('polyline', {
+        points: pointsAttr(r.pts), fill: 'none', stroke: 'rgba(150,163,182,.42)',
+        'stroke-width': r.w * PX + 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round'
+      }));
+    });
+    m.roads.forEach(function (r) {
+      svg.appendChild(svgEl('polyline', {
+        points: pointsAttr(r.pts), fill: 'none', stroke: '#080B10',
+        'stroke-width': r.w * PX, 'stroke-linecap': 'round', 'stroke-linejoin': 'round'
+      }));
+    });
+
+    // 개활지 안의 섬. 길을 판 뒤에 다시 덮는다 —
+    // 사방이 가장자리라 사거리가 360°로 뻗는 자리다. (GDD 75)
+    (m.islands || []).forEach(function (poly) {
+      svg.appendChild(svgEl('polygon', {
+        points: pointsAttr(poly), fill: '#212A37',
+        stroke: 'rgba(140,152,170,.30)', 'stroke-width': 1.5, 'stroke-linejoin': 'round'
+      }));
+    });
+
+    if (m.flood) {
+      svg.appendChild(svgEl('polygon', {
+        points: pointsAttr(m.flood),
+        fill: 'rgba(107,168,245,.18)', stroke: 'rgba(107,168,245,.5)',
+        'stroke-width': 1.5, 'stroke-dasharray': '5 4'
+      }));
+    }
+
+    (m.belts || []).forEach(function (b) {
+      var y = b[1] * PX;
+      var g = svgEl('g', { stroke: 'rgba(240,184,64,.55)', fill: 'rgba(240,184,64,.55)', 'stroke-width': 1.5 });
+      for (var x = 40; x < MAP_W - 20; x += 60) {
+        var d = b[3];
+        g.appendChild(svgEl('line', { x1: x, y1: y, x2: x + 14 * d, y2: y }));
+        g.appendChild(svgEl('polygon', {
+          points: (x + 18 * d) + ',' + y + ' ' + (x + 11 * d) + ',' + (y - 3.5) + ' ' + (x + 11 * d) + ',' + (y + 3.5),
+          stroke: 'none'
+        }));
+      }
+      svg.appendChild(g);
+    });
+
+    // 합류점. 유인 하나가 두 줄기를 다 잡는 자리다. (GDD 25 Map 1)
+    if (m.fork) {
+      svg.appendChild(svgEl('circle', {
+        cx: m.fork[0] * PX, cy: m.fork[1] * PX, r: 13,
+        fill: 'none', stroke: 'rgba(87,210,145,.75)', 'stroke-width': 2
+      }));
+    }
+
+    (m.gates || []).forEach(function (gt) {
+      svg.appendChild(svgEl('circle', {
+        cx: gt[0] * PX, cy: gt[1] * PX, r: 9,
+        fill: 'none', stroke: '#F0B840', 'stroke-width': 1.6, 'stroke-dasharray': '4 3'
+      }));
+    });
+
+    m.spawns.forEach(function (sp) {
+      var p = anchor(sp[0], sp[1]);
+      svg.appendChild(svgEl('circle', {
+        cx: p[0] * PX, cy: p[1] * PX, r: 5,
+        fill: '#4A8FE0', stroke: '#0A0D12', 'stroke-width': 1.6
+      }));
+    });
+
+    m.exits.forEach(function (ex) {
+      var p = anchor(ex[0], ex[1]);
+      svg.appendChild(svgEl('rect', {
+        x: p[0] * PX - 5, y: p[1] * PX - 5, width: 10, height: 10,
+        fill: '#C4463C', stroke: '#0A0D12', 'stroke-width': 1.6
+      }));
+    });
+
+    card.appendChild(svg);
+
+    var cap = document.createElement('div');
+    cap.className = 'cap';
+
+    var title = document.createElement('b');
+    title.innerHTML = '<i>' + (m.n < 10 ? '0' + m.n : m.n) + '</i>' + m.name;
+    cap.appendChild(title);
+
+    var teach = document.createElement('p');
+    teach.textContent = m.teach;
+    cap.appendChild(teach);
+
+    var widths = {};
+    if (m.open) {
+      widths['개활 + 섬 ' + (m.islands || []).length] = true;
+    } else {
+      m.roads.forEach(function (r) { widths[widthName(r.w)] = true; });
+    }
+
+    var io = document.createElement('div');
+    io.className = 'io';
+    io.innerHTML =
+      '<span>Spawn ' + m.spawns.map(function (s) { return edgeName(s[0]) + slotName(s[1]); }).join(' · ') + '</span>' +
+      '<span>Exit ' + m.exits.map(function (e) { return edgeName(e[0]) + slotName(e[1]); }).join(' · ') + '</span>' +
+      '<span style="color:var(--ink-3)">' + Object.keys(widths).join(' · ') + '</span>';
+    cap.appendChild(io);
+
+    card.appendChild(cap);
+    return card;
+  }
+
+  (function () {
+    var grid = document.getElementById('mapsGrid');
+    if (!grid) return;
+
+    // Spawn / Exit 이 길 위인지 확인한다. 개략도가 74장 표와 어긋나면
+    // 조용히 틀린 그림이 남는다.
+    MAPS.forEach(function (m) {
+      m.spawns.concat(m.exits).forEach(function (a) {
+        var p = anchor(a[0], a[1]);
+        if (!onRoadCells(p[0], p[1], m.roads, 0.6, m.islands)) {
+          console.warn('맵 ' + m.n + ': ' + edgeName(a[0]) + slotName(a[1]) + ' 가 길 위가 아니다');
+        }
+      });
+
+      grid.appendChild(buildMapCard(m));
+    });
+  })();
+
+  function renderAll() {
+    document.querySelectorAll('canvas[data-horde]').forEach(function (c) {
+      drawHorde(c, c.getAttribute('data-horde'));
+    });
+  }
+
+  renderAll();
+  window.addEventListener('load', renderAll);
+
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(renderAll, 150);
+  });
+
+</script>
