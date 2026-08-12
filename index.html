@@ -4795,32 +4795,69 @@ Spawn 을 둘로 바꾸니 150 / 150 이 됐다.</p>
 10,000마리가 2.41 → 1.78 ms 가 됐다. (<code>FlowField._nearObstacle</code>)</p>
 <p>그 최적화가 Wave 중 지형 변화(Map 9)에서 낡지 않는지는 테스트로 잡아 둔다 —
 <code>ObstacleAvoidance_FollowsTerrainChangesWithoutRecalculate</code>.</p>
-<h3>다시 재 보니 여유가 없다</h3>
-<p><strong>10,000마리 + 건물 맵이 16.5ms 다. 예산의 99%.</strong>
-같은 테스트가 다른 실행에서 17.5ms 로 넘어가 실패한 적도 있다 — 이제 동전 던지기다.</p>
-<p>빈 맵은 13ms 로 여유가 있으니 병목은 마릿수가 아니라 <strong>건물 맵의 경로 비용</strong>이다.
-한계선을 20ms 로 늘리지 않는다. 그건 목표를 낮추는 게 아니라 목표에 대해 거짓말하는 것이다.</p>
+<h3>어느 빌드에서 잰 숫자인가</h3>
+<p><strong>한 번 크게 틀렸다.</strong> 로컬에서 테스트를 돌리다 10,000마리 + 건물 맵이 16.5ms —
+예산의 99% 로 나왔고, 그걸 실제 성능으로 이 문서에 적었다.</p>
+<p><code>dotnet test</code> 의 기본은 <strong>Debug</strong> 다. 최적화가 꺼진 빌드고, 아무도 그걸로 게임을 하지 않는다.</p>
 <table>
 <thead>
 <tr>
 <th></th>
-<th>ms/frame</th>
-<th>예산 대비</th>
+<th>Debug</th>
+<th>Release</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>10,000 · 빈 맵</td>
-<td>12.9</td>
-<td>78%</td>
+<td>13.3 ms (80%)</td>
+<td><strong>2.6 ms (16%)</strong></td>
 </tr>
 <tr>
 <td>10,000 · 건물 맵</td>
-<td><strong>16.5</strong></td>
-<td><strong>99%</strong></td>
+<td>16.3 ms (98%)</td>
+<td><strong>3.8 ms (23%)</strong></td>
 </tr>
 </tbody>
 </table>
+<p><strong>네 배 차이다.</strong> Debug 수치를 보고 최적화에 들어갔으면 아무도 안 돌리는 빌드를
+빠르게 만드는 데 시간을 썼을 것이다.</p>
+<p>그래서 두 가지를 고쳤다.</p>
+<p><strong>측정값에 빌드 종류를 같이 적는다.</strong> 숫자만 있으면 또 이런다.</p>
+<p><strong>상한을 빌드별로 나눈다.</strong> Debug 는 두 프레임(33ms), Release 는 한 프레임(16.6ms).
+Debug 에서 검사를 아예 끄지는 않는다 — 진짜 회귀는 배수로 나빠지므로
+넉넉한 상한으로도 잡힌다. 진짜 예산 검사는 CI 의 Release 실행이다 (이미 그렇게 돌고 있었다).</p>
+<h3>시간은 전부 이동에 쓴다</h3>
+<p>단계별로 재 보면 답이 하나다. (<code>tools/Profile</code>)</p>
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th>빈 맵</th>
+<th>건물 맵</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Movement.Step</code></td>
+<td>3.26</td>
+<td><strong>5.09</strong></td>
+</tr>
+<tr>
+<td><code>Grid.Rebuild</code></td>
+<td>0.13</td>
+<td>0.13</td>
+</tr>
+<tr>
+<td><code>Rescue.Tick</code></td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+</tbody>
+</table>
+<p><strong>공간 분할은 공짜고 구조는 측정 한계 아래다.</strong> 건물이 늘리는 것도 전부 이동 쪽이다.
+언젠가 최적화가 필요해지면 볼 곳은 여기 하나다 — 다만 지금은 예산의 23% 라
+존재하지 않는 문제다.</p>
 <h3>하지 않은 것</h3>
 <p><strong>Jobs / Burst 는 아직 안 한다.</strong> 목표를 이미 여유 있게 넘겼고,
 이동 단계를 병렬화하려면 위치 배열을 이중 버퍼로 나눠야 한다.
@@ -5308,6 +5345,9 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <h2>변경 이력</h2>
 <h2>v1.1.0 — 인트로 구현</h2>
 <ul>
+<li><strong>성능 수치를 정정한다 (31장).</strong> 앞 판의 "예산의 99%" 는 <strong>Debug 빌드 수치</strong>였다.
+  Release 로 재면 10,000마리 + 건물 맵이 <strong>3.8ms, 예산의 23%</strong> 다. 네 배 차이다.
+  테스트가 빌드 종류를 같이 적고 상한도 빌드별로 나눈다.</li>
 <li><strong><code>StoryDirector</code> 신설 (71장)</strong> — 장면을 트는 쪽이 아무 데도 없었다.
   <code>DialogueView</code> 는 틀어 달라면 틀고 <code>StoryRunner</code> 는 본 적 있는지만 안다.
   <strong>부르는 사람이 없어서 오프닝이 한 번도 재생되지 않았다.</strong></li>
