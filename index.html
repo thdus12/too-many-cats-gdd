@@ -1,4 +1,4 @@
-<title>고양이가 너무 많아! — 기획서 v0.9.8</title>
+<title>고양이가 너무 많아! — 기획서 v0.9.9</title>
 
 <style>
   /* ── 라이트가 기본. 다크는 토큰만 덮는다 ── */
@@ -1093,7 +1093,7 @@
 <nav id="nav">
   <div class="brand">
     <b>고양이가 너무 많아!</b>
-    <span>GDD v0.9.8</span>
+    <span>GDD v0.9.9</span>
   </div>
   <div class="nav-group"><h3>개요<small>무엇을 만드는가</small></h3><ul><li><a href="#s0"><span class="n">0</span><span class="t">문서 정보</span><span class="fig"></span></a></li><li><a href="#s1"><span class="n">1</span><span class="t">게임 개요</span><span class="fig"></span></a></li><li><a href="#s2"><span class="n">2</span><span class="t">핵심 판타지</span><span class="fig"></span></a></li><li><a href="#s3"><span class="n">3</span><span class="t">디자인 원칙</span><span class="fig"></span></a></li><li><a href="#s4"><span class="n">4</span><span class="t">기본 게임 루프</span><span class="fig"></span></a></li><li><a href="#s5"><span class="n">5</span><span class="t">Run 구조</span><span class="fig"></span></a></li><li><a href="#s6"><span class="n">6</span><span class="t">자원</span><span class="fig"></span></a></li></ul></div>
 <div class="nav-group"><h3>고양이<small>무리가 어떻게 움직이는가</small></h3><ul><li><a href="#s7"><span class="n">7</span><span class="t">고양이 데이터</span><span class="fig"></span></a></li><li><a href="#s8"><span class="n">8</span><span class="t">Cat State Machine</span><span class="fig"></span></a></li><li><a href="#s9"><span class="n">9</span><span class="t">고양이 이동 시스템</span><span class="fig"></span></a></li><li><a href="#s10"><span class="n">10</span><span class="t">Flow Field</span><span class="fig"></span></a></li><li><a href="#s11"><span class="n">11</span><span class="t">Attraction System</span><span class="fig"></span></a></li><li><a href="#s12"><span class="n">12</span><span class="t">Separation / Crowd</span><span class="fig"></span></a></li><li><a href="#s13"><span class="n">13</span><span class="t">기본 고양이 종류</span><span class="fig"></span></a></li><li><a href="#s14"><span class="n">14</span><span class="t">특수 고양이</span><span class="fig"></span></a></li><li><a href="#s15"><span class="n">15</span><span class="t">Wave 시스템</span><span class="fig"></span></a></li></ul></div>
@@ -1110,7 +1110,7 @@
 
 <main>
   <header>
-    <p class="eyebrow">Game Design Document v0.9.8</p>
+    <p class="eyebrow">Game Design Document v0.9.9</p>
     <h1>고양이가 너무 많아!</h1>
     <p>
       외계 고양이 행성에서 쳐들어온 고양이 떼를 구조해 로켓에 태워 돌려보내는
@@ -3310,6 +3310,146 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 <pre><code>오프닝 48줄 → 32초
 </code></pre>
 <p>넘기는 시간까지 치면 50~60초쯤이다. 상한은 2분으로 잡아 뒀다.</p>
+<h2>화면 구성 — 배경 CG + 하단 대사창</h2>
+<p>쯔꾸르식이다. 배경 한 장을 화면 전체에 깔고 그 위 하단에 대사창을 띄운다.</p>
+<pre><code>┌──────────────────────────────────────┐
+│                                      │
+│          배경 CG (그림 영역)          │  ← 위 2/3. 여기에 다 들어가야 한다
+│                                      │
+├──────────────────────────────────────┤
+│ 상황실                                │  ← 대사창이 아래 1/3 을 덮는다
+│ &quot;츄르는 쓸 줄 아십니까?&quot;               │
+└──────────────────────────────────────┘
+</code></pre>
+<h3>규격</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>크기</td>
+<td><strong>640 × 360</strong> (내부 해상도. ×2 = 1280×720, ×3 = 1920×1080)</td>
+</tr>
+<tr>
+<td>형식</td>
+<td>PNG. Filter Mode <code>Point</code>, Compression <code>None</code>, Mip Maps <code>Off</code> (29장)</td>
+</tr>
+<tr>
+<td>안전 영역</td>
+<td><strong>위 640 × 240.</strong> 아래 120px 은 대사창이 덮는다</td>
+</tr>
+<tr>
+<td>두는 곳</td>
+<td><code>Assets/Art/Story/&lt;Id&gt;.png</code></td>
+</tr>
+</tbody>
+</table>
+<p>화면비가 다른 기기에서는 <code>ScaleAndCrop</code> 이라 <strong>좌우가 잘린다.</strong>
+중요한 것을 가장자리에 두지 않는다.</p>
+<h3>그려야 하는 12장</h3>
+<p>Id 가 곧 파일명이다. <code>StoryBackgrounds</code> 상수와 1:1 이고,
+<code>EveryCatalogedBackground_IsActuallyUsed</code> 가 목록과 대본이 어긋나는지 잡는다.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Id</th>
+<th>무엇</th>
+<th>어디서</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>bg-news-desk</code></td>
+<td>뉴스 스튜디오. 앵커가 정면을 본다</td>
+<td>오프닝 1 · 3</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>bg-ufo-open</code></td>
+<td>상공에 열린 비행체. 고양이가 쏟아진다</td>
+<td>오프닝 1</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>bg-city-flood</code></td>
+<td>도시 전경이 고양이로 가득하다</td>
+<td>오프닝 1</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>bg-army</code></td>
+<td>총을 내려놓고 고양이를 쓰다듬는 군인</td>
+<td>오프닝 2</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>bg-police</code></td>
+<td>경찰차 위의 고양이들. 경찰은 사진을 찍는다</td>
+<td>오프닝 2</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>bg-fire-station</code></td>
+<td>소방관들이 고양이에게 츄르를 준다</td>
+<td>오프닝 2</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>bg-city-frozen</code></td>
+<td>멈춘 도시. 회사원 · 버스 기사 · 편의점 직원</td>
+<td>오프닝 3</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>bg-situation-room</code></td>
+<td>정부 비상 상황실. 벽에 거대한 작전 지도</td>
+<td>오프닝 2 · 3 · 4 · 5</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>bg-rescue-stamp</code></td>
+<td>「지구 고양이 긴급 구조대」 도장</td>
+<td>오프닝 4</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>bg-appointment</code></td>
+<td>[긴급 구조대 팀장 임명장] 서류</td>
+<td>오프닝 5</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>bg-sick-cat</code></td>
+<td>무리에서 떨어져 나온 광란 고양이 한 마리</td>
+<td>수의사 합류</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>bg-launch-pad</code></td>
+<td>발사대 위의 마지막 수송선</td>
+<td>엔딩</td>
+</tr>
+</tbody>
+</table>
+<p><code>bg-black</code> 은 파일이 아니다 — 암전은 검은 화면이다.</p>
+<p><strong>8번을 제일 먼저 그리는 게 좋다.</strong> 상황실이 오프닝 48줄 중 가장 오래 떠 있고,
+네 장면에 재사용된다. 한 장으로 가장 많은 시간을 산다.</p>
+<h3>그림이 없어도 대사는 돈다</h3>
+<p>배경 Id 에 해당하는 파일이 없으면 그 줄은 <strong>검은 화면</strong>으로 나온다.
+대본과 아트가 서로를 기다리면 둘 다 안 나온다. 지금도 오프닝 전체가 재생된다.</p>
+<h3>장면 전환은 박자로 끊는다</h3>
+<pre><code>오프닝 48줄 / 장면 전환 17회
+</code></pre>
+<p>줄마다 바꾸면 연출이 아니라 슬라이드쇼고, 그만큼 그림을 더 그려야 한다.
+<code>BackgroundChanges_AreBeats_NotEveryLine</code> 이 두 줄에 한 번을 넘지 않는지 본다.</p>
+<p>오프닝 2장면이 전환이 가장 잦다 — 상황실에서 묻고 현장을 보여주는 걸
+세 번 반복하는 구조라서다. 그 반복 자체가 농담이다.</p>
 <h2>침묵도 대사다</h2>
 <p><code>DialogueLine.HoldSeconds</code> 로 줄마다 뜸을 줄 수 있다.
 "………" 을 빨리 넘겨 버리면 농담이 죽는다.</p>
@@ -3350,6 +3490,14 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 <tr>
 <td><code>StoryScene.TitleHere()</code></td>
 <td>타이틀이 뜨는 줄들. 대본이 시점을 들고 있다</td>
+</tr>
+<tr>
+<td><code>Core/Story/StoryBackgrounds.cs</code></td>
+<td>배경 Id 목록. 대본과 아트가 같은 목록을 본다</td>
+</tr>
+<tr>
+<td><code>StoryScene.At(id)</code></td>
+<td>장면 전환. 줄마다가 아니라 박자마다</td>
 </tr>
 <tr>
 <td><code>SaveData.SeenScenes</code></td>
@@ -4578,7 +4726,7 @@ Spawn 을 둘로 바꾸니 150 / 150 이 됐다.</p>
 <tbody>
 <tr>
 <td><code>TooManyCats.Core</code></td>
-<td>테스트 332개 + netstandard2.1 컴파일. <strong>CI 에서 매 push</strong></td>
+<td>테스트 336개 + netstandard2.1 컴파일. <strong>CI 에서 매 push</strong></td>
 </tr>
 <tr>
 <td><code>TooManyCats.Runtime</code></td>
@@ -4945,10 +5093,22 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 </section>
 <section class="chapter" id="end-of-document">
 <h2>End of Document</h2>
-<p><strong>Too Many Cats! — Game Design Document v0.9.8 FULL</strong></p>
+<p><strong>Too Many Cats! — Game Design Document v0.9.9 FULL</strong></p>
 </section>
 <section class="chapter" id="변경-이력">
 <h2>변경 이력</h2>
+<h2>v0.9.9 — 대사 장면에 배경 CG</h2>
+<ul>
+<li><strong>쯔꾸르식 화면 구성 (71장)</strong> — 배경 한 장 + 하단 대사창.
+  <code>DialogueLine.Background</code> 가 줄마다 배경 Id 를 들고 있다.</li>
+<li><strong>그려야 하는 12장을 확정했다.</strong> 640×360, 안전 영역은 위 640×240.
+  Id 가 곧 파일명이고 <code>StoryBackgrounds</code> 상수와 1:1 이다.</li>
+<li><strong>그림이 없어도 대사는 돈다.</strong> 없는 Id 는 검은 화면으로 떨어진다 —
+  대본과 아트가 서로를 기다리면 둘 다 안 나온다.</li>
+<li>배경 Id 를 상수로 모았다. 대본에 문자열을 직접 쓰면 오타 하나가
+  검은 화면으로 조용히 지나간다. 목록과 대본이 어긋나면 테스트가 잡는다.</li>
+<li>장면 전환은 줄이 아니라 박자로 끊는다 — 48줄에 17회.</li>
+</ul>
 <h2>v0.9.8 — 오프닝 마무리</h2>
 <ul>
 <li><strong>5장면 끝을 태도로 닫는다 (71장)</strong> — "옵니다 / 몇 마리 / 너무 많습니다" 대신
