@@ -1119,7 +1119,7 @@
     <div class="chips">
       <span class="chip gold">◆ 표시된 장에 목업이 있다</span>
       <span class="chip">docs/GDD.md 에서 생성됨</span>
-      <span class="chip">Core 테스트 353개</span>
+      <span class="chip">Core 테스트 355개</span>
     </div>
   </header>
 
@@ -2950,62 +2950,104 @@ Wave 전에 배치를 끝내야 Spawn 위치와 지형을 읽고 판을 짜게 �
 </code></pre>
 <p>외형 수가 <code>무늬 × 특수</code> 가 아니라 <code>무늬 + 특수</code> 로 끝난다.
 <code>CatBreeds.Resolve(type, rolledPattern)</code> 이 이 규칙을 강제하고, Spawn 경로에서 검증된다.</p>
-<h2>일반 무늬 — 6종을 유지한다. 단, 명도 축으로</h2>
+<h2>일반 무늬 — 12종. 명도 축으로 늘어세운다</h2>
 <p>고양이 한 마리가 화면에서 차지하는 크기를 생각하면, 무리 속에서 살아남는 정보는
 <strong>색조가 아니라 밝기</strong>다. 줄무늬 방향 같은 건 보이지 않는다.
-그래서 6종을 색조가 아니라 명도로 벌려 놓는다.</p>
+그래서 무늬를 색조가 아니라 명도로 벌려 놓는다.</p>
 <table>
 <thead>
 <tr>
 <th>Atlas 행</th>
 <th>무늬</th>
 <th>명도</th>
-<th>역할</th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>0</td>
-<td>Black</td>
+<td>Black 검정</td>
 <td>가장 어두움</td>
 <td>아래쪽 끝</td>
 </tr>
 <tr>
 <td>1</td>
-<td>Tuxedo</td>
+<td>Tuxedo 턱시도</td>
 <td>어두움 + 흰 덩어리</td>
 <td>유일한 고대비 무늬</td>
 </tr>
 <tr>
 <td>2</td>
-<td>Gray Tabby</td>
+<td>Gray 회색</td>
+<td>어두운 중간</td>
+<td>단색</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Brown Tabby 갈색 줄무늬</td>
+<td>어두운 중간, 따뜻함</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Gray Tabby 회색 줄무늬</td>
 <td>중간</td>
 <td>기본값. 가장 흔하다</td>
 </tr>
 <tr>
-<td>3</td>
-<td>Orange Tabby</td>
-<td>중간, 따뜻함</td>
-<td>유일한 유채색</td>
+<td>5</td>
+<td>Torbie 카오스</td>
+<td>중간, 어지러움</td>
+<td>고등어 + 치즈</td>
 </tr>
 <tr>
-<td>4</td>
-<td>Calico</td>
+<td>6</td>
+<td>Orange Tabby 주황 줄무늬</td>
+<td>중간, 따뜻함</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Calico 삼색이</td>
 <td>밝음/어두움 혼재</td>
 <td>얼룩</td>
 </tr>
 <tr>
-<td>5</td>
-<td>White</td>
+<td>8</td>
+<td>Orange White 주황 + 흰색</td>
+<td>밝은 중간</td>
+<td></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Gray White 회색 + 흰색</td>
+<td>밝은 중간</td>
+<td></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Cream 크림</td>
+<td>밝음</td>
+<td></td>
+</tr>
+<tr>
+<td>11</td>
+<td>White 흰색</td>
 <td>가장 밝음</td>
 <td>위쪽 끝</td>
 </tr>
 </tbody>
 </table>
-<p><strong>6종이 적당한 이유</strong> — 3종이면 무리가 한 덩어리로 보인다.
-12종을 그려도 이 크기에서는 6종과 구분되지 않는다. 아트 비용만 두 배가 된다.
-6은 명도를 눈에 띄게 나눌 수 있는 마지막 지점이다.</p>
-<p><strong>유채색이 하나뿐인 이유</strong> — 나머지 유채색 슬롯을 특수 고양이에게 남겨 둔다. 아래를 본다.</p>
+<h3>6종에서 12종으로 늘렸다</h3>
+<p>이 장은 원래 <strong>6종이 상한</strong>이라고 적고 있었다 — 「12종을 그려도 이 크기에서는
+6종과 구분되지 않는다. 아트 비용만 두 배가 된다」.</p>
+<p><strong>앞의 절반은 아직 유효하고 뒤의 절반이 무너졌다.</strong> PixelLab 이 무늬를 생성하므로
+(27장) 12종의 값이 6종의 두 배가 아니다. 값이 두 배가 아니면 「구분이 안 될 수도
+있다」 는 늘리지 않을 이유가 못 된다. 안 보이면 손해가 없고 보이면 이득이다.</p>
+<p>명도 순서는 그래서 더 중요해졌다. 12칸을 명도로 채우면 이웃끼리는 비슷하지만
+<strong>멀리 떨어진 둘은 확실히 다르다</strong> — 무리가 한 덩어리로 안 보이는 건 그 폭이 하는 일이다.</p>
+<p><strong>따뜻한 색이 넷이 됐다</strong> (갈색 줄무늬 · 주황 줄무늬 · 주황+흰색 · 크림).
+황금 고양이가 이 넷 사이에서 묻힐 위험이 그만큼 커졌다. 아래 예약 색을 본다.</p>
 <h2>예약 색</h2>
 <p>일반 무늬는 이 세 계열을 쓰지 않는다. 특수 고양이 전용이다.</p>
 <table>
@@ -3110,8 +3152,8 @@ Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한
 ------------------------------
 실제로 그리는 것        12장
 </code></pre>
-<p>Atlas 는 <strong>32열(방향 8 × 프레임 4) × 12행(외형)</strong> = 384칸.
-셀 64×64 기준 <strong>2048 × 768</strong>.</p>
+<p>Atlas 는 <strong>32열(방향 8 × 프레임 4) × 18행(외형)</strong> = 576칸.
+셀 64×64 기준 <strong>2048 × 1152</strong>.</p>
 <h3>8방향으로 간다</h3>
 <p>처음엔 4열이었다. 좌우 뒤집기로 방향을 때우는 구성이라 실질 2방향이었고,
 렌더러에도 "방향별 시트를 만들지 않아도 된다" 고 적어 뒀었다.</p>
@@ -5487,9 +5529,10 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 </tbody>
 </table>
 <p>지형 타일만 예외다 — 아래를 본다.</p>
-<h2>A. 고양이 — 12장</h2>
-<p>70장에 이미 적혀 있다. 체형 3종 × 4프레임, 나머지는 팔레트 스왑.
-아틀라스 <strong>32열(방향 8 × 프레임 4) × 12행</strong>, 2048 × 768.</p>
+<h2>A. 고양이 — 18종</h2>
+<p>70장에 이미 적혀 있다. <strong>일반 무늬 12 + 특수 고정 외형 6.</strong>
+체형 3종 × 8방향 × 4프레임을 그리고 나머지 15행은 팔레트 스왑이다.
+아틀라스 <strong>32열(방향 8 × 프레임 4) × 18행</strong>, 2048 × 1152.</p>
 <p><strong>이게 첫 번째다.</strong> 화면의 대부분이 이거고, 나머지는 이것 옆에 놓고 톤을 맞춘다.</p>
 <h2>B. 사람 — 3종 12장</h2>
 <p>65장의 사람 유닛이다. 장비와 갈라 놓는 이유는 하나 — <strong>사람은 움직이고 등급이 있다.</strong></p>
@@ -5830,8 +5873,8 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <tbody>
 <tr>
 <td>A. 고양이</td>
-<td>12</td>
-<td>384</td>
+<td>18</td>
+<td>576</td>
 <td><strong>화면의 대부분</strong></td>
 </tr>
 <tr>
@@ -5866,19 +5909,19 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 </tr>
 <tr>
 <td></td>
-<td><strong>51종</strong></td>
-<td><strong>446칸</strong></td>
+<td><strong>57종</strong></td>
+<td><strong>638칸</strong></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 <p><strong>순서는 「화면을 채우는 순」이다.</strong></p>
-<pre><code>1. 고양이 12                  →  이것만 있어도 무리가 보인다
+<pre><code>1. 고양이 18                  →  이것만 있어도 무리가 보인다
 2. 지형 8                     →  여기까지면 판이 돌아가는 게 보인다
 3. 사람 3 · 장비 9            →  여기까지면 플레이가 된다
 4. UI 14 · 이펙트 5           →  여기까지면 게임처럼 보인다
 </code></pre>
-<p>1번과 2번이면 <strong>첫 스크린샷이 나온다.</strong> 20종이다.
+<p>1번과 2번이면 <strong>첫 스크린샷이 나온다.</strong> 26종이다.
 장비 없이도 고양이는 흐르고 Exit 으로 빠진다 — 시뮬레이션은 이미 돌고 있다 (76장).</p>
 <h2>임시로 때우는 법</h2>
 <p>44종을 다 그리기 전에 씬을 켜 봐야 한다. 없는 스프라이트는 <strong>단색 사각형</strong>으로 둔다.
@@ -5898,8 +5941,8 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <ul>
 <li><strong>픽셀 에셋 목록을 80장에 신설.</strong> 26~29장은 고양이 파이프라인, 70장은 고양이 외형인데
   <strong>장비 · 지형 · UI · 이펙트는 한 곳에 모인 적이 없었다.</strong> 코드의 <code>EquipmentType</code> ·
-  <code>AttractionType</code> · <code>RoadWidth</code> 에서 뽑아 <strong>51종</strong>으로 적었다. 그리는 순서도 같이 —
-  고양이 12 + 지형 8 이면 첫 스크린샷이 나온다.</li>
+  <code>AttractionType</code> · <code>RoadWidth</code> 에서 뽑아 <strong>57종</strong>으로 적었다. 그리는 순서도 같이 —
+  고양이 18 + 지형 8 이면 첫 스크린샷이 나온다.</li>
 <li><strong>기획서가 코드와 맞는지 CI 가 센다 (<code>tools/check-gdd.py</code>).</strong> 인용한 타입 이름,
   오프닝 줄·배경·전환 수, 에셋 합계, 그림 「있음/없음」 네 가지를 본다.
   세 가지가 이미 틀려 있었다 — <code>RescueDeviceKind</code>(없는 타입, 실제는 <code>EquipmentType</code>),
@@ -5907,6 +5950,13 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
   전부 이번 버전에 내가 쓴 것들이라, 손으로 쓰는 한 계속 난다.
   <strong>검사기도 한 번 틀렸다</strong> — 자기 설명에 적힌 <code>RescueDeviceKind</code> 를 "코드에 있는 이름"
   으로 잡아서 반례를 통과시켰다. 틀린 문서를 여섯 개 심어 넣고 전부 실패하는 걸 봤다.</li>
+<li><strong>일반 무늬를 6종 → 12종으로 (70장).</strong> 삼색이 · 회색+흰색 · 주황+흰색 · 카오스 ·
+  크림 · 회색 · 흰색 · 검정 · 갈색 줄무늬 · 주황 줄무늬 · 회색 줄무늬 · 턱시도.
+  이 장은 원래 「6종이 상한」 이라고 적고 있었는데 근거의 절반이 무너졌다 —
+  PixelLab 이 무늬를 생성하므로 12종의 값이 6종의 두 배가 아니다.
+  아틀라스 12행 → <strong>18행</strong>(무늬 12 + 특수 6), 2048 × 1152.
+  <strong>Wave 기본 목록이 여섯만 들고 있었다</strong> — 그린 무늬의 절반이 화면에 영영 안 뜨는데
+  오류는 안 난다. <code>DefaultWave_OffersEveryPattern</code> 이 잠근다.</li>
 <li><strong>고양이를 8방향으로 (27장, 70장).</strong> 아틀라스가 4열 → <strong>32열(방향 8 × 프레임 4)</strong>,
   2048 × 768. 좌우 뒤집기로는 위아래가 구분되지 않는데, 이 게임은 무리가 어디로
   흐르는지를 보는 게임이다. 뒤집기는 한쪽 뺨에만 있는 얼룩도 반대편으로 옮긴다.
