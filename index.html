@@ -1119,7 +1119,7 @@
     <div class="chips">
       <span class="chip gold">◆ 표시된 장에 목업이 있다</span>
       <span class="chip">docs/GDD.md 에서 생성됨</span>
-      <span class="chip">Core 테스트 355개</span>
+      <span class="chip">Core 테스트 357개</span>
     </div>
   </header>
 
@@ -3117,8 +3117,8 @@ Wave 전에 배치를 끝내야 Spawn 위치와 지형을 읽고 판을 짜게 �
 </tr>
 <tr>
 <td>황금 고양이</td>
+<td>실루엣 — 약간 크다 (×1.25)</td>
 <td>금색 + 반짝임</td>
-<td>머리 위 표식</td>
 </tr>
 <tr>
 <td>광란 고양이</td>
@@ -3134,6 +3134,21 @@ Wave 전에 배치를 끝내야 Spawn 위치와 지형을 읽고 판을 짜게 �
 </table>
 <p>굵게 표시한 것들은 <strong>행동이 곧 표식</strong>이다. 그리는 비용이 0이고 가장 잘 읽힌다.
 대장 고양이를 찾는 방법은 대장을 보는 게 아니라 무리가 뭉친 곳을 보는 것이다.</p>
+<h3>황금이 색 하나로만 구분되고 있었다</h3>
+<p>원래 황금의 두 채널은 「금색 + 반짝임」 과 「머리 위 표식」 이었다.
+<strong>표식은 아직 코드에 없고</strong>(두 번째 DrawMeshInstanced 패스가 필요하다) 반짝임은
+색의 일부다. 남는 건 색 하나였고, 그 상태에서 무늬를 6종에서 12종으로 늘려
+따뜻한 계열 경쟁자가 하나에서 넷이 됐다.</p>
+<p>그래서 실루엣을 첫 채널로 올렸다 — <strong>×1.25</strong>. 대장(1.15)보다 조금 크다.
+크게 키우지는 않는다. 황금은 잡는 게 아니라 <b>알아보는</b> 게 일이다.</p>
+<p><code>ColourUnreliableCats_AlsoDifferInSize</code> 가 빠른 · 뚱냥 · 대장 · 황금 넷의 크기가
+일반과 다른지 본다. 실제로 황금이 1.0 이었고 이 검사에 걸렸다.</p>
+<h3>크기는 공짜가 아니다</h3>
+<p>64px 칸을 1.35배로 그리면 그 고양이의 <strong>픽셀이 주변보다 1.35배 크다.</strong>
+픽셀 아트에서 이건 보인다 (26장, 29장). 지금 폭은 <strong>0.85 ~ 1.35</strong> 다.</p>
+<p>이 밖으로 나가야 할 만큼 커야 한다면 배율이 아니라 <strong>그림 안에서 체형을 바꾼다</strong> —
+먹보가 그렇게 한다. 통통한 체형이 <code>DisplayScale</code> 이 아니라 스프라이트에 들어 있다.
+<code>SizeChannel_StaysInsideThePixelBudget</code> 이 이 폭을 잠근다.</p>
 <h2>실루엣은 연출이다</h2>
 <p><code>CatTypeDefinition.DisplayScale</code> 은 렌더러만 읽는다. 시뮬레이션에는 들어가지 않는다.
 Separation 반경이나 속도에 크기를 엮으면 밸런싱과 아트가 한 덩어리가 되어 둘 다 못 만진다.</p>
