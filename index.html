@@ -5426,10 +5426,10 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <section class="chapter" id="s80">
 <h2>80. 픽셀 에셋 목록</h2>
 <p><strong>26~29장은 고양이 파이프라인이고, 70장은 고양이 외형이다. 나머지가 없었다.</strong>
-장비 · 지형 · UI · 이펙트는 문서 곳곳에 이름만 흩어져 있었고 한 곳에 모인 적이 없다.
+사람 · 장비 · 지형 · UI · 이펙트는 문서 곳곳에 이름만 흩어져 있었고 한 곳에 모인 적이 없다.
 그림을 시킬 때 필요한 건 "무엇이 몇 장" 하나다.</p>
 <p>이 장은 <strong>코드에서 뽑은 것</strong>이다. <code>RescueDeviceKind</code>, <code>AttractionType</code>, <code>RoadWidth</code>,
-<code>UnlockCurrency</code> 가 원본이고 여기는 그 목록에 크기와 상태를 붙인 것뿐이다.
+<code>UnlockCurrency</code>, <code>RescueDevice.UpgradeLevel</code> 이 원본이고 여기는 그 목록에 크기와 상태를 붙인 것뿐이다.
 새 종류가 코드에 생기면 여기도 늘어난다.</p>
 <h2>지금 상태</h2>
 <pre><code>있음 :  로고 1 · 키 아트 1 · 초상화 6 · 오프닝 배경 3
@@ -5469,8 +5469,74 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <p>70장에 이미 적혀 있다. 체형 3종 × 4프레임, 나머지는 팔레트 스왑.
 아틀라스 4열 × 12행, 256 × 768.</p>
 <p><strong>이게 첫 번째다.</strong> 화면의 대부분이 이거고, 나머지는 이것 옆에 놓고 톤을 맞춘다.</p>
-<h2>B. 장비 — 10장</h2>
-<p><code>RescueDeviceKind</code> 8종 + 장난감 2종. 전부 길 위나 건물 가장자리에 놓이는 물건이다.</p>
+<h2>B. 사람 — 3종 12장</h2>
+<p>65장의 사람 유닛이다. 장비와 갈라 놓는 이유는 하나 — <strong>사람은 움직이고 등급이 있다.</strong></p>
+<table>
+<thead>
+<tr>
+<th>스프라이트</th>
+<th>동사</th>
+<th>프레임</th>
+<th>재화 (6장)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>unit-rescuer</code></td>
+<td>없앤다. 고양이를 직접 구조</td>
+<td><strong>4</strong></td>
+<td>인력</td>
+</tr>
+<tr>
+<td><code>unit-butler</code></td>
+<td>모은다. 주변 유인 장비를 강화</td>
+<td><strong>4</strong></td>
+<td>인력</td>
+</tr>
+<tr>
+<td><code>unit-vet</code></td>
+<td>고친다. 광란 · 돌연변이를 되돌린다</td>
+<td><strong>4</strong></td>
+<td>인력</td>
+</tr>
+</tbody>
+</table>
+<p><strong>셋 다 걷기 프레임이 필요하다.</strong> 처음엔 정지 한 장으로 적었는데 틀렸다 —
+프로 구조원은 <code>DeviceMovement.Seek</code> 로 <strong>고양이가 많은 쪽으로 스스로 이동한다</strong> (65장).
+이미 구현돼 있는 동작이다(<code>RescueSystem.MoveSeeking</code>). 걸어 다니는 사람을 정지
+한 장으로 그리면 미끄러진다.</p>
+<h3>등급은 몸이 아니라 표식으로</h3>
+<p>각 유닛은 초보 / 중급 / 프로 3등급이고 (<code>RescueDevice.UpgradeLevel</code>),
+등급이 오르면 수치만이 아니라 <strong>동작이 바뀐다</strong> (19장). 그러면 화면에서도
+구분돼야 하는데, 그린다고 구분되지는 않는다.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>장수</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>채택</strong> — 등급은 뱃지</td>
+<td>3종 × 4프레임 = <strong>12</strong> + 뱃지 3</td>
+<td>몸은 직업, 표식은 등급</td>
+</tr>
+<tr>
+<td>기각 — 등급마다 다른 옷</td>
+<td>3 × 3 × 4 = <strong>36</strong></td>
+<td>3배 값에 판독성은 더 나쁘다</td>
+</tr>
+</tbody>
+</table>
+<p>64 × 64 안에서 「중급 구조원 옷」과 「프로 구조원 옷」을 구분되게 그리는 건
+실제로 어렵다. <strong>70장이 고양이에 대해 내린 결론과 같다</strong> — 색 하나로 나누지 않고
+2채널로 나눈다. 사람은 몸(직업) + 뱃지(등급)다. 뱃지는 D 에 있다.</p>
+<p>집사와 수의사는 아직 코드에 없다 (76장 백로그). <strong>그래도 목록에는 지금 적는다</strong> —
+안 적으면 또 빠진다. 이 장이 생긴 이유가 그거다.</p>
+<h2>C. 장비 — 9장</h2>
+<p><code>RescueDeviceKind</code> 중 사람이 아닌 것 + 장난감 2종. 길 위나 건물 가장자리에 놓인다.</p>
 <table>
 <thead>
 <tr>
@@ -5481,12 +5547,6 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td><code>eq-rescuer</code></td>
-<td>구조원. 사람</td>
-<td>1</td>
-<td>인력</td>
-</tr>
 <tr>
 <td><code>eq-churu</code></td>
 <td>츄르 디스펜서</td>
@@ -5524,18 +5584,6 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <td>장비</td>
 </tr>
 <tr>
-<td><code>eq-laser</code></td>
-<td>레이저 포인터</td>
-<td>1</td>
-<td>유인</td>
-</tr>
-<tr>
-<td><code>eq-rod</code></td>
-<td>낚시대</td>
-<td>1</td>
-<td>유인</td>
-</tr>
-<tr>
 <td><code>eq-foodstore</code></td>
 <td>음식점. 2차 유인원 (17장)</td>
 <td>1</td>
@@ -5545,10 +5593,35 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 </table>
 <p><strong>움직이는 둘만 프레임이 여럿이다.</strong> 차량은 경로를 돌고(<code>MovementMode.Route</code>)
 드론은 무리를 쫓는다(<code>Seek</code>). 나머지는 제자리에 서 있으므로 한 장이면 된다.</p>
-<p><code>eq-rod</code> 와 <code>eq-laser</code> 는 <strong>커서를 따라다니는 물건</strong>이다 (77장). 다른 장비처럼
-바닥에 놓이지 않으므로 위에서 내려다본 모습이 아니라 <strong>끝점 표식</strong>에 가깝게 그린다.</p>
-<p>수의사 · 집사는 아직 코드에 없다 (65장, 76장 백로그). 생기면 여기 붙인다.</p>
-<h2>C. 지형 — 8장</h2>
+<h3>장난감 둘은 다르게 그린다</h3>
+<table>
+<thead>
+<tr>
+<th>스프라이트</th>
+<th>무엇</th>
+<th>프레임</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>toy-laser</code></td>
+<td>레이저 포인터</td>
+<td>1</td>
+<td>유인</td>
+</tr>
+<tr>
+<td><code>toy-rod</code></td>
+<td>낚시대</td>
+<td>1</td>
+<td>유인</td>
+</tr>
+</tbody>
+</table>
+<p><strong>커서를 따라다니는 물건</strong>이다 (77장). 바닥에 놓이지 않으므로 위에서 내려다본
+모습이 아니라 <strong>끝점 표식</strong>에 가깝게 그린다 — 레이저는 빨간 점, 낚시대는 흔들리는 미끼다.
+장비 슬롯 안에서는 도구 자체(포인터 · 낚싯대)로 보여야 하므로 슬롯 아이콘은 따로 필요하다.</p>
+<h2>D. 지형 — 8장</h2>
 <p><strong>타일이 아니라 조각이다.</strong> 맵은 격자가 아니라 폭을 가진 길과 건물 사각형으로
 정의된다 (<code>RoadWidth</code>, 74장). 그래서 반복 텍스처 + 가장자리 조각으로 간다.</p>
 <table>
@@ -5606,7 +5679,7 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 등급마다 그림을 따로 그리지 않는다 — 폭 자체가 이미 등급 표시다.</p>
 <p><code>mark-exit</code> 이 빨강인 이유는 74장이다. Exit 은 실패가 새어 나가는 구멍이고,
 플레이어가 판을 볼 때 제일 먼저 찾아야 하는 지점이다.</p>
-<h2>D. UI — 9장</h2>
+<h2>E. UI — 14장</h2>
 <p>72장이 배치를, 42장이 항목을 적었다. 여기는 <strong>그려야 하는 것</strong>만이다.</p>
 <table>
 <thead>
@@ -5652,13 +5725,37 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <td><code>ui-star</code></td>
 <td>클리어 조건 달성 (67장)</td>
 </tr>
+<tr>
+<td><code>ui-grade-1</code></td>
+<td>초보 뱃지</td>
+</tr>
+<tr>
+<td><code>ui-grade-2</code></td>
+<td>중급 뱃지</td>
+</tr>
+<tr>
+<td><code>ui-grade-3</code></td>
+<td>프로 뱃지</td>
+</tr>
+<tr>
+<td><code>ui-slot-laser</code></td>
+<td>레이저 슬롯 아이콘</td>
+</tr>
+<tr>
+<td><code>ui-slot-rod</code></td>
+<td>낚시대 슬롯 아이콘</td>
+</tr>
 </tbody>
 </table>
+<p><strong>뱃지 3장은 유닛 머리 위에 붙는다.</strong> UI 에 두는 이유는 화면 좌표가 아니라
+월드 좌표에 그리지만 하는 일이 정보 표시라서다 — 70장의 황금 고양이 표식과 같은 부류다.
+셋이 <strong>숫자를 안 읽고 구분</strong>돼야 한다. 별 1·2·3 처럼 개수로 가는 게 안전하다.</p>
 <p><strong>재화 아이콘 4종은 서로 확실히 달라야 한다.</strong> 결과 화면에 넷이 나란히 뜬다 (43장).
 색만으로 나누면 안 된다 — 70장이 고양이에 대해 정한 규칙과 같은 이유다.
 사람 / 발바닥 / 톱니 처럼 <strong>모양으로</strong> 가른다.</p>
-<p>장비 슬롯 안의 아이콘은 B 의 장비 스프라이트를 그대로 축소해 쓴다. 따로 안 그린다.</p>
-<h2>E. 이펙트 — 5장</h2>
+<p>장비 슬롯 안의 아이콘은 C 의 장비 스프라이트를 그대로 축소해 쓴다. 따로 안 그린다.
+<strong>장난감 둘만 예외다</strong> — 끝점 표식이라 축소해도 무슨 도구인지 안 보인다.</p>
+<h2>F. 이펙트 — 5장</h2>
 <p>23장의 대량 구조 연출.</p>
 <table>
 <thead>
@@ -5703,7 +5800,8 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <thead>
 <tr>
 <th></th>
-<th>장수</th>
+<th>종수</th>
+<th>아틀라스 칸</th>
 <th></th>
 </tr>
 </thead>
@@ -5711,42 +5809,54 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <tr>
 <td>A. 고양이</td>
 <td>12</td>
+<td>48</td>
 <td><strong>화면의 대부분</strong></td>
 </tr>
 <tr>
-<td>B. 장비</td>
-<td>10 (프레임 포함 16칸)</td>
-<td></td>
+<td>B. 사람</td>
+<td>3</td>
+<td>12</td>
+<td>셋 다 걷는다</td>
 </tr>
 <tr>
-<td>C. 지형</td>
+<td>C. 장비</td>
+<td>9</td>
+<td>15</td>
+<td>장난감 2종 포함</td>
+</tr>
+<tr>
+<td>D. 지형</td>
+<td>8</td>
 <td>8</td>
 <td></td>
 </tr>
 <tr>
-<td>D. UI</td>
-<td>9</td>
+<td>E. UI</td>
+<td>14</td>
+<td>14</td>
+<td>뱃지 3 · 장난감 슬롯 2 포함</td>
+</tr>
+<tr>
+<td>F. 이펙트</td>
+<td>5</td>
+<td>13</td>
 <td></td>
 </tr>
 <tr>
-<td>E. 이펙트</td>
-<td>5 (프레임 포함 13칸)</td>
 <td></td>
-</tr>
-<tr>
-<td></td>
-<td><strong>44종</strong></td>
+<td><strong>51종</strong></td>
+<td><strong>110칸</strong></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 <p><strong>순서는 「화면을 채우는 순」이다.</strong></p>
-<pre><code>1. 고양이 12          →  이것만 있어도 무리가 보인다
-2. 지형 8             →  여기까지면 판이 돌아가는 게 보인다
-3. 장비 10            →  여기까지면 플레이가 된다
-4. UI 9 · 이펙트 5    →  여기까지면 게임처럼 보인다
+<pre><code>1. 고양이 12                  →  이것만 있어도 무리가 보인다
+2. 지형 8                     →  여기까지면 판이 돌아가는 게 보인다
+3. 사람 3 · 장비 9            →  여기까지면 플레이가 된다
+4. UI 14 · 이펙트 5           →  여기까지면 게임처럼 보인다
 </code></pre>
-<p>1번과 2번이면 <strong>첫 스크린샷이 나온다.</strong> 20장이다.
+<p>1번과 2번이면 <strong>첫 스크린샷이 나온다.</strong> 20종이다.
 장비 없이도 고양이는 흐르고 Exit 으로 빠진다 — 시뮬레이션은 이미 돌고 있다 (76장).</p>
 <h2>임시로 때우는 법</h2>
 <p>44종을 다 그리기 전에 씬을 켜 봐야 한다. 없는 스프라이트는 <strong>단색 사각형</strong>으로 둔다.
@@ -5766,8 +5876,12 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <ul>
 <li><strong>픽셀 에셋 목록을 80장에 신설.</strong> 26~29장은 고양이 파이프라인, 70장은 고양이 외형인데
   <strong>장비 · 지형 · UI · 이펙트는 한 곳에 모인 적이 없었다.</strong> 코드의 <code>RescueDeviceKind</code> ·
-  <code>AttractionType</code> · <code>RoadWidth</code> 에서 뽑아 <strong>44종</strong>으로 적었다. 그리는 순서도 같이 —
+  <code>AttractionType</code> · <code>RoadWidth</code> 에서 뽑아 <strong>51종</strong>으로 적었다. 그리는 순서도 같이 —
   고양이 12 + 지형 8 이면 첫 스크린샷이 나온다.</li>
+<li><strong>사람은 장비에서 떼어 냈다 (65장, 80장).</strong> 처음엔 구조원을 정지 한 장으로 적었는데,
+  프로 구조원은 <code>DeviceMovement.Seek</code> 로 <strong>스스로 걸어 다닌다</strong> — 이미 구현된 동작이다.
+  셋 다 걷기 4프레임으로 올렸고, 초보/중급/프로는 옷을 바꾸는 대신 <strong>뱃지</strong>로 나눈다.
+  등급마다 옷을 그리면 36장인데 64×64 에서 구분되지도 않는다.</li>
 <li><strong>로고 · 키 아트 · 배경 3장 · 초상화 6장이 실물이 됐다.</strong> 자리 표시가 아니라 파일이다.</li>
 <li><strong>로고와 키 아트는 <code>Assets/Art/UI/</code> 로 (79장).</strong> 게임이 로드하는 에셋이라
   문서 폴더에 두면 같은 파일이 두 벌이 되고, 두 벌이 되는 순간 최신본이 사라진다.</li>
