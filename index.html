@@ -3887,7 +3887,7 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 치수는 <code>StoryFraming</code> 한 곳에 있고 미리보기 CSS 와 <code>DialogueView</code> 가 같은 값을 쓴다.
 <code>StoryFramingTests</code> 가 두 가지를 잠근다 — <strong>상자가 불투명해지지 않는가</strong>, 그리고
 <strong>상자를 줄이다가 글보다 작아지지 않는가.</strong></p>
-<h3>그려야 하는 12장 — 그중 10장은 이미 있다</h3>
+<h3>그려야 하는 12장 — <strong>전부 있다</strong></h3>
 <p>Id 가 곧 파일명이다. <code>StoryBackgrounds</code> 상수와 1:1 이고,
 <code>OpeningNeeds_TwelveIllustrations</code> 가 이 수가 늘어나면 실패한다.</p>
 <table>
@@ -3921,8 +3921,8 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 <tr>
 <td>4</td>
 <td><code>bg-city-paralyzed</code></td>
-<td>넓은 도시 전경. 도로 · 버스 · 시장 · 회사원이 전부 멈췄다</td>
-<td>없음</td>
+<td>군 · 경 · 시민이 전부 고양이를 안고 서 있다</td>
+<td><strong>있음</strong></td>
 </tr>
 <tr>
 <td>5</td>
@@ -3969,8 +3969,8 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 <tr>
 <td>12</td>
 <td><code>bg-appointment</code></td>
-<td>구조대원이 임명장을 받는 장면</td>
-<td>없음</td>
+<td>책상 위의 임명장. 「OFFICIAL APPOINTMENT — SPECIAL CAT-RESCUE TASK FORCE」</td>
+<td><strong>있음</strong></td>
 </tr>
 </tbody>
 </table>
@@ -3979,7 +3979,7 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 <h4>7장에서 12장으로 늘었는데 그릴 것은 줄었다</h4>
 <p><strong>세는 건 장수고 값은 안 그려진 장수다.</strong> 이 숫자만 보고 「늘었다」 고 읽으면 안 된다.</p>
 <pre><code>전    7장 중  3장 완성  →  그릴 것 4장
-후   12장 중 10장 완성  →  그릴 것 2장
+후   12장 중 12장 완성  →  그릴 것 0장
 </code></pre>
 <p><code>bg-forces-down</code>(3분할, 미착수) 한 장을 군 · 경 · 소방 <strong>before / after 여섯 컷</strong>으로
 갈랐는데 <strong>그 여섯 장이 이미 그려져 있었다.</strong></p>
@@ -6073,11 +6073,12 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <code>UnlockCurrency</code>, <code>RescueDevice.UpgradeLevel</code> 이 원본이고 여기는 그 목록에 크기와 상태를 붙인 것뿐이다.
 새 종류가 코드에 생기면 여기도 늘어난다.</p>
 <h2>지금 상태</h2>
-<pre><code>있음 :  로고 1 · 키 아트 1 · 초상화 7 · 오프닝 배경 10
+<pre><code>있음 :  로고 1 · 키 아트 1 · 초상화 7 · 오프닝 배경 12 · 오버레이 3 · 고양이 아틀라스 1
 없음 :  게임 화면 안에 들어가는 것 전부
 </code></pre>
-<p><strong>한 장도 없다.</strong> <code>Assets/Art/Cats</code>, <code>Equipment</code>, <code>Maps</code>, <code>VFX</code> 가 전부 빈 폴더다.
-지금까지 그린 것은 전부 게임 화면 <b>바깥</b>(타이틀 · 오프닝)이다.</p>
+<p><strong>오프닝은 다 찼다.</strong> 배경 12장 · 오버레이 3개 · 초상화 7장이 전부 들어와 있다.
+고양이 아틀라스도 들어왔다. 남은 것은 <strong>게임 화면 안</strong>의 장비 · 지형 · UI · 이펙트고,
+<code>Assets/Art/Equipment</code>, <code>Maps</code>, <code>VFX</code> 는 아직 빈 폴더다.</p>
 <h2>규격</h2>
 <table>
 <thead>
@@ -6735,7 +6736,7 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <li><strong>배경이 7장 → 9장인데 그릴 것은 4장 → 2장으로 줄었다 (71장).</strong>
   미착수였던 3분할 <code>bg-forces-down</code> 을 세 컷으로 갈랐는데 <strong>그 세 장이 이미
   그려져 있었다.</strong> 숫자만 보고 「늘었다」 고 읽으면 안 된다 — 세는 건 장수고
-  값은 안 그려진 장수다. 남은 건 <code>bg-city-paralyzed</code> 와 <code>bg-appointment</code> 둘.</li>
+  값은 안 그려진 장수다.</li>
 <li><strong>앵커를 기자로 바꿨던 걸 되돌렸다 (71장).</strong> 그때 근거는 「1~4 가 전부 현장
   화면인데 앵커는 스튜디오에 있다」 였는데, <strong>실제 속보는 앵커 목소리로 현장
   화면을 튼다.</strong> 그리고 현장 기자로 두면 상황실에 못 들어가는 게 제약이 아니라
