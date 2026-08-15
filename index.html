@@ -1119,7 +1119,7 @@
     <div class="chips">
       <span class="chip gold">◆ 표시된 장에 목업이 있다</span>
       <span class="chip">docs/GDD.md 에서 생성됨</span>
-      <span class="chip">Core 테스트 384개</span>
+      <span class="chip">Core 테스트 391개</span>
     </div>
   </header>
 
@@ -3794,7 +3794,7 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 <tbody>
 <tr>
 <td>크기</td>
-<td><strong>640 × 360</strong> (내부 해상도. ×2 = 1280×720, ×3 = 1920×1080)</td>
+<td><strong>640 × 240</strong> (8:3). ×2 = 1280×480, ×3 = 1920×720</td>
 </tr>
 <tr>
 <td>형식</td>
@@ -3802,7 +3802,7 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 </tr>
 <tr>
 <td>안전 영역</td>
-<td><strong>위 640 × 240.</strong> 아래 120px 은 대사창이 덮는다</td>
+<td><strong>그림 전체.</strong> 640×240 이 곧 보이는 전부다</td>
 </tr>
 <tr>
 <td>두는 곳</td>
@@ -3810,8 +3810,26 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 </tr>
 </tbody>
 </table>
-<p>화면비가 다른 기기에서는 <code>ScaleAndCrop</code> 이라 <strong>좌우가 잘린다.</strong>
-중요한 것을 가장자리에 두지 않는다.</p>
+<p>화면비가 다른 기기에서는 cover 라 <strong>좌우가 잘린다.</strong> 중요한 것을 가장자리에 두지 않는다.</p>
+<h3>640×360 이 아니라 640×240 인 이유</h3>
+<p><strong>처음엔 640×360 이었고, 그게 틀렸다.</strong></p>
+<p>화면 전체에 깔면 아래 1/3 이 대사창 뒤로 들어간다. 그건 알고 있었고 「안전 영역」
+이라고 적어 뒀는데, 정작 그린 그림 세 장이 전부 16:9 였다. 시민도 고양이도 아래쪽에
+있으니 <strong>「고양이가 많아 보여야 한다」 가 일인 컷에서 고양이가 가려졌다.</strong></p>
+<p>그래서 배경을 화면 전체가 아니라 위 2/3 띠에만 깐다. 지금 있는 16:9 세 장은
+띠에 cover 로 넣고 넘치는 세로를 잘라내는데, 자르는 위치를 아래로 치우쳐서
+아래를 남긴다 (<code>StoryFraming.VerticalBias = 0.85</code>).</p>
+<pre><code>                        보이는 원본 구간      아래 절반 중 보이는 양
+예전  화면 전체         0.000 ~ 0.667             33%
+지금  위 2/3 띠         0.279 ~ 0.951             90%
+</code></pre>
+<p><strong>이건 이미 그린 그림을 살리는 방편이지 규격이 아니다.</strong> 잘라 내는 이상 뭔가는
+버려진다 — 재 보니 UFO 꼭대기(고양이 귀)는 원본 7.7% 지점이라 시민과 동시에는
+어떤 값으로도 못 남긴다. 살리려면 아래를 25% 잘라야 한다.</p>
+<p><strong>앞으로 그리는 것은 처음부터 640×240 으로 그린다.</strong> 그러면 자를 게 없다.
+계산은 <code>StoryFraming</code> 한 곳에 있고 미리보기 CSS 와 <code>DialogueView</code> 가 같은 값을 쓴다.
+<code>StoryFramingTests</code> 가 위 표의 33% → 90% 를 실제로 잰다.</p>
+<p>띠 아래 1/3 은 검게 남고 대사창이 그 위에 뜬다. 레터박스로 읽힌다.</p>
 <h3>그려야 하는 7장</h3>
 <p>Id 가 곧 파일명이다. <code>StoryBackgrounds</code> 상수와 1:1 이고,
 <code>OpeningNeeds_SevenIllustrations</code> 가 이 수가 늘어나면 실패한다.</p>
@@ -6562,6 +6580,17 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <h2>변경 이력</h2>
 <h2>v1.4.0 — 첫 그림이 들어왔다</h2>
 <ul>
+<li><strong>배경 규격을 640×360 에서 640×240 으로 바꿨다 (71장).</strong> 대사창이 아래 1/3 을
+  덮는다는 건 처음부터 「안전 영역」 으로 적어 뒀는데, <strong>정작 그린 세 장이 전부
+  16:9 였다.</strong> 시민도 고양이도 아래쪽에 있어서 「고양이가 많아 보여야 한다」 가
+  일인 컷에서 고양이가 가려졌다. 화면 전체 대신 <strong>위 2/3 띠에만</strong> 깐다.
+  이미 그린 세 장은 띠에 맞춰 위를 잘라 낸다 — <strong>원본 아래 절반이 보이는 양이
+  33% → 90%.</strong> 대신 UFO 꼭대기를 버렸다. 재 봤더니 그건 원본 7.7% 지점이라
+  시민과 동시에는 어떤 값으로도 못 남긴다. <strong>자르는 건 해결이 아니라 방편이고,
+  앞으로 그리는 것은 처음부터 8:3 이다.</strong>
+  계산은 <code>StoryFraming</code> 한 곳에 있다 — 미리보기 CSS 와 <code>DialogueView</code> 두 군데에
+  손으로 적으면 한쪽만 고치고 끝나는데, 틀려도 화면이 조금 이상해질 뿐이라
+  아무도 모른다.</li>
 <li><strong>픽셀 에셋 목록을 80장에 신설.</strong> 26~29장은 고양이 파이프라인, 70장은 고양이 외형인데
   <strong>장비 · 지형 · UI · 이펙트는 한 곳에 모인 적이 없었다.</strong> 코드의 <code>EquipmentType</code> ·
   <code>AttractionType</code> · <code>RoadWidth</code> 에서 뽑아 <strong>57종</strong>으로 적었다. 그리는 순서도 같이 —
