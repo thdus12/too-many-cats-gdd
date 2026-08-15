@@ -1119,7 +1119,7 @@
     <div class="chips">
       <span class="chip gold">◆ 표시된 장에 목업이 있다</span>
       <span class="chip">docs/GDD.md 에서 생성됨</span>
-      <span class="chip">Core 테스트 389개</span>
+      <span class="chip">Core 테스트 392개</span>
     </div>
   </header>
 
@@ -4016,8 +4016,8 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 <p>원래는 「비행체가 열린다」에서 바로 3번으로 넘어갔다. 그러면 뜸 두 줄을
 <strong>이미 답을 보여 준 화면 위에서</strong> 끄는 셈이라 「고양이가 내렸습니다」 가
 아는 걸 다시 말하는 문장이 된다. 빈 빔 한 장이 그 두 줄을 끌고 간다.</p>
-<h3>오버레이 3개 — 장소가 바뀌면 배경, 손에 든 게 바뀌면 오버레이</h3>
-<p>6번 컷은 같은 상황실에서 <strong>그림만 세 번 바뀌면 되는</strong> 장면이다.
+<h3>오버레이 — 장소가 바뀌면 배경, 화면 위에 얹히면 오버레이</h3>
+<p>구조대 창설 컷은 같은 상황실에서 <strong>그림만 세 번 바뀌면 되는</strong> 장면이다.
 배경을 세 장 더 그리는 대신 아이콘 셋을 화면 위에 얹는다.</p>
 <table>
 <thead>
@@ -4025,6 +4025,7 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 <th>Id</th>
 <th>무엇</th>
 <th>대사</th>
+<th>자리</th>
 </tr>
 </thead>
 <tbody>
@@ -4032,25 +4033,47 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 <td><code>ov-net</code></td>
 <td>구조망</td>
 <td>"잡아서,"</td>
+<td>가운데</td>
 </tr>
 <tr>
 <td><code>ov-churu</code></td>
 <td>츄르와 캣닢</td>
 <td>"모아서,"</td>
+<td>가운데</td>
 </tr>
 <tr>
 <td><code>ov-rocket</code></td>
 <td>로켓</td>
 <td>"로켓에 태우고,"</td>
+<td>가운데</td>
+</tr>
+<tr>
+<td><code>bg-city-paralyzed</code></td>
+<td>현장 화면</td>
+<td>"현재까지 인명 피해는 없습니다."</td>
+<td><strong>오른쪽 위</strong></td>
 </tr>
 </tbody>
 </table>
 <p>투명 배경 PNG, <code>Assets/Art/Story/Overlay/</code>. 배경 CG 보다 훨씬 작다.
-안전 영역 안(화면 위 30% 지점)에 놓아서 대사창에 안 가린다.</p>
+자리는 <code>StoryOverlays.BoxOf</code> 가 정하고 미리보기와 <code>DialogueView</code> 가 같은 값을 읽는다 —
+둘 다 안전 영역 안이라 대사창에 안 가린다 (<code>OverlaysStayAboveTheDialogueBox</code>).</p>
 <p><strong>이 컷에서 플레이 방법까지 설명된다.</strong> 구조망 · 츄르 · 로켓은 실제 게임의
 구조 동작 그대로다 (16장, 64장) — 튜토리얼을 서사가 대신한다.</p>
+<h4>뉴스 인서트 — Id 가 배경이다</h4>
+<p>넷째 오버레이는 <code>ov-</code> 로 시작하지 않는다. <strong>배경 Id 를 그대로 쓴다.</strong></p>
+<p>앵커 어깨 위에 현장 화면을 띄우고, 두 줄 뒤 그 그림이 <strong>전체 화면으로 커진다.</strong>
+같은 그림 한 장을 인서트로 한 번, 배경으로 한 번 쓰는 것이다 —
+실제 속보의 문법이고, <strong>작게 먼저 본 것이 커지는 게 리빌</strong>이 된다.</p>
+<pre><code>스튜디오 + 인서트   &quot;현재까지 인명 피해는 없습니다.&quot;  &quot;하지만…&quot;
+전체 화면          &quot;아무도 일을 하지 않고 있습니다.&quot;
+</code></pre>
+<p>복사본을 만들어 <code>ov-news</code> 로 두는 쪽이 이름은 깔끔하다. 그런데 그러면 <strong>같은 그림이
+저장소에 두 장</strong>이 되고 <code>check-gdd.py</code> 의 중복 검사가 그걸 잡는다 — 그 검사가 옳다.</p>
+<p>인서트에만 <strong>흰 테두리</strong>가 붙는다 (<code>StoryOverlays.HasFrame</code>). 없으면 배경에 얹힌
+그림이 아니라 배경의 일부로 보인다 — 방송 그래픽이 아니라 벽에 붙은 사진이 된다.</p>
 <h3>컷신 연출</h3>
-<p>배경이 일곱 장뿐이고 그중 셋은 같은 거리, 하나는 두 번 쓰이므로,
+<p>배경이 열세 장이고 그중 셋은 같은 거리, 거점 둘은 두 번씩 쓰이므로,
 <strong>같은 그림이 정지 화면으로 보이지 않게</strong> 하는 게 연출의 몫이다.
 복잡할 필요는 없다.</p>
 <pre><code>Fade In  →  천천히 Zoom  →  대사  →  다음 컷 Slide / Fade
@@ -6097,7 +6120,7 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <pre><code>있음 :  로고 1 · 키 아트 1 · 초상화 7 · 오프닝 배경 13 · 오버레이 3 · 고양이 아틀라스 1
 없음 :  게임 화면 안에 들어가는 것 전부
 </code></pre>
-<p><strong>오프닝은 다 찼다.</strong> 배경 12장 · 오버레이 3개 · 초상화 7장이 전부 들어와 있다.
+<p><strong>오프닝은 다 찼다.</strong> 배경 13장 · 오버레이 3개 · 초상화 7장이 전부 들어와 있다.
 고양이 아틀라스도 들어왔다. 남은 것은 <strong>게임 화면 안</strong>의 장비 · 지형 · UI · 이펙트고,
 <code>Assets/Art/Equipment</code>, <code>Maps</code>, <code>VFX</code> 는 아직 빈 폴더다.</p>
 <h2>규격</h2>
@@ -6772,6 +6795,11 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
   "……그렇군요." 가 식은땀이었는데, 그러면 <strong>말이 안 되는 건 저쪽인데 웃음이
   이쪽으로 온다.</strong> 식은땀은 본인이 곤란한 얼굴이고(자격 미달을 자백하는
   "고양이 키워본 적 없는데요") 체념은 따질 데가 없는 얼굴이다. 표정 6종 → 7종.</li>
+<li><strong>뉴스 인서트 (71장).</strong> 앵커 어깨 위에 현장 화면을 띄우고 두 줄 뒤 그 그림이
+  전체 화면으로 커진다. <strong>작게 먼저 본 것이 커지는 게 리빌</strong>이다.
+  Id 는 <code>ov-news</code> 가 아니라 <code>bg-city-paralyzed</code> — 같은 그림 한 장을 두 번 쓴다.
+  복사본을 두면 저장소에 같은 그림이 두 장이 되고 중복 검사가 그걸 잡는다.
+  오버레이에 <strong>자리</strong>가 생겼다 (<code>OverlaySlot</code>). 전에는 가운데로 박혀 있었다.</li>
 <li><strong>대사창이 그림을 지우지 않는다 (71장).</strong> 같은 자리를 세 번 고쳤다.
   ① 화면 전체 + 불투명 상자(31%) — 그림의 아래 1/3 이 사라졌다. 「안전 영역」 이라고
   적어는 뒀는데 <strong>정작 그린 세 장이 전부 16:9 였고</strong>, 시민도 고양이도 아래쪽에
