@@ -4135,11 +4135,16 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 </tbody>
 </table>
 <h3>화면 효과 — 지지직 한 자리</h3>
-<p><code>ScreenEffect.SignalLoss</code>. 뉴스가 상황실로 넘어가는 자리, <strong>「— 송출이 끊긴다 —」</strong>
+<p><code>ScreenEffect.SignalLoss</code>. 뉴스가 상황실로 넘어가는 자리, <strong>앵커의 마지막 줄</strong>
 한 줄에만 걸린다.</p>
-<p>암전만으로는 안 끊긴다. 검은 화면은 「방송이 끊겼다」 로도 「장면이 바뀌었다」 로도
-읽히는데 여기서 필요한 건 앞쪽이다 — <strong>뉴스를 보던 사람이 뉴스 밖으로 나가는
-한 박자</strong>라서, 보고 있던 화면이 죽는 게 보여야 한다.</p>
+<pre><code>bg-newsroom   앵커 &quot;정부는 조금 전 긴급 대책본부를 소집했습니다.&quot;   ← 지직
+bg-black      — 송출이 끊긴다 —                                   ← 깨끗한 암전
+</code></pre>
+<p><strong>깨질 그림이 있어야 깨진다.</strong> 처음엔 반대로 넣었다 — 암전 위에 노이즈를
+얹었는데, 그러면 검은 화면에 노이즈가 끼는 것뿐이라 <strong>뭐가 끊겼는지가 안 보인다.</strong>
+끊기는 건 보고 있던 방송이고, 그러려면 그게 화면에 있어야 한다.</p>
+<p>그리고 다음 줄은 <strong>깨끗한 암전</strong>이다. 계속 지직거리면 그건 끊긴 게 아니라
+고장 난 채로 켜져 있는 것이다 — 지지직 다음에 오는 정적이 「끊겼다」 를 완성한다.</p>
 <table>
 <thead>
 <tr>
@@ -4166,13 +4171,19 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 </tr>
 </tbody>
 </table>
+<p><strong>세기는 <code>SignalLossLook</code> 이 정한다.</strong> 미리보기와 <code>DialogueView</code> 가 같은 값을
+내보내기로 받아 쓴다 — 두 군데에 손으로 적으면 한쪽만 고치고 끝나고,
+틀려도 화면이 조금 더 지직거릴 뿐이라 아무도 모른다.</p>
+<p>노이즈 알파를 0.38~0.62 로 뒀다가 0.20~0.40 으로 내렸다. <strong>살아 있는 그림 위에
+얹힌다</strong>는 걸 잊으면 뉴스룸이 회색으로 날아가고, 그러면 깨지는 게 아니라
+<strong>다른 화면</strong>이 된다. 무엇이 끊기는지가 보여야 끊기는 것이다.</p>
 <p><strong>배경 · 표정과 다른 종류의 값이다.</strong> 저 둘은 「지금부터 이렇다」 라 다시 바꿀
 때까지 이어지는데, 효과가 이어지면 남은 장면 전체가 고장 난 화면이 된다.
 그래서 <code>StoryScene.Glitch()</code> 는 <strong>다음 한 줄만</strong> 걸고 스스로 꺼진다 —
 <code>Show(null)</code> 을 잊는 사고와 같은 종류라 아예 이어질 수 없게 만들었다.</p>
-<p><code>SignalLoss_IsOneLineAndLandsOnBlack</code> 이 셋을 본다: 딱 한 줄일 것, 연속으로
-걸리지 않을 것, <strong>암전 위일 것.</strong> 배경이 살아 있는데 지지직이 끼면 그건 방송이
-아니라 화면 자체가 고장 난 것이다.</p>
+<p><code>SignalLoss_BreaksALivePictureThenCutsToBlack</code> 이 넷을 본다: 딱 한 줄일 것,
+연속으로 걸리지 않을 것, <strong>암전이 아닌 그림 위일 것</strong>, 그리고 <strong>바로 다음이
+암전일 것.</strong> 지직거리다 멀쩡한 다음 장면으로 넘어가면 그건 잡음이지 단절이 아니다.</p>
 <p><strong>쌓임 순서는 배경 위 · 대사창 아래다.</strong> 처음에 안 지켰다가 하필
 「— 송출이 끊긴다 —」 가 노이즈에 가렸다 — 무슨 일이 났는지 설명하는 줄이
 그 일에 가려진 셈이다. 미리보기 자체 검사가 z 순서를 본다.</p>
