@@ -3698,7 +3698,7 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 <tr>
 <td>오프닝</td>
 <td>게임 최초 1회</td>
-<td>48줄 · <strong>재생 36초</strong></td>
+<td>49줄 · <strong>재생 36초</strong></td>
 </tr>
 <tr>
 <td>수의사 합류</td>
@@ -3728,10 +3728,11 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 2. 진짜 위기      인명 피해 0. 대신 아무도 일을 안 한다. 세계 경제가 멈췄다
                   앵커의 마지막 줄 — &quot;정부는 조금 전 긴급 대책본부를 소집했습니다&quot;
                   ── 송출이 끊긴다. 여기서 앵커 퇴장 ──
-3. 정부 긴급 상황실  지휘관 &quot;개체 수는?&quot; / 요원 &quot;10,000마리까지 세고 포기했습니다&quot;
+3. 정부 긴급 상황실  지휘관 &quot;개체 수는?&quot; / 요원 &quot;100만 마리까지 세고 포기했습니다&quot;
                   당신의 첫 한 줄 — &quot;……고양이가 너무 많아.&quot;
-4. 대응 실패      지휘관의 보고 한 줄에 현장 컷 하나씩
-                  &quot;군은 전투 불능&quot; / &quot;경찰도 전투 불능&quot; / &quot;소방대는… 츄르 사러 갔습니다&quot;
+4. 대응 실패      질문에 「출동 중」, 답에 「고양이 안고 있음」
+                  지휘관 &quot;군대는?&quot; / 요원 &quot;전투 불능입니다&quot;  ×2
+                  &quot;소방대는?&quot; / &quot;………&quot; / &quot;츄르 사러 갔습니다&quot;
                   &quot;왜죠?&quot; / &quot;너무 귀엽습니다&quot; / &quot;……그렇군요.&quot;
 5. 구조대 창설    → 잡아서, 모아서, 로켓에 태우고,
 6. 플레이어 임명  &quot;츄르는 쓸 줄 아십니까?&quot; / &quot;짜면 되는 거 아닙니까?&quot; / &quot;충분합니다&quot;
@@ -3785,7 +3786,7 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 <h2>길이는 줄 수가 아니라 초로 잰다</h2>
 <p>줄 수로 재면 한 줄에 두 문장을 욱여넣어서 통과할 수 있다.
 <code>Opening_FitsInOneSitting</code> 은 타자 속도(30자/초)와 뜸을 더해 <strong>실제 재생 시간</strong>을 잰다.</p>
-<pre><code>오프닝 48줄 → 36초
+<pre><code>오프닝 49줄 → 36초
 </code></pre>
 <p>넘기는 시간까지 치면 50~60초쯤이다. 상한은 2분으로 잡아 뒀다.</p>
 <h2>화면 구성 — 배경 CG + 하단 대사창</h2>
@@ -3870,9 +3871,9 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 치수는 <code>StoryFraming</code> 한 곳에 있고 미리보기 CSS 와 <code>DialogueView</code> 가 같은 값을 쓴다.
 <code>StoryFramingTests</code> 가 두 가지를 잠근다 — <strong>상자가 불투명해지지 않는가</strong>, 그리고
 <strong>상자를 줄이다가 글보다 작아지지 않는가.</strong></p>
-<h3>그려야 하는 9장 — 그중 7장은 이미 있다</h3>
+<h3>그려야 하는 12장 — 그중 10장은 이미 있다</h3>
 <p>Id 가 곧 파일명이다. <code>StoryBackgrounds</code> 상수와 1:1 이고,
-<code>OpeningNeeds_NineIllustrations</code> 가 이 수가 늘어나면 실패한다.</p>
+<code>OpeningNeeds_TwelveIllustrations</code> 가 이 수가 늘어나면 실패한다.</p>
 <table>
 <thead>
 <tr>
@@ -3915,24 +3916,42 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 </tr>
 <tr>
 <td>6</td>
-<td><code>bg-army-down</code></td>
-<td>군인이 총을 내려놓고 고양이를 안고 있다</td>
+<td><code>bg-army-ready</code></td>
+<td>군인들이 중무장하고 거리를 봉쇄하고 있다. 아직 고양이가 없다</td>
 <td><strong>있음</strong></td>
 </tr>
 <tr>
 <td>7</td>
-<td><code>bg-police-down</code></td>
-<td>경찰이 무전 대신 휴대폰으로 고양이 사진을 찍는다</td>
+<td><code>bg-army-down</code></td>
+<td>같은 군인들. 총을 내려놓고 고양이를 안고 있다</td>
 <td><strong>있음</strong></td>
 </tr>
 <tr>
 <td>8</td>
-<td><code>bg-fire-churu</code></td>
-<td>소방관이 호스를 놓고 주저앉아 츄르를 짜 준다. 뒤에서는 아직 불이 난다</td>
+<td><code>bg-police-ready</code></td>
+<td>경찰이 무전으로 상황을 보고하며 시민을 통제한다</td>
 <td><strong>있음</strong></td>
 </tr>
 <tr>
 <td>9</td>
+<td><code>bg-police-down</code></td>
+<td>같은 경찰. 무전 대신 휴대폰으로 고양이 사진을 찍는다</td>
+<td><strong>있음</strong></td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>bg-fire-ready</code></td>
+<td>소방관이 호스를 들고 불을 끈다. <strong>이 셋만 아직 일하는 중이다</strong></td>
+<td><strong>있음</strong></td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>bg-fire-churu</code></td>
+<td>같은 소방관. 호스를 놓고 주저앉아 츄르를 짜 준다. 불은 아직 난다</td>
+<td><strong>있음</strong></td>
+</tr>
+<tr>
+<td>12</td>
 <td><code>bg-appointment</code></td>
 <td>구조대원이 임명장을 받는 장면</td>
 <td>없음</td>
@@ -3941,18 +3960,24 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 </table>
 <p>그리고 <strong>암전 → 타이틀 → GAME START.</strong> 암전은 파일이 아니다.
 타이틀 카드는 키 아트 위에 로고를 얹는다 (79장).</p>
-<h4>7장에서 9장으로 늘었는데 그릴 것은 줄었다</h4>
+<h4>7장에서 12장으로 늘었는데 그릴 것은 줄었다</h4>
 <p><strong>세는 건 장수고 값은 안 그려진 장수다.</strong> 이 숫자만 보고 「늘었다」 고 읽으면 안 된다.</p>
-<pre><code>전   7장 중 3장 완성  →  그릴 것 4장
-후   9장 중 7장 완성  →  그릴 것 2장
+<pre><code>전    7장 중  3장 완성  →  그릴 것 4장
+후   12장 중 10장 완성  →  그릴 것 2장
 </code></pre>
-<p><code>bg-forces-down</code>(3분할, 미착수) 한 장을 군 · 경 · 소방 세 컷으로 갈랐는데
-<strong>그 세 장이 이미 그려져 있었다.</strong> 3분할로 몰아 넣는 것보다 나은 이유도 있다 —
-지휘관의 보고 한 줄에 컷 하나가 붙어서 「군은 전투 불능」 이 말이 아니라
-<strong>그림으로 온다.</strong></p>
-<p>셋 다 같은 자리의 <strong>before / after 중 after</strong> 다. before(경계 중인 군 · 경 · 소방)도
-파일은 있는데(<code>bg-army-ready</code> · <code>bg-police-ready</code> · <code>bg-fire-ready</code>) 대본이 안 쓴다.
-30초짜리에 컷을 여섯 개 더 넣을 자리가 없다.</p>
+<p><code>bg-forces-down</code>(3분할, 미착수) 한 장을 군 · 경 · 소방 <strong>before / after 여섯 컷</strong>으로
+갈랐는데 <strong>그 여섯 장이 이미 그려져 있었다.</strong></p>
+<h4>질문에 before, 답에 after</h4>
+<p>농담이 대사가 아니라 <strong>컷에 있다.</strong></p>
+<pre><code>지휘관 &quot;군대는?&quot;          →  중무장하고 거리를 봉쇄 중
+요원   &quot;전투 불능입니다.&quot;   →  총 내려놓고 고양이를 안고 있음
+</code></pre>
+<p><strong>두 번 고쳤다.</strong> 처음엔 대사만으로 「군 투입은?」 「전투 불능입니다」 를 주고받았는데
+그동안 화면이 안 바뀌었다. 다음엔 after 세 장만 붙였는데, 그러면
+<strong>전에 뭘 하고 있었는지가 화면에 없다</strong> — 무너진 게 무너진 걸로 안 보인다.</p>
+<p>셋째에서 형식을 튼다. <strong><code>bg-fire-ready</code> 는 이 여섯 장 중 유일하게 아직 일하는 그림</strong>
+이라 "소방대는?" 에서 「이쪽은 멀쩡한가」 로 읽히고, 그 위에서 뜸을 준 다음
+"츄르 사러 갔습니다" 가 떨어진다.</p>
 <h4>값을 아끼는 자리</h4>
 <p><strong>1·2·3 이 같은 그림의 세 단계다.</strong> 거리도 카메라도 그대로고 비행체만 바뀐다 —
 등장 / 열림 / 쏟아짐. 배경 한 장 그리는 값에 가까운데 화면은 세 컷이 나온다.</p>
@@ -4017,7 +4042,17 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 서로 다른 곳에 있었다 — 1~4 가 전부 현장 화면인데 데스크에서 읽는 소리가 깔렸다.
 기자는 그 화면 안에서 말한다. <strong>그림을 한 장도 안 늘리고 맞아떨어진다.</strong>
 사람 얼굴이 처음 나오는 게 5번 상황실이고, 그 자리에서
-"10,000마리까지 세고 포기했습니다" 가 나온다.</p>
+"100만 마리까지 세고 포기했습니다" 가 나온다.</p>
+<p><strong>왜 100만인가.</strong> 처음엔 10,000 이었다 — 31장의 성능 목표와 같은 숫자로 두면
+「듣고 시작해서 실제로 보게 된다」 가 되니까. 그런데 앵커가 바로 앞에서
+"세계 경제가 멈췄습니다" 를 깔아 놓는다. <strong>만 마리로 세계 경제가 멈추지는 않는다.</strong></p>
+<p>지금은 규모가 둘로 나뉜다.</p>
+<pre><code>100만    세계.  앵커가 말한 그 규모
+10,000   한 판. 이 도시 몫 (31장)
+</code></pre>
+<p>그리고 이 줄이 하는 일은 규모 고지가 아니라 <strong>포기</strong>다. 셀 수 있는 숫자를 대면
+「그래서 몇 마리인데」 가 남고, <strong>못 셀 숫자를 대야</strong> 다음 줄이 대꾸가 된다 —
+"……고양이가 너무 많아."</p>
 <h3>오프닝 밖 두 장</h3>
 <table>
 <thead>
@@ -4211,10 +4246,11 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 "인명 피해는 없습니다" 는 기자의 줄이라 그 얼굴이 화면에 안 나온다 —
 안 나올 표정을 대본에 적어 두면 안 그려도 될 그림을 그리게 된다.</p>
 <h3>장면 전환은 박자로 끊는다</h3>
-<pre><code>암전 → UFO → 빔 → 고양이 쏟아짐 → 도시 마비 → 암전(송출 끊김)
-     → 상황실 → 군 → 경 → 소방 → 상황실 → 임명 → 암전
+<pre><code>암전 → UFO → 빔 → 고양이 쏟아짐 → 도시 마비 → 암전(송출 끊김) → 상황실
+     → 군 출동 → 군 무너짐 → 경 출동 → 경 무너짐 → 소방 출동 → 소방 무너짐
+     → 상황실 → 임명 → 암전
 
-오프닝 48줄 / 배경 9장 / 장면 전환 12회
+오프닝 49줄 / 배경 12장 / 장면 전환 15회
 </code></pre>
 <p><strong>현장 컷은 한 번만 쓴다.</strong> 같은 그림이 두 번 일하면 그리는 장수는 그대로인데
 전환만 늘고, 그 사이 농담의 박자가 화면 전환에 밟힌다.</p>
@@ -6002,7 +6038,7 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <code>UnlockCurrency</code>, <code>RescueDevice.UpgradeLevel</code> 이 원본이고 여기는 그 목록에 크기와 상태를 붙인 것뿐이다.
 새 종류가 코드에 생기면 여기도 늘어난다.</p>
 <h2>지금 상태</h2>
-<pre><code>있음 :  로고 1 · 키 아트 1 · 초상화 6 · 오프닝 배경 3
+<pre><code>있음 :  로고 1 · 키 아트 1 · 초상화 7 · 오프닝 배경 10
 없음 :  게임 화면 안에 들어가는 것 전부
 </code></pre>
 <p><strong>한 장도 없다.</strong> <code>Assets/Art/Cats</code>, <code>Equipment</code>, <code>Maps</code>, <code>VFX</code> 가 전부 빈 폴더다.
