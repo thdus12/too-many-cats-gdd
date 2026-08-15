@@ -1119,7 +1119,7 @@
     <div class="chips">
       <span class="chip gold">◆ 표시된 장에 목업이 있다</span>
       <span class="chip">docs/GDD.md 에서 생성됨</span>
-      <span class="chip">Core 테스트 392개</span>
+      <span class="chip">Core 테스트 393개</span>
     </div>
   </header>
 
@@ -4134,7 +4134,7 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 </tr>
 </tbody>
 </table>
-<h3>초상화 — 표정 7종</h3>
+<h3>초상화 — 표정 6종</h3>
 <h3>임명 전에는 "팀장" 이라 부르지 않는다</h3>
 <p>주인공의 이름표는 5장면 <strong>"당신이 팀장입니다."</strong> 를 기점으로 바뀐다.</p>
 <pre><code>당신 7줄  →  [임명]  →  팀장 3줄
@@ -4160,7 +4160,7 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 <tbody>
 <tr>
 <td>팀장</td>
-<td>표정 7종</td>
+<td>표정 6종</td>
 <td>대사마다 바뀐다</td>
 </tr>
 <tr>
@@ -4204,13 +4204,7 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 <td><code>face-neutral</code></td>
 <td>기본 / 무표정</td>
 <td>담담한 정면</td>
-<td>평범한 대화, 브리핑</td>
-</tr>
-<tr>
-<td><code>face-confused</code></td>
-<td>당황 / 어리둥절</td>
-<td>눈썹 처지고 입 작게 벌림 + 땀</td>
-<td>"……왜죠?" · "그게 구조입니까?" <strong>(그림 없음)</strong></td>
+<td>평범한 대화 · 브리핑 · <strong>"……왜죠?"</strong></td>
 </tr>
 <tr>
 <td><code>face-shocked</code></td>
@@ -4228,7 +4222,7 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 <td><code>face-sweating</code></td>
 <td>식은땀 / 난감</td>
 <td>뒤통수 긁으며 어색한 웃음</td>
-<td>"고양이 키워본 적 없는데요."</td>
+<td>"그게 구조입니까?" · "고양이 키워본 적 없는데요."</td>
 </tr>
 <tr>
 <td><code>face-relieved</code></td>
@@ -4244,6 +4238,28 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 </tr>
 </tbody>
 </table>
+<p>지휘관은 표정을 안 바꾸므로 이 표에 없다. 그림은 한 장이다.</p>
+<table>
+<thead>
+<tr>
+<th>Id</th>
+<th>누구</th>
+<th>그림</th>
+<th>언제</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>face-commander</code></td>
+<td>지휘관</td>
+<td>선글라스 · 무전기. 표정이 안 변한다</td>
+<td>지휘관이 말하는 모든 줄</td>
+</tr>
+</tbody>
+</table>
+<p><code>check_face_roster</code> 가 <strong>이 두 표 · 파일 · <code>StoryFaces.cs</code> 셋이 같은지</strong> 본다.
+당황이 그 셋 사이에서 갈라졌던 자리다 — 코드에서 빠져도 표에 행이 남으면
+그걸 보고 「아직 그릴 게 있다」 고 읽는다.</p>
 <h4>체념과 식은땀은 다른 얼굴이다</h4>
 <p>한 장으로 버티다 갈랐다. 둘 다 땀이 있고 둘 다 곤란한데, <strong>곤란한 이유가 다르다.</strong></p>
 <pre><code>식은땀   본인이 곤란하다      &quot;고양이 키워본 적 없는데요.&quot;   ← 자격 미달을 자백
@@ -4308,7 +4324,7 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 </tr>
 <tr>
 <td>"……그렇군요."</td>
-<td>식은땀</td>
+<td>체념</td>
 <td>바로 앞 줄이 "귀엽습니다" 다. 이 게임을 요약하는 얼굴</td>
 </tr>
 </tbody>
@@ -4319,7 +4335,9 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 <p><code>Opening_DoesNotLeanOnOneOrTwoFaces</code> 가 <strong>두 표정의 합</strong>이 60% 를 넘으면 실패한다.
 최다 하나만 보는 검사로는 안 걸린다. 당황 3 · 식은땀 4 는 최다가 4/10 이라
 어떤 단일 기준도 통과한다. 눈에 띄는 건 언제나 둘의 합이었다.</p>
-<p>지금은 평정 2 · 당황 2 · 식은땀 3 · 경악 2 · 결의 1 이다.</p>
+<p>지금은 <strong>경악 2 · 식은땀 2 · 평정 1 · 체념 1 · 결의 1</strong> 이다 (초상화 7줄).
+두 표정의 합이 4/7 — 기준 60% 바로 아래다. <strong>여유가 없다는 뜻이라</strong> 팀장 대사를
+하나 줄이거나 얼굴 하나를 겹치면 바로 걸린다. 그게 이 검사가 하려던 일이다.</p>
 <p><strong>안도는 엔딩에 있다.</strong> 로켓이 떠난 뒤 "우시는 거예요?" / "아니." —
 안도한 얼굴로 부정하고, 들키니까 다음 컷에서 식은땀으로 딴청을 부린다.
 표정이 대사를 배신하는 게 농담이다.</p>
@@ -4423,7 +4441,7 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 </tr>
 <tr>
 <td><code>Core/Story/StoryFaces.cs</code></td>
-<td>표정 7종. <code>Expression</code> enum 과 파일명을 갈라 뒀다</td>
+<td>표정 6종. <code>Expression</code> enum 과 파일명을 갈라 뒀다</td>
 </tr>
 <tr>
 <td><code>Core/Story/StoryOverlays.cs</code></td>
@@ -6120,12 +6138,11 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <code>UnlockCurrency</code>, <code>RescueDevice.UpgradeLevel</code> 이 원본이고 여기는 그 목록에 크기와 상태를 붙인 것뿐이다.
 새 종류가 코드에 생기면 여기도 늘어난다.</p>
 <h2>지금 상태</h2>
-<pre><code>있음 :  로고 1 · 키 아트 1 · 초상화 6 · 오프닝 배경 13 · 오버레이 3 · 고양이 아틀라스 1
-없음 :  당황 표정 1 (face-confused)
+<pre><code>있음 :  로고 1 · 키 아트 1 · 초상화 7 · 오프닝 배경 13 · 오버레이 3 · 고양이 아틀라스 1
 없음 :  게임 화면 안에 들어가는 것 전부
 </code></pre>
-<p><strong>오프닝 배경은 다 찼다.</strong> 배경 13장 · 오버레이 3개가 전부 들어와 있고
-초상화는 일곱 중 여섯이다 — 당황 한 장이 비어 있다.
+<p><strong>오프닝 그림은 다 찼다.</strong> 배경 13장 · 오버레이 3개 · 초상화 7장
+(팀장 표정 6 + 지휘관 1)이 전부 들어와 있다.
 고양이 아틀라스도 들어왔다. 남은 것은 <strong>게임 화면 안</strong>의 장비 · 지형 · UI · 이펙트고,
 <code>Assets/Art/Equipment</code>, <code>Maps</code>, <code>VFX</code> 는 아직 빈 폴더다.</p>
 <h2>규격</h2>
@@ -6769,6 +6786,22 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <h2>변경 이력</h2>
 <h2>v1.4.0 — 첫 그림이 들어왔다</h2>
 <ul>
+<li><strong>표정을 7종에서 6종으로 줄였다 (71장).</strong> 당황(<code>face-confused</code>)을 뺐다.
+  그림이 세 번 올라왔는데 <strong>세 번 다 경악과 바이트까지 같은 파일</strong>이었다
+  (md5 <code>06ca5bd1…</code>). 이름만 당황이고 내용은 경악이라, 넣으면 대본은 두 표정을
+  쓰는데 화면에는 한 얼굴이 두 번 뜬다. <strong>그리고 파일이 있으니 아무도 못 본다.</strong>
+  화면에 실제로 당황이 뜨던 세 줄은 얼굴을 갈라 받았다 —
+  "……왜죠?" 는 <strong>평정</strong>(놀랄 힘이 없는 평평함, 다음 줄 체념으로 이어진다),
+  "그게 구조입니까?" 와 "겁먹은 건가." 는 <strong>식은땀</strong>(작전 설명이 끝나는 순간
+  남 얘기가 아니게 된다). 초상화가 안 뜨는 두 자리도 식은땀으로 채웠다 —
+  <strong>지우기만 하면 얼굴이 안 바뀌는 구간이 생긴다.</strong>
+  검사 셋(<code>EveryExpression_IsActuallyUsed</code> 6/6 · <code>Opening_DoesNotLeanOnOneOrTwoFaces</code>
+  4/7 · <code>FaceChanges_MoreOftenThanBackground</code> 18 &gt; 17)이 전부 유지된다.</li>
+<li><strong>작전 아이콘을 화면 정중앙으로, 1.7배 크게 (71장).</strong> 지휘관을 안 가리려고
+  위쪽에 작게 뒀는데, 그러느라 <strong>정작 보여 주려던 물건이 작았다.</strong> 로켓 그림이
+  정사각형이라 카드 높이에 갇혀 가로의 절반만 쓰고 101px 로 서 있었다.
+  그 세 줄 동안 주인공은 말하는 사람이 아니라 보여 주는 물건이다 — 가리는 게 맞다.
+  세로가 병목이라 안전 영역(0.76)이 허락하는 최대까지 늘려 172px 로 세웠다.</li>
 <li><strong>앵커와 상황실이 서로 말을 주고받고 있었다 (71장).</strong> 그게 제일 큰 문제였다 —
   그러면 앵커가 <strong>장치가 아니라 등장인물</strong>이 되고, 「왜 방송하는 사람이 정부
   상황실에 있지」 가 먼저 떠오른다. 지금은 뉴스가 "정부는 조금 전 긴급 대책본부를
@@ -6990,7 +7023,7 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 </ul>
 <h2>v1.0.1 — 대사창에 팀장 초상화</h2>
 <ul>
-<li><strong>표정 6종 (71장)</strong> — 기본 / 당황 / 경악 / 결의 / 식은땀 / 안도. 128×128.</li>
+<li><strong>표정 6종 (71장)</strong> — 기본 / 경악 / 결의 / 식은땀 / 안도 / 체념. 128×128.</li>
 <li><strong>배경과 다른 채널이다.</strong> 배경은 장면이고 표정은 반응이다 —
   오프닝에서 배경 8회 바뀌는 동안 표정은 24회 바뀐다.</li>
 <li><strong>누가 말하든 초상화는 팀장이다.</strong> 상황실은 목소리고 앵커는 배경 안에 있다.
