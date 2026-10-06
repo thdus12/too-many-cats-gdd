@@ -1,4 +1,4 @@
-<title>Too Many Cats! — 기획서 v1.5.1</title>
+<title>Too Many Cats! — 기획서 v1.6.0</title>
 
 <style>
   /* ── 라이트가 기본. 다크는 토큰만 덮는다 ── */
@@ -1073,6 +1073,27 @@
   .cat-bottom .back { padding: .18em .8em; border: 1px solid var(--s-rule); border-radius: 4px; color: var(--s-ink); }
   .cat-bottom .reward { margin-left: auto; }
 
+  /* ── 모집 (82장) ── */
+  .recruit { position: absolute; inset: 0; padding: 1.2em 1.5em; display: flex; flex-direction: column; gap: .7em; }
+  .rc-top { display: flex; align-items: center; gap: 1em; }
+  .rc-top strong { font-size: 1.1em; }
+  .rc-top .purse { margin-left: auto; }
+  .rc-body { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: .9em; min-height: 0; }
+  .rc-panel { border: 1px solid var(--s-rule); border-radius: 6px; background: var(--s-panel-solid); padding: .8em .95em; display: flex; flex-direction: column; gap: .4em; font-size: .9em; }
+  .rc-panel h6 { margin: 0 0 .2em; font-size: 1em; }
+  .rc-panel .k { color: var(--s-dim); }
+  .rc-btns { display: flex; gap: .5em; margin-top: auto; }
+  .rc-btn { flex: 1; text-align: center; padding: .4em 0; border: 1px solid var(--s-gold); border-radius: 4px; color: var(--s-gold); }
+  .rc-btn.dim { border-color: var(--s-rule); color: var(--s-dim); }
+  .rc-card { display: flex; gap: .8em; align-items: center; border: 1px solid var(--s-gold); border-radius: 6px; padding: .6em .8em; background: rgba(240,184,64,.08); }
+  .rc-card .face { width: 3.2em; height: 3.2em; border-radius: 6px; background: #2A323D; border: 1px solid #3A4553; flex: none; }
+  .rc-card .grade { font-family: ui-monospace, monospace; color: var(--s-gold); font-size: .85em; }
+  .rc-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: .35em; font-size: .85em; }
+  .rc-list span { border: 1px solid var(--s-rule); border-radius: 4px; padding: .15em .4em; }
+  .rc-list span.own { color: var(--s-green); border-color: rgba(87,210,145,.5); }
+  .rc-bottom { display: flex; align-items: center; gap: 1em; color: var(--s-dim); font-size: .88em; }
+  .rc-bottom .back { padding: .18em .8em; border: 1px solid var(--s-rule); border-radius: 4px; color: var(--s-ink); }
+
 
   /* ── 좁은 화면 ── */
   .nav-toggle {
@@ -1119,7 +1140,7 @@
 <nav id="nav">
   <div class="brand">
     <b>Too Many Cats!</b>
-    <span>GDD v1.5.1</span>
+    <span>GDD v1.6.0</span>
   </div>
   <div class="nav-group"><h3>개요<small>무엇을 만드는가</small></h3><ul><li><a href="#s0"><span class="n">0</span><span class="t">문서 정보</span><span class="fig"></span></a></li><li><a href="#s1"><span class="n">1</span><span class="t">게임 개요</span><span class="fig"></span></a></li><li><a href="#s2"><span class="n">2</span><span class="t">핵심 판타지</span><span class="fig"></span></a></li><li><a href="#s3"><span class="n">3</span><span class="t">디자인 원칙</span><span class="fig"></span></a></li><li><a href="#s4"><span class="n">4</span><span class="t">기본 게임 루프</span><span class="fig"></span></a></li><li><a href="#s5"><span class="n">5</span><span class="t">Run 구조</span><span class="fig"></span></a></li><li><a href="#s6"><span class="n">6</span><span class="t">자원</span><span class="fig"></span></a></li></ul></div>
 <div class="nav-group"><h3>고양이<small>무리가 어떻게 움직이는가</small></h3><ul><li><a href="#s7"><span class="n">7</span><span class="t">고양이 데이터</span><span class="fig"></span></a></li><li><a href="#s8"><span class="n">8</span><span class="t">Cat State Machine</span><span class="fig"></span></a></li><li><a href="#s9"><span class="n">9</span><span class="t">고양이 이동 시스템</span><span class="fig"></span></a></li><li><a href="#s10"><span class="n">10</span><span class="t">Flow Field</span><span class="fig"></span></a></li><li><a href="#s11"><span class="n">11</span><span class="t">Attraction System</span><span class="fig"></span></a></li><li><a href="#s12"><span class="n">12</span><span class="t">Separation / Crowd</span><span class="fig"></span></a></li><li><a href="#s13"><span class="n">13</span><span class="t">기본 고양이 종류</span><span class="fig"></span></a></li><li><a href="#s14"><span class="n">14</span><span class="t">특수 고양이</span><span class="fig"></span></a></li><li><a href="#s15"><span class="n">15</span><span class="t">Wave 시스템</span><span class="fig"></span></a></li></ul></div>
@@ -1130,13 +1151,13 @@
 <div class="nav-group"><h3>UI · 연출<small>무엇을 보여주는가</small></h3><ul><li><a href="#s42"><span class="n">42</span><span class="t">UI</span><span class="fig"></span></a></li><li><a href="#s43"><span class="n">43</span><span class="t">Run Result</span><span class="fig"></span></a></li><li><a href="#s44"><span class="n">44</span><span class="t">Audio</span><span class="fig"></span></a></li><li><a href="#s45"><span class="n">45</span><span class="t">VFX</span><span class="fig"></span></a></li></ul></div>
 <div class="nav-group"><h3>범위<small>어디까지 만드는가</small></h3><ul><li><a href="#s46"><span class="n">46</span><span class="t">Prototype Roadmap</span><span class="fig"></span></a></li><li><a href="#s47"><span class="n">47</span><span class="t">Vertical Slice</span><span class="fig"></span></a></li><li><a href="#s48"><span class="n">48</span><span class="t">MVP</span><span class="fig"></span></a></li><li><a href="#s49"><span class="n">49</span><span class="t">웹판 출시 범위 후보</span><span class="fig"></span></a></li><li><a href="#s50"><span class="n">50</span><span class="t">현재 개발 우선순위</span><span class="fig"></span></a></li><li><a href="#s51"><span class="n">51</span><span class="t">Master Cat 기준</span><span class="fig"></span></a></li><li><a href="#s52"><span class="n">52</span><span class="t">핵심 Gameplay Test</span><span class="fig"></span></a></li><li><a href="#s53"><span class="n">53</span><span class="t">핵심 기술 위험</span><span class="fig"></span></a></li></ul></div>
 <div class="nav-group"><h3>확장<small>그 다음</small></h3><ul><li><a href="#s54"><span class="n">54</span><span class="t">Build 방향</span><span class="fig"></span></a></li><li><a href="#s55"><span class="n">55</span><span class="t">Skill Synergy 예</span><span class="fig"></span></a></li><li><a href="#s56"><span class="n">56</span><span class="t">Special Wave 후보</span><span class="fig"></span></a></li><li><a href="#s57"><span class="n">57</span><span class="t">Endless Mode</span><span class="fig"></span></a></li><li><a href="#s58"><span class="n">58</span><span class="t">접근성</span><span class="fig"></span></a></li><li><a href="#s59"><span class="n">59</span><span class="t">소개 영상 핵심 장면</span><span class="fig"></span></a></li><li><a href="#s60"><span class="n">60</span><span class="t">소개 페이지 문장 후보</span><span class="fig"></span></a></li><li><a href="#s61"><span class="n">61</span><span class="t">프로젝트 식별자</span><span class="fig"></span></a></li><li><a href="#s62"><span class="n">62</span><span class="t">프로젝트 핵심 문장</span><span class="fig"></span></a></li><li><a href="#s63"><span class="n">63</span><span class="t">개발 철학</span><span class="fig"></span></a></li></ul></div>
-<div class="nav-group"><h3>v0.5+<small>나중에 정한 것들</small></h3><ul><li><a href="#s64"><span class="n">64</span><span class="t">세계관</span><span class="fig"></span></a></li><li><a href="#s65"><span class="n">65</span><span class="t">사람 유닛</span><span class="fig"></span></a></li><li><a href="#s66"><span class="n">66</span><span class="t">광역 구조 원칙</span><span class="fig"></span></a></li><li><a href="#s67"><span class="n">67</span><span class="t">클리어 평가와 재화 배분</span><span class="fig"></span></a></li><li><a href="#s68"><span class="n">68</span><span class="t">특수 고양이 등장 순서</span><span class="fig"></span></a></li><li><a href="#s69"><span class="n">69</span><span class="t">준비 단계와 실행 중 개입</span><span class="fig"></span></a></li><li><a href="#s70"><span class="n">70</span><span class="t">고양이 외형 설계</span><span class="fig"></span></a></li><li><a href="#s71"><span class="n">71</span><span class="t">오프닝과 스토리</span><span class="fig"> ◆</span></a></li><li><a href="#s72"><span class="n">72</span><span class="t">게임 화면 UI</span><span class="fig"> ◆</span></a></li><li><a href="#s73"><span class="n">73</span><span class="t">스테이지 난이도</span><span class="fig"></span></a></li><li><a href="#s74"><span class="n">74</span><span class="t">맵 출입 방향</span><span class="fig"></span></a></li><li><a href="#s75"><span class="n">75</span><span class="t">길과 건물</span><span class="fig"></span></a></li><li><a href="#s76"><span class="n">76</span><span class="t">측정된 것</span><span class="fig"></span></a></li><li><a href="#s77"><span class="n">77</span><span class="t">유인과 정지</span><span class="fig"></span></a></li><li><a href="#s78"><span class="n">78</span><span class="t">사거리와 배치 프리뷰</span><span class="fig"></span></a></li><li><a href="#s79"><span class="n">79</span><span class="t">타이틀 로고</span><span class="fig"> ◆</span></a></li><li><a href="#s80"><span class="n">80</span><span class="t">픽셀 에셋 목록</span><span class="fig"></span></a></li><li><a href="#s81"><span class="n">81</span><span class="t">무늬 도감</span><span class="fig"></span></a></li></ul></div>
+<div class="nav-group"><h3>v0.5+<small>나중에 정한 것들</small></h3><ul><li><a href="#s64"><span class="n">64</span><span class="t">세계관</span><span class="fig"></span></a></li><li><a href="#s65"><span class="n">65</span><span class="t">사람 유닛</span><span class="fig"></span></a></li><li><a href="#s66"><span class="n">66</span><span class="t">광역 구조 원칙</span><span class="fig"></span></a></li><li><a href="#s67"><span class="n">67</span><span class="t">클리어 평가와 재화 배분</span><span class="fig"></span></a></li><li><a href="#s68"><span class="n">68</span><span class="t">특수 고양이 등장 순서</span><span class="fig"></span></a></li><li><a href="#s69"><span class="n">69</span><span class="t">준비 단계와 실행 중 개입</span><span class="fig"></span></a></li><li><a href="#s70"><span class="n">70</span><span class="t">고양이 외형 설계</span><span class="fig"></span></a></li><li><a href="#s71"><span class="n">71</span><span class="t">오프닝과 스토리</span><span class="fig"> ◆</span></a></li><li><a href="#s72"><span class="n">72</span><span class="t">게임 화면 UI</span><span class="fig"> ◆</span></a></li><li><a href="#s73"><span class="n">73</span><span class="t">스테이지 난이도</span><span class="fig"></span></a></li><li><a href="#s74"><span class="n">74</span><span class="t">맵 출입 방향</span><span class="fig"></span></a></li><li><a href="#s75"><span class="n">75</span><span class="t">길과 건물</span><span class="fig"></span></a></li><li><a href="#s76"><span class="n">76</span><span class="t">측정된 것</span><span class="fig"></span></a></li><li><a href="#s77"><span class="n">77</span><span class="t">유인과 정지</span><span class="fig"></span></a></li><li><a href="#s78"><span class="n">78</span><span class="t">사거리와 배치 프리뷰</span><span class="fig"></span></a></li><li><a href="#s79"><span class="n">79</span><span class="t">타이틀 로고</span><span class="fig"> ◆</span></a></li><li><a href="#s80"><span class="n">80</span><span class="t">픽셀 에셋 목록</span><span class="fig"></span></a></li><li><a href="#s81"><span class="n">81</span><span class="t">무늬 도감</span><span class="fig"></span></a></li><li><a href="#s82"><span class="n">82</span><span class="t">현장 로스터와 모집</span><span class="fig"></span></a></li></ul></div>
 <div class="nav-group"><h3>문서<small>이력과 끝</small></h3><ul><li><a href="#end-of-document"><span class="n"></span><span class="t">End of Document</span><span class="fig"></span></a></li><li><a href="#변경-이력"><span class="n"></span><span class="t">변경 이력</span><span class="fig"></span></a></li></ul></div>
 </nav>
 
 <main>
   <header>
-    <p class="eyebrow">Game Design Document v1.5.1</p>
+    <p class="eyebrow">Game Design Document v1.6.0</p>
     <h1>Too Many Cats!</h1>
     <p>
       외계 고양이 행성에서 쳐들어온 고양이 떼를 구조해 로켓에 태워 돌려보내는
@@ -1162,7 +1183,7 @@
 <li>Art Style: 2D Pixel Art</li>
 <li>Primary Art Tool: PixelLab</li>
 <li>Development Style: Solo + AI Assisted</li>
-<li>Document Version: 1.5.1</li>
+<li>Document Version: 1.6.0</li>
 </ul>
 <p>현재 제작·검증 대상은 웹판이다. Unity / C# 은 이전 프로토타입이고, 본문에 남은 그쪽 코드 이름과
 실측은 이식 참고 기록이다. 웹판 구현이 끝났다는 뜻이 아니다.</p>
@@ -1299,6 +1320,47 @@ x742</p>
 <p>Economy 브랜치는 <strong>세 재화 중 아무거나</strong> 받는다.
 원래 다른 셋을 빨리 굴리기 위한 브랜치라 성격상 중립이고,
 한쪽 재화가 남을 때 태울 곳이 된다.</p>
+<h2>모집권과 인연 조각 (v1.6)</h2>
+<p>영구 재화는 기본 포인트 · 인력 · 유인 · 장비 · Golden Paw · <strong>모집권</strong> · <strong>인연 조각</strong> 일곱이다. 모집권과 인연 조각은 캐릭터 영입(82장)에만 쓰며,
+수치 성장과 역할 사용권을 대신하지 않는다. Golden Paw 는 모집 · 교환 · 개인 성장에 쓰지 않는다.</p>
+<table>
+<thead>
+<tr>
+<th>재화</th>
+<th>용도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기본 포인트</td>
+<td>열린 공통 스킬 강화, 캐릭터별 중급 · 프로 훈련</td>
+</tr>
+<tr>
+<td>인력</td>
+<td>Rescue 역할 사용권 · 교육 노드 해금</td>
+</tr>
+<tr>
+<td>유인</td>
+<td>Attraction 노드 해금</td>
+</tr>
+<tr>
+<td>장비</td>
+<td>Automation 노드 해금</td>
+</tr>
+<tr>
+<td>Golden Paw</td>
+<td>Ultimate 해금</td>
+</tr>
+<tr>
+<td>모집권</td>
+<td>모집, 또는 인연 조각으로 교환 (1 → 2)</td>
+</tr>
+<tr>
+<td>인연 조각</td>
+<td>미보유 캐릭터 지정 영입</td>
+</tr>
+</tbody>
+</table>
 <h2>해금은 2단계다</h2>
 <pre><code>해금 재화로 노드를 연다  →  기본 포인트로 키운다
 </code></pre>
@@ -2113,6 +2175,10 @@ Wave 총 수 T, 황금 수 G, 최종 비율 r 에 대해 비황금 특수 수는
 - Wave Reward
 - Rare Cat Bonus
 - Research Multiplier</p>
+<h2>역할 노드는 사용권과 교육 (v1.6)</h2>
+<p>Rescue 브랜치의 사람 노드는 <strong>역할 공통의 사용권 · 교육 과정</strong>으로 남고, 개인 성장은 캐릭터 안으로 옮긴다 (82장 5절).
+같은 교육 노드를 12벌 만들지 않는다 — 노드를 열면 보유한 그 역할의 모든 캐릭터에 적용되고, 실제 중급 · 프로 훈련은 캐릭터별로 기본 포인트 20 · 40 을 쓴다.
+모집은 인력 노드를 대신 열어 주지 않는다.</p>
 </section>
 <section class="chapter" id="s22">
 <h2>22. Combo System</h2>
@@ -2970,7 +3036,8 @@ TooManyCats</p>
 </table>
 <h2>등급</h2>
 <p>각 유닛은 초보 / 중급 / 프로 3등급을 갖는다.
-현장 등급은 초보 · 중급 · 프로 셋뿐이다. 저장값은 초보 0 · 중급 1 · 프로 2 고, 화면에는 등급명과
+사람에게는 <strong>캐릭터 등급</strong>과 <strong>성장 단계</strong>가 있다 (82장). 캐릭터 등급은 일반 · S · SSR 이며 영입 확률과 킷 분류를 나타낸다 —
+세기가 아니다. 성장 단계는 초보 · 중급 · 프로이며 실제 현장 동작을 나타낸다. 프로의 동작 변화는 같은 역할의 모든 캐릭터에게 공통이다. 저장값은 초보 0 · 중급 1 · 프로 2 고, 화면에는 등급명과
 별 1 · 2 · 3개만 보여 준다 — "중급 구조원 ★★" 처럼. 사람 유닛 이름 뒤에 따로 「Lv.」 를 붙이지
 않는다. 영구 스킬의 레벨은 스킬트리 노드에서만 표시한다. (이전 구현은 <code>RescueDevice.UpgradeLevel</code>
 필드가 이 등급이었다.)</p>
@@ -3060,6 +3127,9 @@ Spawn 순번이 빠른 쪽이다. 수의사에게 따로 실시간 이동 명령
 판을 만들지 않는다.</p>
 <h2>배치</h2>
 <p>사람 유닛도 장비와 같은 Build Zone 규칙을 따른다. (18장)</p>
+<h2>캐릭터 로스터 (v1.6)</h2>
+<p>구조원 5(한결 · 두리 · 태산 · 소연 · 교진) · 집사 4(보미 · 나리 · 만복 · 이음) · 수의사 3(온유 · 민서 · 지안). 시그니처 특성 · 획득 경로 · 편성 상한은 82장.
+Map 7 대여 수의사는 <strong>온유</strong>다. 기존 저장의 구조원 → 한결, 집사 → 보미, 수의사 → 온유.</p>
 <hr />
 </section>
 <section class="chapter" id="s66">
@@ -3233,6 +3303,9 @@ Rescue 노드를 열려 하면 <code>NotEnoughCurrency</code> 다. 여기가 막
 <p><strong>Unity 쪽에서 맵이 난이도를 덮어쓰고 있었다.</strong> <code>MapDataSO.Apply</code> 가 <code>MissedCatLimit</code> 을
 기준값으로 되돌려서, 드라이버가 Run 시작 뒤에 맵을 적용하면 쉬움과 어려움의 허용량이 같아진다.
 맵을 먼저 깔고 난이도를 나중에 거는 순서로 바꿨다. 73장을 물릴 때 놓친 구멍이다.</p>
+<h2>모집권 (v1.6)</h2>
+<p>Run 클리어 정산에 <strong>모집권</strong> 한 줄이 붙는다 — 쉬움 0 · 보통 2 · 어려움 3, Run 당 1회, 실패 · 포기 0. 구조 수 · Wave 수 · Economy 배율을 곱하지 않는다.
+기존 재화의 지급량과 판정은 그대로다 (82장 4절).</p>
 <hr />
 </section>
 <section class="chapter" id="s68">
@@ -3402,6 +3475,10 @@ Wave 전에 배치를 끝내야 Spawn 위치와 지형을 읽고 판을 짜게 �
 <li>등장 예정 고양이 종류 — 광란이 나오는 Wave 면 미리 알려 준다 (68장)</li>
 <li><strong>구조 시작</strong> 버튼</li>
 </ul>
+<h2>사람 편성 (v1.6)</h2>
+<p>캐릭터 한 명은 현장 한 자리만 차지한다. 서로 다른 같은 역할 캐릭터는 함께 배치할 수 있다.
+<strong>동시 편성 상한은 구조원 3 · 집사 2 · 수의사 1, 총 6</strong> — 일반 6명만으로 모든 자리가 찬다. 보유 수가 곧 타워 수가 되지 않게 하는 선이다.
+배치비는 구조원 100 · 집사 120 · 수의사 150 Rescue Points, 등급 · 성장에 따른 차이 없음. 시그니처 설정은 준비 단계에서 확정하고 실행 중에는 바꾸지 못한다 (82장 5절).</p>
 <hr />
 </section>
 <section class="chapter" id="s70">
@@ -3764,7 +3841,8 @@ Unity 를 켜지 않고 잡을 수 있는 종류의 사고다.</p>
 로켓은 처형이 아니라 귀향이다(64장).
 오프닝은 이걸 설명하는 게 아니라 <strong>웃기면서 납득시켜야</strong> 한다.</p>
 <h2>등장인물 = 유닛 로스터</h2>
-<p>새 캐릭터를 만들지 않는다. 65장의 사람 유닛이 그대로 등장인물이다.</p>
+<p>스토리 전용 현장 인물을 따로 만들지 않는다. 현장 인물이 필요하면 65장 로스터를 참조한다. 상황실의 팀장 · 지휘관 · 요원은 고정 인물이며 모집 대상이 아니다.
+현장 로스터 12명(82장)은 본편 컷신의 화자로 넣지 않는다 — 누구를 먼저 모집했는지에 따라 대본이 갈리지 않게. 개성은 도감 프로필과 준비 단계 배치 한마디(캐릭터당 Run 최초 배치 1회, 24자 · 2초)에 둔다.</p>
 <table>
 <thead>
 <tr>
@@ -4909,6 +4987,8 @@ v1.5 에는 따로 미니맵을 두지 않는다 — 전체 보기가 그 역할
   Battle --> Result[결과 화면<br/>로켓 발사 · 43장 · 64장]
   Result --> Tree[스킬트리<br/>21장]
   Tree --> Pick
+  Tree --> Recruit[모집<br/>82장]
+  Recruit --> Tree
   Pick --> Catalog[도감<br/>81장]
   Catalog -->|빈 칸 누르면 그 맵| Pick
 
@@ -5351,8 +5431,8 @@ v1.5 에는 따로 미니맵을 두지 않는다 — 전체 보기가 그 역할
       특수 페이지는 같은 격자에 14장 통합표의 첫 등장 맵 · Wave 를 보여 주는 <strong>기록</strong>, 사람 페이지는 71장 등장인물의 <strong>명단</strong>이다. 셋은 따로 세고 보상도 따로다 (81장). 발견한 칸의 상세는 캐릭터 프로필 — 별명 · 성격 · 버릇 · 한마디 · 이야기 · 구조대 메모.
     </figcaption>
   </figure></div>
-<p>세 페이지다 — 무늬 12칸은 <strong>지도</strong>, 특수 10칸은 <strong>기록</strong>, 사람 6칸은 <strong>명단</strong> (81장). 제목 옆 탭으로 넘기고, 집계는
-일반 n/12 · 특수 n/10 · 사람 n/6 을 따로 센다. 합치지 않는다.</p>
+<p>세 페이지다 — 무늬 12칸은 <strong>지도</strong>, 특수 10칸은 <strong>기록</strong>, 사람은 <strong>현장 로스터 12 와 상황실 3</strong> (81 · 82장). 제목 옆 탭으로 넘기고, 집계는
+일반 n/12 · 특수 n/10 · 현장 n/12 · 상황실 n/3 을 따로 센다. 합치지 않는다.</p>
 <ul>
 <li>카드 격자 4열 × 3행, 카드 84×76px, 간격 8px. 오른쪽은 선택한 칸의 상세 — 이름 · 상태 · 처음 나오는 맵 · 같이 나오는 맵,
   그리고 <strong>캐릭터 프로필</strong> — 별명 · 성격 · 버릇 · 좋아하는 것 · 싫어하는 것 · 한마디 · 이야기(64장 톤, 두세 문장) · 구조대 메모(게임플레이 한 줄: 무늬는 어디서 왜 보이나, 특수는 무엇을 하고 무엇으로 대응하나).
@@ -5360,11 +5440,58 @@ v1.5 에는 따로 미니맵을 두지 않는다 — 전체 보기가 그 역할
 <li>미발견 칸은 실루엣과 「Map N」 뿐이다. 누르면 그 무늬가 처음 나오는 맵이 선택된 <strong>맵 선택 화면</strong>으로 간다.
   잠긴 맵이면 해금 조건(「맵 N-1 보통 클리어」)을 보여 준다.</li>
 <li>특수 페이지의 미발견 칸은 14장 통합표의 첫 등장 맵 · Wave 를 보여 준다. 황금은 「Map 10 최종 Wave」.</li>
-<li>사람 페이지는 71장의 등장인물 = 65장 유닛 로스터다 — 팀장 · 지휘관 · 요원 · 구조원 · 집사 · 수의사. 앵커는 장치라 없다.
-  카드는 유닛 스프라이트(남쪽 프레임) 또는 초상화, 상세에는 직함 · 성격 · 버릇 · 한마디 · 이력 · 게임에서 하는 일(65장 동사와 프로 등급의 변화) · 언제 만나나.
-  발견은 처음 등장(상황실 셋은 오프닝) 또는 처음 배치(유닛). 보상은 없다 — 명단이 찼다는 말만.</li>
+<li>사람 페이지는 <strong>현장 로스터 12명</strong>(역할 × 등급 필터, 같은 4×3 격자)과 <strong>상황실 3명</strong>(팀장 · 지휘관 · 요원)의 하위 보기다. 앵커는 장치라 없다.
+  카드는 걷기 시트의 남쪽 프레임, 상세에는 초상 · 별명 · 역할 · 캐릭터 등급 · 성장 단계 · 성격 · 버릇 · 한마디 · 이야기 · 구조대 메모 · 획득 경로.
+  <strong>미보유 카드도 게임 규칙은 전부 보여 준다</strong> — 시그니처 수치 · 프로 공통 동작 · 확정 합류 지점 · 지정 영입 가격과 현재 조각 · 모집 확률. 보유하면 인물의 읽을거리가 열린다.
+  미보유 칸을 눌렀다고 모집 화면으로 바로 보내지 않는다 — 「확정 합류 맵 보기」 와 「지정 영입」 을 고른다.
+  발견은 영입 거래 완료 시점(상황실 셋은 오프닝, 스킵했으면 Map 1 첫 진입). 보상은 없다 — 전원 합류 표식만.</li>
 <li>들어오는 길은 맵 선택 하단의 도감 버튼, 뒤로는 맵 선택이다. 결과 화면에서 신규 발견이 있으면 「도감 +n」 과 함께 그 칸의 <strong>발견 기록 한 줄</strong>(구조대 기록 형식)을 띄운다.</li>
 <li>발견 판정과 보상은 81장. 웹판 데이터는 web/data/catalog.json — 무늬 12 · 특수 10 · 맵별 풀 · 보상 키 · 칸마다 설명 · 이야기 · 힌트 · 발견 기록 문구.</li>
+</ul>
+<h3>모집</h3>
+<div class="mockup">  <figure>
+    <div class="screen">
+      <div class="recruit">
+        <div class="rc-top">
+          <strong>모집</strong>
+          <span class="k">상황실 지원서 접수</span>
+          <div class="purse"><span class="p"><i style="background:var(--s-blue)"></i>모집권 7</span><span class="p"><i style="background:#8B7FD6"></i>인연 조각 14</span><span class="p"><i style="background:var(--s-dim)"></i>S 보장까지 3 · SSR 보장까지 27</span></div>
+        </div>
+        <div class="rc-body">
+          <div class="rc-panel">
+            <h6>상시 모집 — 기본 확률</h6>
+            <span>일반 <b>80%</b> · S <b>18%</b> · SSR <b>2%</b> <span class="k">(등급 안에서는 같은 확률)</span></span>
+            <span class="k">10회 안에 S 이상 보장 · 40회 안에 SSR 보장. 중복은 인연 조각 (일반 +2 · S +6 · SSR +20).</span>
+            <span class="k">모집권 1 → 조각 2 로 바로 바꿀 수 있다. 보통 Map 10 까지 가면 모집 없이 전원 합류.</span>
+            <div class="rc-btns"><span class="rc-btn">1회 — 모집권 1</span><span class="rc-btn">10회 — 모집권 10</span><span class="rc-btn dim">조각으로 교환</span></div>
+          </div>
+          <div class="rc-panel">
+            <h6>결과 · 교환소</h6>
+            <div class="rc-card"><span class="face"></span><div><div><b>소연</b> <span class="grade">S · 구조원</span></div><div class="k">낮은 자세 — 반경 5 안 겁쟁이 1마리의 공포 반응 2초 억제, 쿨다운 8초</div><div class="k">지휘관 도장 · 신규 합류 · 조각 +2</div></div></div>
+            <div class="rc-list">
+              <span class="own">한결</span><span class="own">두리</span><span class="own">태산</span><span class="own">소연</span><span>교진 · 조각 60</span>
+              <span class="own">보미</span><span class="own">나리</span><span>만복 · 조각 24</span><span>이음 · 조각 60</span>
+              <span class="own">온유</span><span>민서 · 조각 24</span><span>지안 · 조각 24</span>
+            </div>
+          </div>
+        </div>
+        <div class="rc-bottom">
+          <span class="back">← 스킬트리</span>
+          <span>실제 돈 · 광고 · 출석 없음. 모집권은 보통 클리어 2 · 어려움 3 (82장)</span>
+        </div>
+      </div>
+    </div>
+    <figcaption>
+      결과 연출은 <strong>지원서 접수</strong>다 — 사람이 로켓에서 나오지 않는다 (64장). 미보유 칸에는 지정 영입 가격이 바로 붙어, 운이 나빠도 길이 보인다. 확률은 「기본 확률」 이라 적고 천장 포함 실효 확률로 적지 않는다.
+    </figcaption>
+  </figure></div>
+<p>스킬트리 옆에 둔다. Run 밖의 맵 선택 · 스킬트리에서 들어온다 (82장 4절).
+<code>모집 → 확률 · 천장 · 교환소 확인 → 1회 / 10회 → 결과 → 로스터 / 다시 모집</code></p>
+<ul>
+<li>상단에 모집권 · 인연 조각 · 두 천장까지 남은 횟수. 확률은 「기본 확률」 이라 표시하고 천장 포함 실효 확률로 적지 않는다.</li>
+<li>결과 연출은 <strong>상황실의 지원서 접수</strong> — 지원서가 들어오고 지휘관의 도장이 찍힌 뒤 카드가 열린다. 사람이 로켓에서 나오지 않는다 (64장). 1회 2초 · 10회 3초, 즉시 넘기기와 연출 끄기.</li>
+<li>교환소에는 처음부터 12명 전부. 미보유자는 즉시 지정 영입, 역할이 잠겨 있으면 배치 조건 표시. 모집권 → 조각 직접 교환(1 → 2).</li>
+<li>모집은 비용 차감 · 결과 · 조각 · 천장 · 보유를 한 번에 저장한 뒤 연출한다. 새로고침하면 저장된 결과를 보여 준다.</li>
 </ul>
 <h3>일시정지</h3>
 <p>계속 / 현재 Wave 다시 준비 / 설정 / Run 포기.
@@ -7027,6 +7154,9 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 황금 고양이가 무리 속에서 보이는지는 진짜 그림 없이도 알 수 있다.</p>
 <p>오프닝이 그렇게 굴러갔다. 배경이 없으면 Id 를 적어 두고 대사는 그대로 돌렸다.
 그림을 기다리느라 검증이 막히지 않게 하는 게 이 프로젝트의 방식이다.</p>
+<h2>로스터 그림 (v1.6)</h2>
+<p>현장 캐릭터 12명의 걷기 시트 12장(2048×64)과 초상 12장(256×256, 머리부터 가슴까지)은 82장 9절 목록대로 그림 지시문 9단계에서 만든다.
+위 합계 표는 그림이 들어올 때 갱신한다 — 사람 3종 · 12칸이 12종 · 384칸으로 바뀐다.</p>
 <hr />
 </section>
 <section class="chapter" id="s81">
@@ -7149,9 +7279,10 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <p>이건 69장과도 어긋나지 않는다. 69장의 학습 루프는 <strong>같은 판을 세팅만 바꿔 다시 하는
 것</strong>이고, 도감은 <strong>클리어한 맵을 다시 가게</strong> 만든다. 새 맵을 강요하지 않는다 —
 한 판이면 그 페이지가 차니까 반복 자체가 없다.</p>
-<h2>사람은 세 번째 페이지</h2>
-<p>팀장 · 지휘관 · 요원 · 구조원 · 집사 · 수의사. 71장의 등장인물이 곧 65장의 유닛이라 새 얼굴은 없다. 수집이 아니라 <strong>명단</strong>이다 —
-스토리와 배치를 따라가면 저절로 찬다. 이 페이지가 있는 이유는 캐릭터 프로필(성격 · 버릇 · 이력)을 읽을 자리가 게임 어디에도 없어서다.</p>
+<h2>사람은 세 번째 페이지 — 로스터</h2>
+<p>현장 로스터 12명(82장)과 상황실 3명. 로스터는 수집이지만 <strong>확률이 완성을 막지 않는다</strong> — 모든 캐릭터에 확정 합류 지점이 있고, 보통 Map 10 까지 가면
+모집을 한 번도 하지 않아도 전원이 모인다. 모집은 원하는 사람을 일찍 만나는 방법이다. 완성 보상은 없다 — 사람은 실제 편성 선택지라 수집 자체가 보상이고,
+여기에 재화를 붙이면 안 모은 사람이 재화에서도 손해를 본다. 이 페이지가 있는 이유는 캐릭터 프로필(성격 · 버릇 · 이력)을 읽을 자리가 게임 어디에도 없어서다.</p>
 <h2>특수 고양이는 다른 페이지</h2>
 <p>무늬 12종과 특수 10종은 같은 도감에 있지만 성격이 반대다. 특수 목록은 겁쟁이 · 도둑 · 먹보 · 빠른
 고양이 · 뚱냥이 · 대장 · 황금 · 애교냥이 · 광란 · 돌연변이고, 첫 등장 맵은 14장을 따른다.</p>
@@ -7209,8 +7340,8 @@ UI(72장)에서 이 두 계열을 섞어 쓰지 않는다.</p>
 <td>catalog-specials-v1</td>
 </tr>
 <tr>
-<td>사람 6명 완성</td>
-<td>없음 (명단이 찼다는 말만)</td>
+<td>사람 전원 합류 (현장 12 · 상황실 3)</td>
+<td>없음 (전원 합류 표식만)</td>
 <td>catalog-people-v1</td>
 </tr>
 </tbody>
@@ -7252,12 +7383,1657 @@ Golden Paw 지급 시점은 73장을 따른다. 쉬움에서 완성하면 "보�
 그걸 플레이해 봐야 안다. <code>EveryPatternIsCollectible</code> 이 먼저 잡는다.</p>
 <hr />
 </section>
+<section class="chapter" id="s82">
+<h2>82. 현장 로스터와 모집</h2>
+<p><strong>v1.6.0 신설.</strong> 기획자 방향 「역할당 한 명이 아니라 일반 · S · SSR 캐릭터, 재화로 뽑기」 를 Codex 가 설계하고 Claude 가 검토했다 (<code>web/design/codex-roster-design.md</code>).
+[제안] 이 붙은 수치는 구현 · 측정 전 초깃값이다. 설계 전제 다섯 — 등급은 세기가 아니라 킷과 성격, 천장과 교환소, 모집 대상은 현장 유닛만,
+성장(초보 · 중급 · 프로)은 캐릭터 안에, 「일반만으로 모든 맵 보통 클리어」 — 와 Codex 가 더한 <strong>전원 확정 합류</strong>(보통 Map 10 까지 모집 없이 12명)가 뼈대다.
+A안(천장 있는 모집)을 적용한다. B안(조각 교환만)은 11절에 남겨 둔다.</p>
+<p>이 장은 일반 · S · SSR 캐릭터와 모집을 추가하는 설계안이다. 기존 규칙은 해당 장을 인용하고, 신설하거나 바꾸는 규칙에는 <strong>[제안]</strong>을 붙인다. 아래 수치는 구현과 측정을 위한 초깃값이며, 검증 완료 수치가 아니다.</p>
+<h2>1. 시스템 개요</h2>
+<p><strong>[제안] 사람 유닛의 세 역할을 12명의 현장 캐릭터로 나눈다. 캐릭터 등급은 일반 · S · SSR, 성장 단계는 초보 · 중급 · 프로다. 둘은 서로 다른 축이다.</strong></p>
+<p>캐릭터는 플레이로 얻는 모집권으로 모집하거나, 조각으로 지정 영입하거나, 보통 맵 진행으로 확정 영입한다. 모집은 원하는 사람을 일찍 만나는 방법이다. <strong>보통 Map 10까지 진행하면 모집을 한 번도 하지 않아도 12명을 모두 보유한다.</strong></p>
+<p>Claude의 울타리 다섯 가지는 채택한다. 다만 확률과 교환소만으로는 반복 파밍이 남으므로, <strong>전체 로스터의 확정 합류 경로</strong>를 더한다.</p>
+<table>
+<thead>
+<tr>
+<th>충돌</th>
+<th>해결</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>81장 — 도감은 확률이 아니라 지도다</td>
+<td><strong>[제안]</strong> 무늬·특수 도감은 그대로 두고, 사람은 모든 캐릭터에 확정 합류 지점을 표시한다. 모집 운이 완성을 막지 않는다.</td>
+</tr>
+<tr>
+<td>6장 — Golden Paw는 선택지 확장 전용이다</td>
+<td><strong>[제안]</strong> 모집·교환·개인 성장에 Golden Paw를 쓰지 않고, 사람 수집 보상으로도 지급하지 않는다.</td>
+</tr>
+<tr>
+<td>65장·19장 — 세 동사와 프로의 동작 변화가 있다</td>
+<td><strong>[제안]</strong> 역할과 성장 단계는 보존한다. 캐릭터 등급은 별도 축이며, SSR도 초보로 합류한다.</td>
+</tr>
+<tr>
+<td>71장 — 새 캐릭터를 만들지 않는다</td>
+<td><strong>[제안]</strong> “스토리 전용 현장 인물을 따로 만들지 않는다”로 개정한다. 현장 인물은 65장 로스터를 공유하고 상황실 셋은 모집에서 제외한다.</td>
+</tr>
+<tr>
+<td>73장 — 같은 지형, 다른 압력, 보통 클리어로 진행한다</td>
+<td><strong>[제안]</strong> 캐릭터 보유를 맵 해금 조건에 넣지 않는다. 모든 맵 보통은 일반 캐릭터만으로 통과하게 검증한다.</td>
+</tr>
+<tr>
+<td>69장·18장 — 사람은 준비 단계에 배치한다</td>
+<td><strong>[제안]</strong> 모집·영구 성장은 Run 밖에서만 한다. 실행 중 합류·교대·신규 배치는 없고, 시그니처도 이 경계를 넘지 않는다.</td>
+</tr>
+<tr>
+<td>6장·67장 — 기존 재화의 용도와 수입이 정해져 있다</td>
+<td><strong>[제안]</strong> 모집권과 공용 조각을 추가한다. 인력 재화의 노드 해금 기능과 기존 정산량은 보존하고, 모집 보상을 별도 행으로 명시한다.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>[제안] 보유 수에 따른 전력 증가도 제한한다.</strong> 동시 현장 인원은 최대 6명이며, 구조원 3명 · 집사 2명 · 수의사 1명까지다. 일반 6명만으로 모든 자리를 채운다. 여러 캐릭터를 모으면 같은 자리에서 고를 사람이 늘어난다.</p>
+<p>이 인원 상한은 기존 GDD에 없던 제한이다. 기존 무제한 사람 배치를 전제로 만든 맵·예산이 있다면 함께 다시 조정한다.</p>
+<hr />
+<h2>2. 로스터 표</h2>
+<p><strong>[제안] 첫 버전은 구조원 5명 · 집사 4명 · 수의사 3명, 합계 12명이다. 일반 6명 · S 4명 · SSR 2명이다.</strong></p>
+<table>
+<thead>
+<tr>
+<th>역할</th>
+<th style="text-align: right;">일반</th>
+<th style="text-align: right;">S</th>
+<th style="text-align: right;">SSR</th>
+<th style="text-align: right;">합계</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>구조원</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>집사</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr>
+<td>수의사</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td>합계</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12</td>
+</tr>
+</tbody>
+</table>
+<p>수의사 SSR을 억지로 넣지 않는다. 첫 버전은 기존 치료와 다른 상호작용 두 개를 S에서 검증한다.</p>
+<h3>시그니처 공통 규칙</h3>
+<p><strong>[제안] 아래 표 전체는 신규 캐릭터 정의다.</strong></p>
+<ul>
+<li>시그니처는 초보부터 사용한다. 성장 단계에 따라 시그니처 수치를 올리지 않는다.</li>
+<li>준비 단계에서 캐릭터별 시그니처를 켜거나 끈다. 실행 중에는 바꾸지 못한다.</li>
+<li>시간은 게임 시간, 거리는 칸이다. 일시정지에서는 시간이 흐르지 않는다.</li>
+<li>별도 표기가 없는 효과는 자신의 유효 범위 안에서만 작동한다.</li>
+<li>같은 효과는 합산하지 않는다. 대상 선택이 같으면 거리, Spawn 순번으로 결정한다.</li>
+<li>홀림 중에는 시그니처의 신규 발동과 사람의 기본 동작이 모두 멈춘다. 쿨다운은 흐른다. 이미 시작된 짧은 상태 효과는 남은 시간까지 유지한다.</li>
+<li>강제 이동·순간이동·신규 설치·무료 구조·추가 영구 재화는 만들지 않는다.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>이름 · ID</th>
+<th>역할</th>
+<th>등급</th>
+<th>시그니처 특성</th>
+<th>성격</th>
+<th>외형</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>한결</strong> <code>rescuer-hangyeol</code></td>
+<td>구조원</td>
+<td>일반</td>
+<td><strong>차례대로</strong> — 새 구조 대상을 고를 때 음식에 붙들린 <code>Held</code> 고양이 1마리를 우선한다. 없으면 기본 선택으로 돌아간다.</td>
+<td>시작한 줄은 끝까지 정리한다.</td>
+<td>주황 조끼, 둥근 헬멧, 짧고 네모난 체형, 두꺼운 장갑.</td>
+</tr>
+<tr>
+<td><strong>두리</strong> <code>rescuer-duri</code></td>
+<td>구조원</td>
+<td>일반</td>
+<td><strong>양쪽 확인</strong> — 준비 단계에 범위 안 음식 유인원 2개를 지정한다. 구조 1회마다 두 곳의 점유 고양이를 번갈아 우선한다. 한쪽이 비면 다른 쪽을 고른다.</td>
+<td>누구 하나 오래 기다리는 것을 못 본다.</td>
+<td>주황 조끼, 양옆으로 묶은 머리, 좁은 어깨, 허리 양쪽의 작은 파우치.</td>
+</tr>
+<tr>
+<td><strong>태산</strong> <code>rescuer-taesan</code></td>
+<td>구조원</td>
+<td>일반</td>
+<td><strong>마지막 손길</strong> — 범위 안에서 Exit까지 남은 Flow 경로가 가장 짧은 고양이 1마리를 우선한다. 진행 중인 구조는 중단하지 않는다.</td>
+<td>말보다 마지막 확인을 믿는다.</td>
+<td>주황 조끼, 각진 안전모, 넓은 어깨와 긴 팔, 낮게 멘 구조 가방.</td>
+</tr>
+<tr>
+<td><strong>소연</strong> <code>rescuer-soyeon</code></td>
+<td>구조원</td>
+<td>S</td>
+<td><strong>낮은 자세</strong> — 반경 5 안의 겁쟁이 1마리가 자신에게 보이는 공포 반응을 2초간 억제한다. 쿨다운 8초. 다른 사람·차량의 공포는 남는다.</td>
+<td>먼저 눈높이를 맞추고 기다린다.</td>
+<td>주황 조끼, 낮은 챙 모자, 굽힌 무릎, 한쪽으로 접어 멘 매트.</td>
+</tr>
+<tr>
+<td><strong>교진</strong> <code>rescuer-gyojin</code></td>
+<td>구조원</td>
+<td>SSR</td>
+<td><strong>두 팔 구조</strong> — 서로 다른 음식에 붙들린 고양이가 범위 안에 있으면 2마리를 동시에 처리한다. 총 구조 작업량을 각각 50%로 나누며, 대상이 1마리면 100%를 쓴다.</td>
+<td>양손이 비어 있으면 일이 덜 끝난 기분이다.</td>
+<td>주황 조끼, 키 큰 체형, 양팔의 넓은 보호대, 머리 위로 솟은 짧은 머리.</td>
+</tr>
+<tr>
+<td><strong>보미</strong> <code>butler-bomi</code></td>
+<td>집사</td>
+<td>일반</td>
+<td><strong>자리 안내</strong> — 범위 안 음식이 가득 차면 점유 고양이 1마리를 범위 안의 빈 음식 자리로 안내한다. 2초마다 최대 1마리. 고양이는 직접 걸어간다.</td>
+<td>빈자리를 누구보다 빨리 찾는다.</td>
+<td>남색 앞치마, 둥근 머릿수건, 낮고 넓은 체형, 한 손의 둥근 쟁반.</td>
+</tr>
+<tr>
+<td><strong>나리</strong> <code>butler-nari</code></td>
+<td>집사</td>
+<td>일반</td>
+<td><strong>여기서 식사</strong> — 장난감을 따라온 고양이가 범위 안 음식의 정지 반경에 들어오면 1초간 그 음식을 우선한다. 4초마다 최대 4마리.</td>
+<td>놀 때와 먹을 때를 또렷하게 나눈다.</td>
+<td>청회색 앞치마, 높은 묶음머리, 긴 다리, 세로로 접힌 냅킨.</td>
+</tr>
+<tr>
+<td><strong>만복</strong> <code>butler-manbok</code></td>
+<td>집사</td>
+<td>S</td>
+<td><strong>단골 가게</strong> — 준비 단계에 범위 안 맵 음식점 1곳을 지정해 자신의 공통 유인 보조 효과를 적용한다. 켜 두면 플레이어 유인 장비에는 보조 효과를 주지 않는다.</td>
+<td>동네 가게 사정을 전부 알고 있다.</td>
+<td>남색 앞치마, 넓은 사각 모자, 둥근 어깨, 옆으로 돌출된 사각 배달 가방.</td>
+</tr>
+<tr>
+<td><strong>이음</strong> <code>butler-ieum</code></td>
+<td>집사</td>
+<td>SSR</td>
+<td><strong>이어지는 상차림</strong> — 범위 안 음식 A와 A에서 6칸 이내 음식 B를 연결해, 자신의 공통 보조 효과를 B 한 곳에만 전달한다. A와 다른 유인원에는 적용하지 않는다.</td>
+<td>떨어져 있는 자리도 한 상으로 본다.</td>
+<td>청회색 긴 앞치마, 짧은 단발, 가늘고 긴 체형, 양옆의 낮은 직사각 도시락통.</td>
+</tr>
+<tr>
+<td><strong>온유</strong> <code>vet-onyu</code></td>
+<td>수의사</td>
+<td>일반</td>
+<td><strong>잠깐 쉬자</strong> — 치료 완료한 고양이 1마리를 1초간 제자리에 머물게 한다. 쿨다운 4초, 같은 고양이는 Wave당 1회.</td>
+<td>안심했다는 표정을 보고 손을 뗀다.</td>
+<td>흰 짧은 가운, 둥근 안경, 둥근 체형, 반원형 왕진 가방.</td>
+</tr>
+<tr>
+<td><strong>민서</strong> <code>vet-minseo</code></td>
+<td>수의사</td>
+<td>S</td>
+<td><strong>먼저 막는다</strong> — 단일 치료 시 돌연변이 중 반경 2 안 일반 행동 고양이가 가장 많은 1마리를 먼저 치료한다. 돌연변이가 없으면 광란을 고른다.</td>
+<td>작은 징후를 먼저 적는다.</td>
+<td>흰 긴 가운, 가는 체형, 높은 묶음머리, 몸 옆의 세로 기록판.</td>
+</tr>
+<tr>
+<td><strong>지안</strong> <code>vet-jian</code></td>
+<td>수의사</td>
+<td>S</td>
+<td><strong>재감염 관찰</strong> — 치료 완료한 고양이 1마리에 돌연변이 재감염 면역 2초를 준다. 쿨다운 10초, 같은 고양이는 Wave당 1회.</td>
+<td>끝난 일도 한 번 더 돌아본다.</td>
+<td>흰 가운, 낮은 사각 의료 모자, 넓은 소매, 가로로 긴 의료 가방.</td>
+</tr>
+</tbody>
+</table>
+<h3>경계 판정</h3>
+<p><strong>[제안] 보미의 안내는 정원을 늘리지 않는다.</strong> 출발 자리에서 빠진 순간 기존 점유를 해제하고, 목적지의 필요한 자리 수를 예약한다. 먹보는 3자리가 모두 비어 있어야 한다. 예약도 정원에 포함한다. 2초 안에 도착하지 못하거나 목적지가 비활성화되면 예약을 해제한다. 안내 중인 고양이는 다시 안내하지 않는다.</p>
+<p><strong>[제안] 나리의 우선권도 음식 정원이 있을 때만 성립한다.</strong> 정원 초과, 도둑에 의한 비활성화, 음식 소멸을 무시하지 않는다.</p>
+<p><strong>[제안] 이음은 플레이어 음식만 연결한다.</strong> 준비 단계에 존재하는 츄르 둘을 지정하며 연결을 연쇄하지 않는다. 집사의 범위와 A–B 거리 조건은 계속 검사한다. B가 비활성화되면 효과가 쉬고, 다른 곳으로 자동 이전하지 않는다.</p>
+<p><strong>[제안] 교진은 처리 속도 보너스를 받지 않는다.</strong> 각 고양이의 구조 저항은 따로 계산한다. 다른 장비가 대상을 먼저 구조하면 그 대상의 작업을 끝내고 남은 대상에 작업량을 모은다. 고양이 1마리를 두 번 구조하거나 보상하지 않는다.</p>
+<p><strong>[제안] 집단 치료에서 온유·지안의 추가 효과는 완료 대상 중 Spawn 순번이 빠른 1마리에만 붙는다.</strong> 민서의 우선순위는 모든 대상을 함께 치료하는 프로에서는 추가 효과가 없다. 특정 캐릭터가 모든 성장 단계에서 유리할 필요는 없다.</p>
+<hr />
+<h2>3. 등급 정의</h2>
+<h3>캐릭터 등급과 성장 단계</h3>
+<p><strong>[제안] 일반 · S · SSR은 모집에서의 희소성과 킷의 조건 수를 나타낸다. 초보 · 중급 · 프로는 현장 동작의 성장이다.</strong></p>
+<table>
+<thead>
+<tr>
+<th>캐릭터 등급</th>
+<th>킷의 범위 [제안]</th>
+<th>확정 획득 경로 [제안]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>일반</td>
+<td>대상 선택·인계·짧은 후속 동작 1개</td>
+<td>맵 첫 진입으로 6명 지급</td>
+</tr>
+<tr>
+<td>S</td>
+<td>특정 특수 고양이 또는 맵 유인원과의 상호작용 1개</td>
+<td>보통 Map 3·5·7·9 최초 클리어마다 미보유 S 1명 선택</td>
+</tr>
+<tr>
+<td>SSR</td>
+<td>둘 이상의 대상·유인원을 연결하는 동작 1개. 적용 범위나 작업량의 대가를 함께 둔다</td>
+<td>보통 Map 8·10 최초 클리어마다 미보유 SSR 1명 선택</td>
+</tr>
+</tbody>
+</table>
+<p><strong>[제안] 기본 지급은 다음과 같다.</strong> 첫 진입은 난이도와 무관하며, 해당 Run의 준비 단계 전에 처리한다. 스토리 시청 여부는 지급 조건이 아니다.</p>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>확정 지급</th>
+<th>사용 조건</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Map 1 첫 진입</td>
+<td>한결</td>
+<td>구조원 초보 사용권도 기본 제공</td>
+</tr>
+<tr>
+<td>Map 2 첫 진입</td>
+<td>두리 · 보미</td>
+<td>두리는 즉시 사용. 보미는 집사 노드 해금 후 사용</td>
+</tr>
+<tr>
+<td>Map 3 첫 진입</td>
+<td>태산</td>
+<td>즉시 사용</td>
+</tr>
+<tr>
+<td>Map 4 첫 진입</td>
+<td>나리</td>
+<td>집사 노드 해금 후 사용</td>
+</tr>
+<tr>
+<td>Map 7 첫 진입</td>
+<td>온유</td>
+<td>수의사 영구 해금 전에는 65장의 무료 대여 규칙 적용</td>
+</tr>
+</tbody>
+</table>
+<p>캐릭터 <strong>보유</strong>와 역할의 <strong>영구 사용권</strong>을 구분한다. 수의사를 먼저 모집해도 Map 7 이전에는 배치할 수 없다. 25장·68장의 도구 도입 순서를 모집이 앞당기지 않는다.</p>
+<p><strong>[제안] 확정 지급 대상이 이미 있으면 일반은 조각 2개를 준다.</strong> S·SSR 선택 지급은 미보유자를 우선 선택하며, 해당 등급을 전부 보유했을 때만 각각 조각 6개·20개로 대체한다. 모든 지급은 영구 진행당 1회다.</p>
+<p>따라서 Map 10 보통까지 정상 진행하면 일반 6명과 선택 지급 S 4명·SSR 2명으로 명단이 완성된다. 노드를 열지 않은 역할은 보유 상태에서 배치 잠금으로 남는다.</p>
+<h3>수치와 성장 비용</h3>
+<p><strong>[제안] 같은 역할·같은 성장 단계의 기본 수치는 캐릭터 간 차이 0%로 시작한다.</strong> SSR 배율, 숨은 성장률, 희귀도별 배치 할인은 없다.</p>
+<p>Claude가 제시한 ±10%는 기본 능력치 차이로 쓰지 않는다. 속도와 범위와 정원이 각각 10%씩 오르면 합성 효과가 커지기 때문이다. 10%는 뒤의 판 단위 비교 검사에서 사용한다.</p>
+<p><strong>[제안] 모든 캐릭터의 개인 성장 비용은 같다.</strong></p>
+<table>
+<thead>
+<tr>
+<th>성장</th>
+<th style="text-align: right;">비용</th>
+<th>전제</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>합류 → 초보</td>
+<td style="text-align: right;">0</td>
+<td>역할 사용권 필요</td>
+</tr>
+<tr>
+<td>초보 → 중급</td>
+<td style="text-align: right;">기본 포인트 20</td>
+<td>해당 역할 중급 교육 노드 해금</td>
+</tr>
+<tr>
+<td>중급 → 프로</td>
+<td style="text-align: right;">기본 포인트 40</td>
+<td>해당 역할 프로 교육 노드 해금</td>
+</tr>
+</tbody>
+</table>
+<p>성장은 캐릭터별로 저장한다. 새로 얻은 SSR은 초보이며, 다른 캐릭터가 프로여도 자동 승급하지 않는다. 개인 경험치, 출전 횟수 조건, 중복 돌파, 승급 재료는 없다.</p>
+<p><strong>[제안] 중복은 두 번째 사람을 만들지 않는다.</strong> 보유 여부는 참·거짓 하나이며 중복은 공용 조각으로 바뀐다. 같은 캐릭터를 여러 번 얻어도 능력치·성장 상한·배치 가능 수는 늘지 않는다.</p>
+<hr />
+<h2>4. 뽑기 — 모집</h2>
+<h3>사용하는 재화</h3>
+<p><strong>[제안] 새 재화 「모집권」을 사용한다.</strong></p>
+<p>인력 재화는 사람 역할과 교육 노드를 여는 재화다(6장·21장). 여기에 모집까지 붙이면 수의사를 확정 해금할 재화와 무작위 캐릭터를 뽑을 재화가 경쟁한다. 필요한 답을 여는 선택이 모집 때문에 늦어지므로 재활용하지 않는다.</p>
+<p>모집권은 모집 또는 공용 조각 교환에만 쓴다. 실제 돈, 유료 재화, 광고 시청, 출석, 접속 시간으로 얻지 않는다. 만료도 없다.</p>
+<h3>Run당 수입</h3>
+<p>67장은 어려움 조건 달성 보상 3개와 일부 측정 사례를 제시하지만, 모든 난이도의 모집용 지급표는 없다. 아래 모집권 수입은 <strong>67장의 기존 수치를 인용한 값이 아니라 추가 제안</strong>이다.</p>
+<table>
+<thead>
+<tr>
+<th>정산 항목</th>
+<th style="text-align: right;">쉬움</th>
+<th style="text-align: right;">보통</th>
+<th style="text-align: right;">어려움</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기본 포인트</td>
+<td style="text-align: right;">기존 계산</td>
+<td style="text-align: right;">기존 계산</td>
+<td style="text-align: right;">기존 계산</td>
+<td>구조 수에 따른 지급 유지, 6장·67장</td>
+</tr>
+<tr>
+<td>인력·유인·장비 재화</td>
+<td style="text-align: right;">기존 조건별 지급</td>
+<td style="text-align: right;">기존 조건별 지급</td>
+<td style="text-align: right;">기존 조건별 지급</td>
+<td>지급량·판정 유지, 67장</td>
+</tr>
+<tr>
+<td>Golden Paw</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">기존 규칙</td>
+<td style="text-align: right;">기존 규칙</td>
+<td>6장·14장·73장</td>
+</tr>
+<tr>
+<td><strong>모집권 — Run 클리어</strong></td>
+<td style="text-align: right;"><strong>0</strong></td>
+<td style="text-align: right;"><strong>2</strong></td>
+<td style="text-align: right;"><strong>3</strong></td>
+<td><strong>[제안]</strong> Run당 1회</td>
+</tr>
+<tr>
+<td><strong>모집권 — 실패·포기</strong></td>
+<td style="text-align: right;"><strong>0</strong></td>
+<td style="text-align: right;"><strong>0</strong></td>
+<td style="text-align: right;"><strong>0</strong></td>
+<td><strong>[제안]</strong></td>
+</tr>
+<tr>
+<td><strong>공용 조각 — 반복 Run 직접 지급</strong></td>
+<td style="text-align: right;"><strong>0</strong></td>
+<td style="text-align: right;"><strong>0</strong></td>
+<td style="text-align: right;"><strong>0</strong></td>
+<td><strong>[제안]</strong> A안 기준</td>
+</tr>
+</tbody>
+</table>
+<p><strong>[제안] 모집권에는 구조 수·Wave 수·Economy 배율을 곱하지 않는다.</strong> 500마리 Run과 10,000마리 Run의 동일 난이도 지급량은 같다. 어려움은 보통보다 Run당 50% 많이 주되, 시간당 수입이 더 높은지는 실제 Run 시간과 함께 측정한다.</p>
+<p>Map 1은 특수가 없어 인력 목표가 제외될 수 있지만(67장), 보통 클리어 모집권은 정상 지급한다. 모집권은 특수 구조의 대체 보상이 아니다.</p>
+<h3>비용·확률·천장</h3>
+<p><strong>[제안] 모집은 영구 상시 풀 하나만 둔다.</strong> 기간 한정, 픽업, 별도 역할 풀은 첫 버전에 없다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>값 [제안]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1회 모집</td>
+<td>모집권 1개</td>
+</tr>
+<tr>
+<td>10회 모집</td>
+<td>모집권 10개. 할인 없음</td>
+</tr>
+<tr>
+<td>기본 등급 확률</td>
+<td>일반 80% · S 18% · SSR 2%</td>
+</tr>
+<tr>
+<td>등급 내 선택</td>
+<td>해당 등급의 모든 캐릭터를 같은 확률로 선택</td>
+</tr>
+<tr>
+<td>S 이상 천장</td>
+<td>연속 9회 일반이면 다음 1회 S 이상</td>
+</tr>
+<tr>
+<td>SSR 천장</td>
+<td>연속 39회 SSR 미획득이면 다음 1회 SSR</td>
+</tr>
+<tr>
+<td>첫 무료 모집</td>
+<td>Map 1 보통 최초 클리어 뒤 모집 화면 개방 시 1회</td>
+</tr>
+<tr>
+<td>무료 모집의 처리</td>
+<td>유료 모집권 사용과 같은 확률·천장·조각 규칙 적용</td>
+</tr>
+</tbody>
+</table>
+<p>여기서 “유료”는 모집권을 소비한다는 뜻이며 실제 결제는 없다.</p>
+<p><strong>[제안] 기본 확률에서 개별 캐릭터 확률은 일반 각각 13⅓%, S 각각 4.5%, SSR 각각 1%다.</strong> 보유 여부와 역할 사용권은 확률에 영향을 주지 않는다. 아직 배치할 수 없는 캐릭터는 결과 화면에서 사용 조건을 바로 보여 준다.</p>
+<p><strong>[제안] 천장은 다음 순서로 처리한다.</strong></p>
+<ol>
+<li>SSR 미획득 누적이 39라면 SSR을 지급한다.</li>
+<li>그렇지 않고 S 이상 미획득 누적이 9라면 S 98% · SSR 2%로 지급한다.</li>
+<li>나머지는 일반 80% · S 18% · SSR 2%를 사용한다.</li>
+<li>S를 얻으면 S 이상 누적만 0으로 만든다.</li>
+<li>SSR을 얻으면 두 누적을 모두 0으로 만든다.</li>
+<li>일반을 얻으면 두 누적을 1씩 올린다. S를 얻으면 SSR 누적만 1 올린다.</li>
+</ol>
+<p>중복 S·SSR도 천장을 초기화한다. 확정 합류와 조각 교환은 모집 횟수에 포함하지 않는다. 10회 모집은 위 규칙을 10번 순서대로 실행한다. “10연 마지막 칸 보정”은 따로 없다.</p>
+<p>화면의 80·18·2%는 <strong>기본 확률</strong>이라고 표시한다. 천장을 포함한 장기 실효 확률로 표시하지 않는다.</p>
+<h3>조각과 지정 영입</h3>
+<p><strong>[제안] 공용 재화 「인연 조각」을 둔다. 캐릭터별 조각은 만들지 않는다.</strong></p>
+<table>
+<thead>
+<tr>
+<th>상황</th>
+<th style="text-align: right;">인연 조각 [제안]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>모집 1회 완료</td>
+<td style="text-align: right;">신규·중복 모두 기본 2개</td>
+</tr>
+<tr>
+<td>일반 중복</td>
+<td style="text-align: right;">추가 2개, 합계 4개</td>
+</tr>
+<tr>
+<td>S 중복</td>
+<td style="text-align: right;">추가 6개, 합계 8개</td>
+</tr>
+<tr>
+<td>SSR 중복</td>
+<td style="text-align: right;">추가 20개, 합계 22개</td>
+</tr>
+<tr>
+<td>모집권 직접 교환</td>
+<td style="text-align: right;">모집권 1개 → 조각 2개</td>
+</tr>
+<tr>
+<td>일반 지정 영입</td>
+<td style="text-align: right;">조각 8개</td>
+</tr>
+<tr>
+<td>S 지정 영입</td>
+<td style="text-align: right;">조각 24개</td>
+</tr>
+<tr>
+<td>SSR 지정 영입</td>
+<td style="text-align: right;">조각 60개</td>
+</tr>
+</tbody>
+</table>
+<p>모집 결과와 무관하게 지정 영입까지의 거리가 줄어든다. 무작위를 원하지 않으면 모집권을 바로 조각으로 바꾼다. 역교환은 없다.</p>
+<p><strong>[제안] 교환소에는 처음부터 12명을 모두 표시한다.</strong> 미보유자는 즉시 지정 영입할 수 있고, 역할이 잠겨 있으면 배치 조건을 표시한다. 보유 캐릭터는 재구매할 수 없다. 교환소 재고·가격은 순환하지 않는다.</p>
+<p>SSR 한 명의 확정 비용은 모집권 직접 교환 기준 30개다. 반복 수입만 계산하면 보통 15 Run 또는 어려움 10 Run이다. 이는 조각 경로의 상한이며, Map 8·10 보통의 확정 합류가 별도로 있다. 12명을 채우려고 이 횟수를 반복할 필요는 없다.</p>
+<h3>쉬움과 저장</h3>
+<p><strong>[제안] 쉬움에서는 모집권과 반복 조각 보상을 지급하지 않는다.</strong> 73장의 “쉬움은 가르치는 판”이라는 선을 따른다. 쉬움 목표 목록에 모집권 조건을 띄워 놓고 보상만 0으로 만들지 않는다.</p>
+<p>쉬움 첫 진입으로 받는 일반 캐릭터는 허용한다. 이미 획득한 모집권을 로비에서 사용하는 것도 허용한다. 마지막으로 고른 난이도에 따라 모집 기능을 잠그지 않는다.</p>
+<p><strong>[제안] 모집권 지급은 43장의 Run 정산과 같은 거래에 기록한다.</strong> Run ID별 1회이며 결과 화면 재진입으로 다시 주지 않는다. Wave 재시도에서 버린 시도는 지급 근거가 되지 않는다.</p>
+<p>모집은 비용 차감·결과·조각·천장·보유 캐릭터를 한 번에 저장한 뒤 연출한다. 새로고침하면 저장된 결과를 보여 준다. 모집 난수는 Wave 난수와 분리한다.</p>
+<h3>화면 흐름</h3>
+<p><strong>[제안] 스킬트리 옆에 「모집」을 둔다.</strong> Run 밖의 맵 선택·스킬트리에서 접근한다.</p>
+<p><code>모집 → 확률·천장·교환소 확인 → 1회 / 10회 → 결과 → 로스터 / 다시 모집</code></p>
+<p>상단에 모집권·조각·두 천장까지 남은 횟수를 표시한다. 캐릭터 상세에는 시그니처 전체 수치, 프로 동작, 배치 잠금 조건, 확정 합류 경로를 표시한다.</p>
+<p><strong>[제안] 연출은 상황실의 지원서 접수다.</strong> 로켓 발사 기록 옆으로 지원서가 들어오고, 지휘관의 도장이 찍힌 뒤 카드가 열린다. 사람이 로켓에서 상품처럼 나오지는 않는다. 로켓은 귀향 연출이라는 64장의 위치를 유지한다.</p>
+<p>연출은 1회 최대 2초, 10회는 묶음 연출 최대 3초다. 즉시 넘기기와 연출 끄기를 제공한다. SSR만 연출을 강제로 오래 잡지 않는다.</p>
+<hr />
+<h2>5. 기존 시스템과의 접합</h2>
+<h3>21장 — Rescue 브랜치</h3>
+<p><strong>[제안] 역할 노드는 공통 사용권·교육 과정으로 남기고, 개인 성장은 캐릭터 안으로 옮긴다.</strong> 같은 교육 노드를 12벌 만들지 않는다.</p>
+<p>제공된 21장에는 브랜치 원칙은 있으나 아래 이름의 세부 노드 가격은 없다. 다음 비용·개방 시점은 신규 제안이다.</p>
+<table>
+<thead>
+<tr>
+<th>노드</th>
+<th>바뀐 기능 [제안]</th>
+<th style="text-align: right;">인력 비용 [제안]</th>
+<th>개방 조건 [제안]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>구조원</td>
+<td>모든 구조원의 초보 사용권</td>
+<td style="text-align: right;">0</td>
+<td>Map 1 첫 진입</td>
+</tr>
+<tr>
+<td>구조원 · 중급</td>
+<td>보유 구조원 개별 중급 훈련 허용</td>
+<td style="text-align: right;">2</td>
+<td>Map 3 진입</td>
+</tr>
+<tr>
+<td>구조원 · 프로</td>
+<td>보유 구조원 개별 프로 훈련 허용</td>
+<td style="text-align: right;">4</td>
+<td>Map 5 진입, 중급 교육 해금</td>
+</tr>
+<tr>
+<td>집사</td>
+<td>모든 집사의 초보 사용권</td>
+<td style="text-align: right;">2</td>
+<td>Map 2 진입</td>
+</tr>
+<tr>
+<td>집사 · 중급</td>
+<td>보유 집사 개별 중급 훈련 허용</td>
+<td style="text-align: right;">2</td>
+<td>집사 해금, Map 3 진입</td>
+</tr>
+<tr>
+<td>집사 · 프로</td>
+<td>보유 집사 개별 프로 훈련 허용</td>
+<td style="text-align: right;">4</td>
+<td>중급 교육 해금, Map 5 진입</td>
+</tr>
+<tr>
+<td>수의사</td>
+<td>모든 수의사의 초보 영구 사용권</td>
+<td style="text-align: right;">2</td>
+<td>Map 7 진입</td>
+</tr>
+<tr>
+<td>수의사 · 중급</td>
+<td>보유 수의사 개별 중급 훈련 허용</td>
+<td style="text-align: right;">2</td>
+<td>수의사 해금</td>
+</tr>
+<tr>
+<td>수의사 · 프로</td>
+<td>보유 수의사 개별 프로 훈련 허용</td>
+<td style="text-align: right;">4</td>
+<td>중급 교육 해금, Map 8 진입</td>
+</tr>
+</tbody>
+</table>
+<p>역할 사용권은 보유한 모든 해당 역할 캐릭터에 적용된다. 모집은 인력 노드를 대신 열어 주지 않는다.</p>
+<p><strong>[제안] 표의 교육 노드는 별도의 기본 포인트 레벨업을 갖지 않는다.</strong> 실제 중급·프로 훈련에서 캐릭터별로 20·40을 쓴다. 같은 승급에 노드 강화비와 개인 훈련비를 두 번 받지 않는다.</p>
+<p>기존 공통 수치 강화 노드는 6장·21장의 방식대로 유지한다. 인력으로 열고 기본 포인트로 키우며, 적용 대상 역할의 모든 캐릭터에 같은 값을 적용한다.</p>
+<h3>6장 — 재화표 수정문</h3>
+<p><strong>[제안] 다음 문장과 표로 교체한다.</strong></p>
+<blockquote>
+<p>Run 재화는 Rescue Points 하나다. 영구 재화는 기본 포인트 · 인력 · 유인 · 장비 · Golden Paw · 모집권 · 인연 조각 일곱이다. 모집권과 인연 조각은 캐릭터 영입에만 쓰며, 수치 성장과 역할 사용권을 대신하지 않는다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>재화</th>
+<th>용도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기본 포인트</td>
+<td>열린 공통 스킬 강화, 캐릭터별 중급·프로 훈련</td>
+</tr>
+<tr>
+<td>인력</td>
+<td>Rescue 역할 사용권·교육 노드 해금</td>
+</tr>
+<tr>
+<td>유인</td>
+<td>Attraction 노드 해금</td>
+</tr>
+<tr>
+<td>장비</td>
+<td>Automation 노드 해금</td>
+</tr>
+<tr>
+<td>Golden Paw</td>
+<td>기존 Ultimate 해금</td>
+</tr>
+<tr>
+<td>모집권</td>
+<td>모집 또는 인연 조각으로 교환</td>
+</tr>
+<tr>
+<td>인연 조각</td>
+<td>미보유 캐릭터 지정 영입</td>
+</tr>
+</tbody>
+</table>
+<p>Economy 노드는 기존 인력·유인·장비 중 하나만 받는다(6장). 모집권·조각은 Economy 비용이나 연구 배율의 대상이 아니다 <strong>[제안]</strong>.</p>
+<h3>65장 — 등급 표 수정문</h3>
+<p><strong>[제안] “현장 등급은 셋뿐이다”를 다음 문장으로 교체한다.</strong></p>
+<blockquote>
+<p>사람에게는 캐릭터 등급과 성장 단계가 있다. 캐릭터 등급은 일반 · S · SSR이며 영입 확률과 킷 분류를 나타낸다. 성장 단계는 초보 · 중급 · 프로이며 실제 현장 동작을 나타낸다. 성장 저장값 0 · 1 · 2와 별 1 · 2 · 3개는 유지한다. 프로 동작은 같은 역할의 모든 캐릭터에게 공통이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>역할</th>
+<th>초보</th>
+<th>중급</th>
+<th>프로</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>구조원</td>
+<td>고정 위치 단일 구조</td>
+<td>구조 속도·범위 상승</td>
+<td><strong>Auto Move</strong></td>
+</tr>
+<tr>
+<td>집사</td>
+<td>주변 유인 장비 반경 보조</td>
+<td>반경·세기 보조</td>
+<td><strong>맛집 소문</strong></td>
+</tr>
+<tr>
+<td>수의사</td>
+<td>단일 치료</td>
+<td>치료 속도 상승</td>
+<td><strong>집단 치료</strong></td>
+</tr>
+</tbody>
+</table>
+<p>위 동작 구분은 65장·19장을 유지한다. 캐릭터별 시그니처가 이를 대체하지 않는다.</p>
+<p><strong>[제안] 누락된 정량값의 첫 검증 기준은 다음과 같다.</strong> 공통 스킬·Run Upgrade 적용 전 수치다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th style="text-align: right;">초보</th>
+<th style="text-align: right;">중급</th>
+<th style="text-align: right;">프로</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>구조원 구조 범위</td>
+<td style="text-align: right;">3칸</td>
+<td style="text-align: right;">3.3칸</td>
+<td style="text-align: right;">3.3칸</td>
+</tr>
+<tr>
+<td>구조원 작업량</td>
+<td style="text-align: right;">일반 저항 기준 초당 1마리분</td>
+<td style="text-align: right;">초당 1.25마리분</td>
+<td style="text-align: right;">초당 1.25마리분</td>
+</tr>
+<tr>
+<td>집사 보조 범위</td>
+<td style="text-align: right;">3칸</td>
+<td style="text-align: right;">3칸</td>
+<td style="text-align: right;">3칸</td>
+</tr>
+<tr>
+<td>집사 유인 반경 보조</td>
+<td style="text-align: right;">+5%</td>
+<td style="text-align: right;">+10%</td>
+<td style="text-align: right;">+10%</td>
+</tr>
+<tr>
+<td>집사 유인 세기 보조</td>
+<td style="text-align: right;">0%</td>
+<td style="text-align: right;">+10%</td>
+<td style="text-align: right;">+10%</td>
+</tr>
+<tr>
+<td>수의사 치료 범위</td>
+<td style="text-align: right;">3칸</td>
+<td style="text-align: right;">3칸</td>
+<td style="text-align: right;">3칸</td>
+</tr>
+<tr>
+<td>수의사 치료 시간</td>
+<td style="text-align: right;">1마리당 4초</td>
+<td style="text-align: right;">1마리당 3초</td>
+<td style="text-align: right;">범위 안 대상별 3초, 동시 진행</td>
+</tr>
+</tbody>
+</table>
+<p><strong>[제안] 집사 보조는 같은 유인원에 가장 높은 값 하나만 적용한다.</strong> 정지 반경·정원은 늘리지 않는다. 맛집 소문도 같은 츄르에 한 번만 부여하고 기존 츄르 Transformation과 중첩하지 않는다(17장·65장·77장).</p>
+<p><strong>[제안] 구조원 프로의 이동은 초당 1.2칸이다.</strong> 최초 배치는 건물 가장자리의 Build Zone에서 하고, 실행 중에는 그 자리에 연결된 합법적인 건물 가장자리 경로 안에서만 자동 이동한다. 길 횡단·건물 관통·드론의 비행 배치 규칙을 상속하지 않는다. 갈 수 없으면 현재 위치에서 구조한다. 65장의 Auto Move와 75장의 지형 규칙 사이에 있던 빈칸을 이 규칙으로 메운다.</p>
+<p><strong>[제안] 수의사의 치료 진행은 대상별로 누적하고, 범위를 벗어나면 정지한다.</strong> 1초 이내 재진입하면 이어가고, 1초를 넘기면 해당 진행을 버린다. 홀림은 치료 작업을 일시정지한다. 여러 수의사가 가능한 시험 환경에서도 한 대상의 치료 완료 보상은 한 번만 발생한다.</p>
+<h3>69장 — 배치와 편성</h3>
+<p><strong>[제안] 캐릭터 한 명은 현장 한 자리만 차지한다.</strong> 서로 다른 같은 역할 캐릭터는 함께 배치할 수 있다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>규칙 [제안]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>동시 배치 상한</td>
+<td>구조원 3 · 집사 2 · 수의사 1, 총 6</td>
+</tr>
+<tr>
+<td>배치 비용</td>
+<td>구조원 100 · 집사 120 · 수의사 150 Rescue Points</td>
+</tr>
+<tr>
+<td>등급·성장별 배치비 차이</td>
+<td>없음</td>
+</tr>
+<tr>
+<td>영입과 배치비</td>
+<td>영입은 영구 보유권이며 Run 배치비는 별도로 낸다</td>
+</tr>
+<tr>
+<td>준비 단계 교체</td>
+<td>회수 후 다른 캐릭터 배치 가능</td>
+</tr>
+<tr>
+<td>환불</td>
+<td>할인 후 실제 지불액 전액, 69장</td>
+</tr>
+<tr>
+<td>실행 중 교체·수동 이동</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>실행 중 자동 이동</td>
+<td>프로 구조원의 공통 동작만 허용</td>
+</tr>
+<tr>
+<td>시그니처 설정</td>
+<td>준비 단계에서 확정</td>
+</tr>
+</tbody>
+</table>
+<p>Wave 사이 교체한 캐릭터는 자신에게 저장된 성장 단계로 나온다. 공통 Run Upgrade는 역할·장비 적용 규칙에 따라 받으며, 이전 캐릭터의 개인 성장 단계를 물려받지 않는다.</p>
+<p><strong>[제안] 시그니처 쿨다운은 캐릭터별로 Run 동안 보관하고 Live 시간에만 감소한다.</strong> 회수·재배치로 초기화하지 않는다. 현재 Wave 재시도는 캐릭터 ID·성장·시그니처 설정·연결 대상·쿨다운까지 복원한다(69장).</p>
+<h3>Map 7 수의사 대여</h3>
+<p>65장의 “Map 7 이후, 영구 해금 전 초보 수의사 1명 대여”를 유지한다.</p>
+<p><strong>[제안] 대여 대상은 온유다.</strong> Map 7 첫 진입으로 프로필과 보유 명단에는 들어오지만, 수의사 사용권을 열기 전에는 임시 초보 배치만 허용한다.</p>
+<ul>
+<li>Map 7 이후 모든 해당 Run에서 비용·환불액 0인 온유 1명을 제공한다.</li>
+<li>대여 온유도 수의사 1명 상한에 포함한다.</li>
+<li>민서·지안을 먼저 모집했어도 대여 대상을 바꾸지 않는다.</li>
+<li>수의사 노드를 열면 대여가 끝나고 세 수의사에 영구 사용권이 적용된다.</li>
+<li>영구 온유는 정상 배치비를 낸다. 신규 영입으로 다시 처리하지 않는다.</li>
+</ul>
+<h3>14장 — 특수 고양이와의 관계</h3>
+<p><strong>[제안] 시그니처는 기본 대응을 보조한다. 특수의 규칙을 통째로 지우지 않는다.</strong></p>
+<table>
+<thead>
+<tr>
+<th>특수</th>
+<th>유지하는 규칙</th>
+<th>시그니처의 한계 [제안]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>겁쟁이</td>
+<td>사람·차량 공포 반경 5, 수의사 완화</td>
+<td>소연은 자신에 대한 반응 1마리·2초만 억제한다</td>
+</tr>
+<tr>
+<td>애교냥이</td>
+<td>사람 5초 홀림, 기계 면역</td>
+<td>전 캐릭터가 홀린다. SSR 면역 없음</td>
+</tr>
+<tr>
+<td>먹보</td>
+<td>음식 자리 3개 점유</td>
+<td>보미도 빈자리 3개를 확보해야 안내한다</td>
+</tr>
+<tr>
+<td>도둑</td>
+<td>음식 6초 비활성</td>
+<td>집사 보조·연결이 비활성을 해제하지 않는다</td>
+</tr>
+<tr>
+<td>빠른 고양이</td>
+<td>속도·유인 저항 유지</td>
+<td>나리도 음식 범위와 정원을 만족해야 인계한다</td>
+</tr>
+<tr>
+<td>뚱냥이</td>
+<td>구조 작업량 2.5배</td>
+<td>교진도 각 대상의 저항을 그대로 치른다</td>
+</tr>
+<tr>
+<td>광란·돌연변이</td>
+<td>수의사 치료가 기본 답</td>
+<td>수의사를 모집해야만 쓸 수 있게 만들지 않는다</td>
+</tr>
+<tr>
+<td>황금</td>
+<td>Run당 고정 출현·보상 조건 유지</td>
+<td>시그니처로 Golden Paw를 추가하지 않는다</td>
+</tr>
+</tbody>
+</table>
+<p><strong>[제안] 같은 고양이의 돌연변이 치료 Rescue Points 보너스는 Run당 최초 1회만 지급한다.</strong> 재감염·재치료를 수입원으로 만들지 않는다. 치료는 구조·콤보·특수 구조 횟수를 올리지 않으며 Spawn 당시 점수 분류도 유지한다(14장·22장).</p>
+<hr />
+<h2>6. 밸런스 원칙과 검사</h2>
+<p><strong>[제안] “일반만으로 모든 맵 보통 클리어 가능”은 출시 조건이다.</strong> “가능할 것”이라는 문장으로 통과시키지 않는다.</p>
+<p>일반만 사용한다는 뜻은 <strong>사람 유닛의 캐릭터 등급을 일반으로 제한한다</strong>는 뜻이다. 해당 시점에 열린 츄르·투척물·구조망·드론·차량은 사용한다. 기계를 빼는 검사가 아니다.</p>
+<h3>검증 기준</h3>
+<p>76장의 같은 조건에서 기능을 켜고 끄는 방식을 사용한다. 아래는 모두 <strong>[제안] 검사 계획</strong>이며 아직 측정되지 않았다.</p>
+<table>
+<thead>
+<tr>
+<th>검사</th>
+<th>조건</th>
+<th>합격 기준 [제안]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>보통 진행</td>
+<td>Map 1~10, 맵당 고정 시드 100개, 그 시점 확정 일반 캐릭터만</td>
+<td>맵별 95/100 Run 이상 클리어</td>
+</tr>
+<tr>
+<td>재현 가능한 해법</td>
+<td>맵별 고정 배치·성장·투척·조준 기록 1벌</td>
+<td>기준 시드에서 10/10 재실행 성공</td>
+</tr>
+<tr>
+<td>현실적인 영구 성장</td>
+<td>새 저장에서 이전 맵 최초 보통 클리어와 확정 보상만 사용</td>
+<td>재화 음수·미래 보상·어려움 반복·모집 의존 0</td>
+</tr>
+<tr>
+<td>시그니처 존재 이유</td>
+<td>각 캐릭터에 적합·부적합 상황을 각각 1개 이상, 켬/끔 비교</td>
+<td>대상 선택·이동·치료·놓침·개입 횟수 중 실질 차이 1개 이상</td>
+</tr>
+<tr>
+<td>범용 우위</td>
+<td>동일 역할·성장·예산, 일반 대 S/SSR 교체</td>
+<td>의도한 조건이 없는 시험군에서 처리량 이득 10% 이하</td>
+</tr>
+<tr>
+<td>어려움 특화</td>
+<td>연결 음식·특수 압력이 있는 어려움 시험군</td>
+<td>일반 대안보다 일반 놓침 20% 이상 감소 또는 추가 개입 2회 이상 감소</td>
+</tr>
+<tr>
+<td>일반 어려움 해법</td>
+<td>일반 로스터와 해당 시점 허용 성장, 맵별 별도 최적화</td>
+<td>기준 시드 클리어 해법 최소 1벌</td>
+</tr>
+<tr>
+<td>유인 필요성</td>
+<td>중후반 집결 시험군에서 유인 켬/끔 비교</td>
+<td>유인 없이 같은 결과로 통과하면 재설계, 66장</td>
+</tr>
+<tr>
+<td>배치 상한</td>
+<td>일반 6명 대 전체 보유 12명</td>
+<td>같은 역할의 동시 인원 상한이 동일</td>
+</tr>
+<tr>
+<td>공통 프로 보존</td>
+<td>각 역할 일반과 SSR/S에 프로 적용</td>
+<td>Auto Move·맛집 소문·집단 치료가 등급과 무관하게 작동</td>
+</tr>
+</tbody>
+</table>
+<p><strong>[제안] 기록에는 다음 값을 남긴다.</strong></p>
+<p><code>맵 / 난이도 / 시드 / 보유 명단 / 배치 / 성장 / 노드 지출 / 일반 Spawn·구조·놓침 / 특수 구조 / 최대 콤보 / 치료 수 / 유인 점유율 / 추가 투척·조준 횟수 / 완료 시간 / 시그니처 발동·유효 발동 수</code></p>
+<p>SSR 효과가 있어 보이는데 결과가 같으면 통과시키지 않는다. 반대로 구조 수가 같아도 재배치 계획이나 실행 중 개입이 줄었다면 그 값을 적는다. 도둑의 판 단위 검증에서 남긴 기준과 같다(14장·76장).</p>
+<h3>SSR은 어려움에서 어떻게 빛나는가</h3>
+<p><strong>[제안] 난이도를 읽는 숨은 SSR 보너스를 넣지 않는다.</strong> 쉬움·보통·어려움에서 같은 동작을 한다.</p>
+<p>교진은 여러 음식에 붙든 대상이 동시에 쌓여야 두 팔 구조가 의미를 갖는다. 이음은 제한된 자리에서 떨어진 음식으로 보조 효과를 보내야 의미가 있다. 높은 Spawn 압력과 낮은 예산이 이런 배치 판단을 더 자주 요구하게 한다(73장).</p>
+<p>보통에서 SSR이 유용한 것은 허용한다. <strong>보통을 SSR 없이 못 깨거나, SSR을 넣는 순간 유인·조준을 생략할 수 있는 상태는 실패다.</strong></p>
+<h3>파워 크리프 방지</h3>
+<p><strong>[제안] 신규 캐릭터는 다음 조건을 모두 만족해야 한다.</strong></p>
+<ul>
+<li>기존 캐릭터와 기본 수치·성장비·배치비가 같다.</li>
+<li>독립 시그니처는 1개다. 여러 보너스를 묶어 하나라고 부르지 않는다.</li>
+<li>대상 수·범위·지속시간·쿨다운·중첩 규칙을 데이터에 명시한다.</li>
+<li>유리한 상황과 일반 캐릭터가 더 나은 상황을 각각 제시한다.</li>
+<li>전역 유인, 무한 정원, 영구 공포·홀림 면역, 범위 밖 치료를 만들지 않는다.</li>
+<li>캐릭터·등급·보유 수 조합 보너스를 만들지 않는다.</li>
+<li>새 캐릭터에 맞추려고 기존 보통 압력을 올리지 않는다.</li>
+<li>확정 획득 경로를 동시에 제공한다. 한정 모집 전용 캐릭터는 없다.</li>
+</ul>
+<hr />
+<h2>7. 도감 사람 페이지 재설계</h2>
+<p>무늬 12칸은 지도, 특수 10칸은 기록이라는 72장·81장의 구분을 유지한다.</p>
+<p><strong>[제안] 사람 페이지를 「현장 로스터 12명」과 「상황실 3명」의 하위 보기로 나눈다.</strong> 집계도 현장 <code>n/12</code>, 상황실 <code>n/3</code>으로 나누며 고양이 도감과 합산하지 않는다.</p>
+<h3>칸 구성</h3>
+<p><strong>[제안] 현장 로스터는 역할 × 캐릭터 등급으로 분류한다.</strong></p>
+<table>
+<thead>
+<tr>
+<th>역할</th>
+<th>일반</th>
+<th>S</th>
+<th>SSR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>구조원</td>
+<td>한결 · 두리 · 태산</td>
+<td>소연</td>
+<td>교진</td>
+</tr>
+<tr>
+<td>집사</td>
+<td>보미 · 나리</td>
+<td>만복</td>
+<td>이음</td>
+</tr>
+<tr>
+<td>수의사</td>
+<td>온유</td>
+<td>민서 · 지안</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>12장의 카드는 72장의 4열×3행을 유지하고, 역할·등급 필터를 제공한다. 9개 분류 칸 안에 작은 초상화를 빽빽하게 넣지 않는다. 수의사 SSR의 빈 분류는 “이번 로스터에는 없음”으로 표시하며 미획득 칸처럼 보이지 않게 한다.</p>
+<h3>미보유 표시</h3>
+<p><strong>[제안] 미보유 카드는 남쪽 프레임 실루엣·이름·역할·등급을 표시한다.</strong> 상세에는 다음을 공개한다.</p>
+<ul>
+<li>시그니처의 전체 수치와 프로 공통 동작.</li>
+<li>확정 합류 지점.</li>
+<li>지정 영입 가격과 현재 조각.</li>
+<li>상시 모집 확률.</li>
+<li>역할 사용권의 해금 조건.</li>
+</ul>
+<p>예: <code>교진 — Map 8·10 보통 최초 클리어의 SSR 선택 합류 / 조각 60 / 기본 모집 확률 1%</code>.</p>
+<p>칸을 누르면 상세가 열리고 「확정 합류 맵 보기」와 「지정 영입」을 고른다. 미보유 칸을 눌렀다는 이유로 바로 모집 화면으로 보내지 않는다.</p>
+<h3>보유 프로필</h3>
+<p><strong>[제안] 보유하면 다음을 표시한다.</strong></p>
+<p><code>이름 · 별명 · 역할 · 캐릭터 등급 · 성장 단계 · 성격 · 버릇 · 좋아하는 것 · 싫어하는 것 · 한마디 · 이야기 2~3문장 · 구조대 메모 · 획득 경로</code></p>
+<p>게임 규칙은 미보유 상태에서도 읽을 수 있다. 보유 후에는 인물의 읽을거리가 열린다.</p>
+<p><strong>[제안] 프로필 문체 예시는 다음과 같다.</strong></p>
+<blockquote>
+<p><strong>온유 / 별명: 한 번 더</strong><br />
+버릇: 가방을 닫기 전에 안쪽을 한 번 더 본다.<br />
+좋아하는 것: 치료 뒤의 느린 하품.<br />
+싫어하는 것: “이제 괜찮겠지”라는 말.<br />
+한마디: “괜찮아졌어도, 잠깐만 쉬자.”<br />
+이야기: 왕진 가방에는 늘 빈 칸이 하나 있다. 무엇을 더 넣을지 정하지 못해서가 아니라, 현장에서 필요한 것을 챙겨 돌아오기 위해서다.<br />
+구조대 메모: 치료 완료 후 1마리를 1초 세운다. 구조 판정은 별도다.</p>
+</blockquote>
+<h3>발견과 보상</h3>
+<p><strong>[제안] 현장 로스터의 발견은 영입 거래 완료 시점으로 바꾼다.</strong> 첫 배치 여부와 분리한다. “보유하지만 아직 배치하지 않음”은 별도 기록이다. 대여 사용만으로 다른 캐릭터를 보유 처리하지 않는다.</p>
+<p><strong>[제안] 사람 완성 보상은 0이다.</strong> Golden Paw, 기본 포인트, 모집권, 조각 모두 주지 않는다. “전원 합류” 문구와 완성 표식만 남긴다.</p>
+<p>사람은 실제 편성 선택지이므로 수집 자체가 이미 보상이다. 여기에 완성 재화를 붙이면 모으지 않은 사람이 재화에서도 손해를 본다. 기존 사람 명단의 무보상 원칙과 81장의 의도를 유지한다.</p>
+<p>팀장·지휘관·요원은 상황실 보기에 남긴다. 캐릭터 등급·성장·교환 가격이 없다. 앵커는 기존처럼 명단에 넣지 않는다(71장).</p>
+<p><strong>[제안] 오프닝을 스킵한 경우 상황실 명단은 Map 1 첫 진입에서 기록한다.</strong> 시청 완료와 인물 접근권을 분리한다.</p>
+<hr />
+<h2>8. 스토리 — 71장</h2>
+<p><strong>[제안] 상황실의 고정 화자는 팀장·지휘관·요원 셋으로 유지한다.</strong> 오프닝의 앵커는 기존 뉴스 장치로 남는다. “셋만 말한다”는 규칙을 이유로 기존 앵커 대사를 지우지 않는다.</p>
+<p>현장 로스터 12명은 본편 컷신의 추가 화자로 넣지 않는다. 도감 프로필과 준비 단계 배치 한마디로 성격을 전달한다.</p>
+<p>이유는 세 가지다.</p>
+<ol>
+<li>누구를 먼저 모집했는지에 따라 본편 대본을 분기하지 않아도 된다.</li>
+<li>미보유 인물이 중요한 대사를 맡아 수집이 스토리 조건이 되는 일을 막는다.</li>
+<li>71장의 화자 역할과 짧은 반복 학습 루프를 유지한다.</li>
+</ol>
+<p><strong>[제안] 71장의 원문을 다음과 같이 교체한다.</strong></p>
+<blockquote>
+<p>스토리 전용 현장 인물을 따로 만들지 않는다. 현장 인물이 필요하면 65장 로스터를 참조한다. 상황실의 팀장·지휘관·요원은 고정 인물이며 모집 대상이 아니다. 현장 로스터의 개성은 도감과 준비 단계 한마디에 둔다.</p>
+</blockquote>
+<p><strong>[제안] 수의사 합류 장면은 온유의 대여 시작을 알리는 장면으로 정리한다.</strong> 치료 설명은 지휘관, 현황은 요원, “할 일이 하나 늘었다. 고친다”의 회수는 팀장이 맡는다. 스킵해도 온유 대여는 열린다(65장·68장·71장).</p>
+<p>실제 대본 수정은 71장의 단일 원본 절차를 따른다. 별도 JSON에 대사를 중복 작성하지 않는다.</p>
+<p><strong>[제안] 배치 한마디는 캐릭터당 Run 최초 배치 1회, 최대 24자·2초로 제한한다.</strong> 입력을 막지 않고 끄기 설정을 제공한다. 반복 회수로 다시 재생하지 않는다. 첫 버전은 텍스트만이며 음성 제작은 없다.</p>
+<hr />
+<h2>9. 그림 목록</h2>
+<p><strong>[제안] 신규 로스터 그림은 24파일이다. 걷기 시트 12장과 초상 12장이다.</strong> 도감 카드용 남쪽 프레임은 시트에서 읽으며 따로 저장하지 않는다.</p>
+<h3>공통 제작 규격</h3>
+<p>걷기 시트는 제공된 <code>concept-art.md</code>의 규격을 따른다.</p>
+<ul>
+<li>2048×64, 64×64 셀 32개.</li>
+<li>남·남동·동·북동·북·북서·서·남서 순서, 방향별 걷기 4프레임.</li>
+<li>열 번호는 <code>방향 × 4 + 프레임</code>.</li>
+<li>사람 본체 높이 36~40px, 기본 폭 약 16px. 소품 포함 폭은 <strong>[제안] 최대 24px</strong>.</li>
+<li>발 기준점 <code>(32,56)</code>, 투명 PNG, 프레임별 Crop 금지.</li>
+<li>로우 탑다운, 어두운 1px 외곽선, 16색 이하, 안티앨리어싱 없음.</li>
+<li>등급과 성장 별은 UI로 붙인다. 몸 그림에 굽지 않는다.</li>
+</ul>
+<p><strong>[제안] 초상은 요청 규격인 256×256으로 신설한다.</strong> 71장의 기존 팀장 106×96·지휘관 380×344 원본은 바꾸지 않는다. 같은 프레이밍은 같은 파일 치수가 아니라 <strong>머리부터 가슴까지 보이는 정도</strong>를 뜻한다.</p>
+<p>초상은 정면에 가까운 상체, 머리 위 여백 8~16px, 가슴 하단 기준선 y=248, 허리·전신 구도 금지로 잡는다 <strong>[제안]</strong>. 로스터 UI의 정사각 슬롯에 넣고, 검수 때 팀장과 같은 상체 높이로 나란히 비교한다. 기존 대사 초상 슬롯의 비율 검사에는 새 이미지를 예외로 끼워 넣지 않는다.</p>
+<p><strong>[제안] 팔레트 충돌은 다음과 같이 정리한다.</strong> 갈색·크림 등 고양이 털색을 사람의 의상 구분에 쓰지 않는다. 구조원 주황 조끼는 요청과 기존 역할색에 따른 명시적 예외다. 주황 조끼의 면적과 인간 실루엣으로 고양이와 구분한다. 집사는 남색·청회색 앞치마, 수의사는 흰 가운을 유지한다.</p>
+<p>아래 경로의 공통 루트는 <code>Assets/Art/</code>다. 표 전체는 <strong>[제안] 신규 제작 목록</strong>이다.</p>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>규격</th>
+<th>무엇</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Units/rescuer-hangyeol.png</code></td>
+<td>2048×64 시트</td>
+<td>한결. 주황 조끼, 둥근 헬멧, 짧고 네모난 몸, 큰 장갑. 좁은 자세의 묵직한 걷기. 공통 8방향·4프레임 규격.</td>
+</tr>
+<tr>
+<td><code>Story/Face/portrait-rescuer-hangyeol.png</code></td>
+<td>256×256</td>
+<td>한결. 주황 조끼가 보이는 가슴까지의 상체, 둥근 헬멧과 네모난 턱, 차분한 정면 표정. 투명 배경.</td>
+</tr>
+<tr>
+<td><code>Units/rescuer-duri.png</code></td>
+<td>2048×64 시트</td>
+<td>두리. 주황 조끼, 머리 양옆 묶음 두 개, 좁은 어깨, 양쪽 허리 파우치. 머리의 좌우 돌출로 한결과 구분.</td>
+</tr>
+<tr>
+<td><code>Story/Face/portrait-rescuer-duri.png</code></td>
+<td>256×256</td>
+<td>두리. 주황 조끼, 양옆 묶음머리, 살짝 고개를 기울여 양쪽을 살피는 표정. 가슴까지, 투명 배경.</td>
+</tr>
+<tr>
+<td><code>Units/rescuer-taesan.png</code></td>
+<td>2048×64 시트</td>
+<td>태산. 주황 조끼, 각진 안전모, 넓은 어깨와 긴 팔, 낮은 구조 가방. 로스터 구조원 중 가장 넓은 상체.</td>
+</tr>
+<tr>
+<td><code>Story/Face/portrait-rescuer-taesan.png</code></td>
+<td>256×256</td>
+<td>태산. 주황 조끼, 각진 안전모와 넓은 어깨, 굳게 다문 입. 가슴까지 보이는 상체, 투명 배경.</td>
+</tr>
+<tr>
+<td><code>Units/rescuer-soyeon.png</code></td>
+<td>2048×64 시트</td>
+<td>소연. 주황 조끼, 낮은 챙 모자, 굽힌 무릎, 한쪽 어깨의 접힌 매트. 낮고 비대칭인 실루엣.</td>
+</tr>
+<tr>
+<td><code>Story/Face/portrait-rescuer-soyeon.png</code></td>
+<td>256×256</td>
+<td>소연. 주황 조끼, 낮은 챙 모자와 한쪽 매트 끈, 부드럽게 눈높이를 맞추는 표정. 가슴까지, 투명 배경.</td>
+</tr>
+<tr>
+<td><code>Units/rescuer-gyojin.png</code></td>
+<td>2048×64 시트</td>
+<td>교진. 주황 조끼, 키 큰 몸, 위로 솟은 짧은 머리, 양팔의 넓은 보호대. 긴 세로축과 큰 팔로 구분.</td>
+</tr>
+<tr>
+<td><code>Story/Face/portrait-rescuer-gyojin.png</code></td>
+<td>256×256</td>
+<td>교진. 주황 조끼, 솟은 짧은 머리, 화면 아래 양옆에 보호대가 보이는 가슴 구도. 의욕적인 표정, 투명 배경.</td>
+</tr>
+<tr>
+<td><code>Units/butler-bomi.png</code></td>
+<td>2048×64 시트</td>
+<td>보미. 남색 앞치마, 둥근 머릿수건, 낮고 넓은 몸, 한 손의 둥근 쟁반. 둥근 외곽을 반복한다.</td>
+</tr>
+<tr>
+<td><code>Story/Face/portrait-butler-bomi.png</code></td>
+<td>256×256</td>
+<td>보미. 남색 앞치마와 둥근 머릿수건, 둥근 어깨, 밝게 자리를 안내하는 표정. 가슴까지, 투명 배경.</td>
+</tr>
+<tr>
+<td><code>Units/butler-nari.png</code></td>
+<td>2048×64 시트</td>
+<td>나리. 청회색 앞치마, 높은 묶음머리, 긴 다리, 세로로 접힌 냅킨. 집사 중 높은 머리 실루엣.</td>
+</tr>
+<tr>
+<td><code>Story/Face/portrait-butler-nari.png</code></td>
+<td>256×256</td>
+<td>나리. 청회색 앞치마, 높은 묶음머리, 또렷하고 단정한 표정. 머리부터 가슴까지, 투명 배경.</td>
+</tr>
+<tr>
+<td><code>Units/butler-manbok.png</code></td>
+<td>2048×64 시트</td>
+<td>만복. 남색 앞치마, 넓은 사각 모자, 둥근 어깨, 옆으로 나온 사각 배달 가방. 가로로 넓은 실루엣.</td>
+</tr>
+<tr>
+<td><code>Story/Face/portrait-butler-manbok.png</code></td>
+<td>256×256</td>
+<td>만복. 남색 앞치마, 넓은 사각 모자, 배달 가방 어깨끈, 친근하고 느긋한 표정. 가슴까지, 투명 배경.</td>
+</tr>
+<tr>
+<td><code>Units/butler-ieum.png</code></td>
+<td>2048×64 시트</td>
+<td>이음. 청회색 긴 앞치마, 짧은 단발, 가늘고 긴 몸, 허리 양옆 낮은 직사각 도시락통. 세로 몸과 수평 소품 대비.</td>
+</tr>
+<tr>
+<td><code>Story/Face/portrait-butler-ieum.png</code></td>
+<td>256×256</td>
+<td>이음. 청회색 앞치마, 짧은 단발, 가는 어깨, 조용히 계획하는 표정. 가슴까지, 투명 배경.</td>
+</tr>
+<tr>
+<td><code>Units/vet-onyu.png</code></td>
+<td>2048×64 시트</td>
+<td>온유. 흰 짧은 가운, 둥근 안경, 둥근 몸, 반원형 왕진 가방. 가방과 몸이 둥근 실루엣.</td>
+</tr>
+<tr>
+<td><code>Story/Face/portrait-vet-onyu.png</code></td>
+<td>256×256</td>
+<td>온유. 흰 가운, 둥근 안경과 청진기, 안심시키는 작은 미소. 가슴까지, 투명 배경.</td>
+</tr>
+<tr>
+<td><code>Units/vet-minseo.png</code></td>
+<td>2048×64 시트</td>
+<td>민서. 흰 긴 가운, 높은 묶음머리, 가는 몸, 옆에 세운 기록판. 길고 좁은 실루엣.</td>
+</tr>
+<tr>
+<td><code>Story/Face/portrait-vet-minseo.png</code></td>
+<td>256×256</td>
+<td>민서. 흰 가운, 높은 묶음머리, 아래 한쪽에 기록판 윗부분, 집중한 표정. 가슴까지, 투명 배경.</td>
+</tr>
+<tr>
+<td><code>Units/vet-jian.png</code></td>
+<td>2048×64 시트</td>
+<td>지안. 흰 가운, 낮은 사각 의료 모자, 넓은 소매, 가로로 긴 의료 가방. 낮고 넓은 실루엣.</td>
+</tr>
+<tr>
+<td><code>Story/Face/portrait-vet-jian.png</code></td>
+<td>256×256</td>
+<td>지안. 흰 가운, 낮은 사각 의료 모자, 넓은 어깨선, 차분히 살피는 표정. 가슴까지, 투명 배경.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>[제안] 합계는 시트 12파일·384셀, 초상 12파일이다.</strong> 기존 사람 3종의 제작 항목을 이 목록으로 대체한다. 도감 남쪽 프레임 12개는 참조 영역이며 신규 파일 수에 더하지 않는다.</p>
+<p>신규 모집권·조각 아이콘은 첫 버전에서 기존 UI 틀과 코드 도형으로 표시한다 <strong>[제안]</strong>. 별도 그림 제작을 추가하지 않으므로 이 기능의 신규 원화 목록은 24파일로 닫힌다.</p>
+<p><strong>[제안] 80장의 기존 합계도 바꾼다.</strong> 기존 기본 목록 59종·702셀에서 사람 3종·12셀을 빼고 12종·384셀을 더하면 <strong>68종·1,074셀</strong>이다. 광란·돌연변이를 포함하면 <strong>70종·1,138셀</strong>이다. 초상 12장은 기존 규칙대로 월드 아틀라스 합계 밖에서 센다.</p>
+<hr />
+<h2>10. 데이터 스키마</h2>
+<p><strong>[제안] 정적 정의와 플레이어 저장을 분리한다.</strong></p>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>소유하는 데이터 [제안]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>web/data/roster.json</code></td>
+<td>캐릭터 ID·역할·등급·시그니처·성장 규칙·프로필·그림</td>
+</tr>
+<tr>
+<td><code>web/data/recruit.json</code></td>
+<td>모집 재화·수입·풀·확률·천장·조각·교환·확정 합류</td>
+</tr>
+<tr>
+<td><code>web/data/catalog.json</code></td>
+<td>페이지 구성·캐릭터 참조·상황실 명단·고양이 도감</td>
+</tr>
+<tr>
+<td>플레이어 저장</td>
+<td>보유 ID·개인 성장·역할 노드·잔액·천장·지급 키·모집 거래</td>
+</tr>
+</tbody>
+</table>
+<p>캐릭터의 게임 규칙과 프로필을 <code>catalog.json</code>에 다시 복사하지 않는다. 사람 페이지는 <code>roster.json</code>의 ID를 참조한다. 기존 <code>rescuer / butler / vet</code> 세 항목은 역할 설명용 레거시 ID로만 남기고 현장 카드로 세지 않는다.</p>
+<h3><code>web/data/roster.json</code> 예시</h3>
+<p><strong>[제안] 다음은 온유 1명을 담은 유효 JSON 예시다.</strong> 실제 파일에는 2절의 12명을 같은 형식으로 넣는다. <code>effect</code>는 실행 코드가 지원하는 열거값이며 자유 텍스트를 실행하지 않는다.</p>
+<pre><code class="language-json">{
+  &quot;schemaVersion&quot;: 1,
+  &quot;source&quot;: {
+    &quot;gdd&quot;: &quot;1.5.1&quot;,
+    &quot;proposalChapter&quot;: 82,
+    &quot;chapters&quot;: [19, 21, 65, 69, 75, 78, 81]
+  },
+  &quot;rarities&quot;: [&quot;normal&quot;, &quot;S&quot;, &quot;SSR&quot;],
+  &quot;growth&quot;: {
+    &quot;initialStage&quot;: 0,
+    &quot;stages&quot;: [
+      {&quot;id&quot;: 0, &quot;ko&quot;: &quot;초보&quot;, &quot;stars&quot;: 1},
+      {&quot;id&quot;: 1, &quot;ko&quot;: &quot;중급&quot;, &quot;stars&quot;: 2},
+      {&quot;id&quot;: 2, &quot;ko&quot;: &quot;프로&quot;, &quot;stars&quot;: 3}
+    ],
+    &quot;transitions&quot;: [
+      {
+        &quot;from&quot;: 0,
+        &quot;to&quot;: 1,
+        &quot;currency&quot;: &quot;basePoints&quot;,
+        &quot;cost&quot;: 20,
+        &quot;licenseSuffix&quot;: &quot;intermediate&quot;
+      },
+      {
+        &quot;from&quot;: 1,
+        &quot;to&quot;: 2,
+        &quot;currency&quot;: &quot;basePoints&quot;,
+        &quot;cost&quot;: 40,
+        &quot;licenseSuffix&quot;: &quot;pro&quot;
+      }
+    ],
+    &quot;rarityCostMultiplier&quot;: 1
+  },
+  &quot;deployment&quot;: {
+    &quot;uniqueCharacter&quot;: true,
+    &quot;totalCap&quot;: 6,
+    &quot;roleCaps&quot;: {
+      &quot;rescuer&quot;: 3,
+      &quot;butler&quot;: 2,
+      &quot;vet&quot;: 1
+    },
+    &quot;baseCosts&quot;: {
+      &quot;rescuer&quot;: 100,
+      &quot;butler&quot;: 120,
+      &quot;vet&quot;: 150
+    },
+    &quot;initialTerrain&quot;: &quot;buildingEdgeInBuildZone&quot;,
+    &quot;allowedPhase&quot;: &quot;prep&quot;
+  },
+  &quot;characters&quot;: [
+    {
+      &quot;id&quot;: &quot;vet-onyu&quot;,
+      &quot;ko&quot;: &quot;온유&quot;,
+      &quot;role&quot;: &quot;vet&quot;,
+      &quot;rarity&quot;: &quot;normal&quot;,
+      &quot;verb&quot;: &quot;고친다&quot;,
+      &quot;baseStatsRef&quot;: &quot;personnel-vet&quot;,
+      &quot;rarityStatMultiplier&quot;: 1,
+      &quot;growthTrack&quot;: &quot;personal&quot;,
+      &quot;roleLicense&quot;: &quot;rescue.vet&quot;,
+      &quot;earliestDeploymentMap&quot;: 7,
+      &quot;signature&quot;: {
+        &quot;id&quot;: &quot;rest-after-treatment&quot;,
+        &quot;effect&quot;: &quot;holdAfterTreatment&quot;,
+        &quot;togglePhase&quot;: &quot;prep&quot;,
+        &quot;enabledByDefault&quot;: true,
+        &quot;trigger&quot;: &quot;treatmentCompleted&quot;,
+        &quot;durationSeconds&quot;: 1,
+        &quot;cooldownSeconds&quot;: 4,
+        &quot;maxTargetsPerTrigger&quot;: 1,
+        &quot;maxApplicationsPerCatPerWave&quot;: 1,
+        &quot;batchTieBreak&quot;: &quot;spawnOrder&quot;,
+        &quot;stacking&quot;: &quot;nonStacking&quot;,
+        &quot;cooldownClock&quot;: &quot;liveGameTime&quot;,
+        &quot;requiresOperatorActive&quot;: true
+      },
+      &quot;loan&quot;: {
+        &quot;fromMap&quot;: 7,
+        &quot;untilLicense&quot;: &quot;rescue.vet&quot;,
+        &quot;stage&quot;: 0,
+        &quot;cost&quot;: 0,
+        &quot;refund&quot;: 0,
+        &quot;countsTowardRoleCap&quot;: true
+      },
+      &quot;profile&quot;: {
+        &quot;nickname&quot;: &quot;한 번 더&quot;,
+        &quot;personality&quot;: &quot;안심했다는 표정을 보고 손을 뗀다.&quot;,
+        &quot;habit&quot;: &quot;가방을 닫기 전에 안쪽을 한 번 더 본다.&quot;,
+        &quot;likes&quot;: &quot;치료 뒤의 느린 하품&quot;,
+        &quot;dislikes&quot;: &quot;이제 괜찮겠지라는 말&quot;,
+        &quot;line&quot;: &quot;괜찮아졌어도, 잠깐만 쉬자.&quot;,
+        &quot;story&quot;: [
+          &quot;왕진 가방에는 늘 빈 칸이 하나 있다.&quot;,
+          &quot;현장에서 필요한 것을 챙겨 돌아오기 위해서다.&quot;
+        ]
+      },
+      &quot;art&quot;: {
+        &quot;root&quot;: &quot;Assets/Art/&quot;,
+        &quot;sprite&quot;: &quot;Units/vet-onyu.png&quot;,
+        &quot;portrait&quot;: &quot;Story/Face/portrait-vet-onyu.png&quot;,
+        &quot;sheetSize&quot;: [2048, 64],
+        &quot;cellSize&quot;: [64, 64],
+        &quot;directions&quot;: [&quot;S&quot;, &quot;SE&quot;, &quot;E&quot;, &quot;NE&quot;, &quot;N&quot;, &quot;NW&quot;, &quot;W&quot;, &quot;SW&quot;],
+        &quot;framesPerDirection&quot;: 4,
+        &quot;pivot&quot;: [32, 56],
+        &quot;catalogFrame&quot;: 0,
+        &quot;portraitSize&quot;: [256, 256],
+        &quot;portraitBaselineY&quot;: 248
+      }
+    }
+  ]
+}
+</code></pre>
+<h3><code>web/data/recruit.json</code> 예시</h3>
+<p><strong>[제안] A안의 확률·지급·확정 합류를 한 파일에서 읽는다.</strong></p>
+<pre><code class="language-json">{
+  &quot;schemaVersion&quot;: 1,
+  &quot;mode&quot;: &quot;A&quot;,
+  &quot;availableOutsideRunOnly&quot;: true,
+  &quot;unlock&quot;: &quot;map-01-normal-first-clear&quot;,
+  &quot;currency&quot;: &quot;recruitTicket&quot;,
+  &quot;costPerDraw&quot;: 1,
+  &quot;tenDrawCost&quot;: 10,
+  &quot;freeDraw&quot;: {
+    &quot;count&quot;: 1,
+    &quot;key&quot;: &quot;recruit-introduction-v1&quot;,
+    &quot;usesPity&quot;: true,
+    &quot;grantsBaseShards&quot;: true
+  },
+  &quot;runRewards&quot;: {
+    &quot;requiresClear&quot;: true,
+    &quot;oncePerRunId&quot;: true,
+    &quot;ticketByDifficulty&quot;: {
+      &quot;easy&quot;: 0,
+      &quot;normal&quot;: 2,
+      &quot;hard&quot;: 3
+    },
+    &quot;failure&quot;: 0,
+    &quot;abandon&quot;: 0,
+    &quot;affectedByEconomyMultiplier&quot;: false
+  },
+  &quot;pool&quot;: {
+    &quot;id&quot;: &quot;permanent-v1&quot;,
+    &quot;weights&quot;: {
+      &quot;normal&quot;: 8000,
+      &quot;S&quot;: 1800,
+      &quot;SSR&quot;: 200
+    },
+    &quot;members&quot;: {
+      &quot;normal&quot;: [
+        &quot;rescuer-hangyeol&quot;,
+        &quot;rescuer-duri&quot;,
+        &quot;rescuer-taesan&quot;,
+        &quot;butler-bomi&quot;,
+        &quot;butler-nari&quot;,
+        &quot;vet-onyu&quot;
+      ],
+      &quot;S&quot;: [
+        &quot;rescuer-soyeon&quot;,
+        &quot;butler-manbok&quot;,
+        &quot;vet-minseo&quot;,
+        &quot;vet-jian&quot;
+      ],
+      &quot;SSR&quot;: [
+        &quot;rescuer-gyojin&quot;,
+        &quot;butler-ieum&quot;
+      ]
+    },
+    &quot;withinRarity&quot;: &quot;uniform&quot;,
+    &quot;filterByOwnership&quot;: false,
+    &quot;filterByRoleLicense&quot;: false
+  },
+  &quot;pity&quot;: {
+    &quot;priority&quot;: [&quot;SSR&quot;, &quot;SOrHigher&quot;, &quot;base&quot;],
+    &quot;SOrHigher&quot;: {
+      &quot;guaranteedDraw&quot;: 10,
+      &quot;resetOn&quot;: [&quot;S&quot;, &quot;SSR&quot;],
+      &quot;weightsAtGuarantee&quot;: {&quot;S&quot;: 9800, &quot;SSR&quot;: 200}
+    },
+    &quot;SSR&quot;: {
+      &quot;guaranteedDraw&quot;: 40,
+      &quot;resetOn&quot;: [&quot;SSR&quot;],
+      &quot;weightsAtGuarantee&quot;: {&quot;SSR&quot;: 10000}
+    },
+    &quot;duplicatesReset&quot;: true,
+    &quot;exchangeAndMilestonesCount&quot;: false,
+    &quot;tenDrawsResolveSequentially&quot;: true
+  },
+  &quot;shards&quot;: {
+    &quot;currency&quot;: &quot;bondShard&quot;,
+    &quot;basePerDraw&quot;: 2,
+    &quot;duplicateExtra&quot;: {
+      &quot;normal&quot;: 2,
+      &quot;S&quot;: 6,
+      &quot;SSR&quot;: 20
+    },
+    &quot;ticketConversion&quot;: {&quot;tickets&quot;: 1, &quot;shards&quot;: 2},
+    &quot;reverseConversion&quot;: false
+  },
+  &quot;exchange&quot;: {
+    &quot;prices&quot;: {&quot;normal&quot;: 8, &quot;S&quot;: 24, &quot;SSR&quot;: 60},
+    &quot;allPoolMembersAvailable&quot;: true,
+    &quot;unownedOnly&quot;: true,
+    &quot;rotatingStock&quot;: false
+  },
+  &quot;guaranteedJoins&quot;: {
+    &quot;mapEntryGrants&quot;: [
+      {&quot;map&quot;: 1, &quot;characters&quot;: [&quot;rescuer-hangyeol&quot;]},
+      {&quot;map&quot;: 2, &quot;characters&quot;: [&quot;rescuer-duri&quot;, &quot;butler-bomi&quot;]},
+      {&quot;map&quot;: 3, &quot;characters&quot;: [&quot;rescuer-taesan&quot;]},
+      {&quot;map&quot;: 4, &quot;characters&quot;: [&quot;butler-nari&quot;]},
+      {&quot;map&quot;: 7, &quot;characters&quot;: [&quot;vet-onyu&quot;]}
+    ],
+    &quot;firstNormalClearChoices&quot;: [
+      {&quot;map&quot;: 3, &quot;rarity&quot;: &quot;S&quot;, &quot;count&quot;: 1},
+      {&quot;map&quot;: 5, &quot;rarity&quot;: &quot;S&quot;, &quot;count&quot;: 1},
+      {&quot;map&quot;: 7, &quot;rarity&quot;: &quot;S&quot;, &quot;count&quot;: 1},
+      {&quot;map&quot;: 9, &quot;rarity&quot;: &quot;S&quot;, &quot;count&quot;: 1},
+      {&quot;map&quot;: 8, &quot;rarity&quot;: &quot;SSR&quot;, &quot;count&quot;: 1},
+      {&quot;map&quot;: 10, &quot;rarity&quot;: &quot;SSR&quot;, &quot;count&quot;: 1}
+    ],
+    &quot;choicePolicy&quot;: &quot;unownedFirst&quot;,
+    &quot;duplicateOrCompletedTierShards&quot;: {
+      &quot;normal&quot;: 2,
+      &quot;S&quot;: 6,
+      &quot;SSR&quot;: 20
+    },
+    &quot;oncePerProfile&quot;: true,
+    &quot;keyPattern&quot;: &quot;roster-join-{eventId}-v1&quot;
+  },
+  &quot;transaction&quot;: {
+    &quot;commitBeforeAnimation&quot;: true,
+    &quot;separateRandomStreamFromRun&quot;: true,
+    &quot;saveResultWithCostAndPity&quot;: true
+  }
+}
+</code></pre>
+<h3>저장·이행·검사</h3>
+<p><strong>[제안] 저장에는 다음을 추가한다.</strong></p>
+<p>ownedRosterIds, growthByRosterId, recruitTickets, bondShards, drawsSinceSOrHigher, drawsSinceSSR, recruitTransactionId, pendingRecruitResult, claimedRosterMilestones.</p>
+<p>확정 선택 보상은 바로 고르지 않아도 저장된 미수령 권리로 남는다. 다른 모집으로 해당 등급을 완성한 뒤 수령하면 정해진 조각 보상을 준다.</p>
+<p><strong>[제안] 기존 저장은 다음과 같이 이행한다.</strong></p>
+<ul>
+<li>기존 구조원 → 한결, 집사 → 보미, 수의사 → 온유로 대응한다.</li>
+<li>이미 영구 해금한 역할과 교육 단계는 유지한다.</li>
+<li>영구 구매로 확보한 성장 단계는 대응 기본 캐릭터에 보존한다. Run 안에서만 올린 임시 단계는 이월하지 않는다.</li>
+<li>이미 진입한 맵의 일반 지급과 이미 보통 클리어한 맵의 선택 지급을 누락분만 지급한다.</li>
+<li>과거 반복 Run 횟수로 모집권을 소급 지급하지 않는다.</li>
+<li>마이그레이션 키를 남겨 재실행해도 중복 지급하지 않는다.</li>
+</ul>
+<p><strong>[제안] 로딩 검사는 12명·6:4:2·5:4:3 합계, ID 참조, 확률 합 10,000, 빈 모집 등급, 천장 경계, 중복 환산, 그림 치수, 도감 참조를 확인한다.</strong> 40번째와 10번째 천장이 겹칠 때 SSR이 먼저 적용되는 반례도 검사한다.</p>
+<hr />
+<h2>11. B안 — 모집 없이 조각 교환만</h2>
+<p><strong>[제안] B안은 모집권·무작위 결과·천장을 없애고, 인연 조각으로만 지정 영입한다.</strong> 로스터·성장·배치·확정 합류는 A안과 같다.</p>
+<table>
+<thead>
+<tr>
+<th>지급 조건</th>
+<th style="text-align: right;">쉬움</th>
+<th style="text-align: right;">보통</th>
+<th style="text-align: right;">어려움</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Run 클리어</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">조각 4</td>
+<td style="text-align: right;">조각 6</td>
+</tr>
+<tr>
+<td>해당 Run의 특수 구조 목표 달성 + 클리어</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">추가 2</td>
+<td style="text-align: right;">추가 2</td>
+</tr>
+<tr>
+<td>실패·포기</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>첫 교환 안내</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">Map 1 보통 최초 클리어에 추가 2, 1회</td>
+<td style="text-align: right;">—</td>
+</tr>
+</tbody>
+</table>
+<p>표 전체는 <strong>[제안]</strong>이다. 특수 출현 수가 목표보다 적어 목표가 제외된 Run은 추가 2개도 없다(67장). 기존 인력 재화 지급은 그대로이며 조각으로 대체하지 않는다.</p>
+<p><strong>[제안] 가격은 일반 8 · S 24 · SSR 60으로 A안과 같다.</strong> 특수 목표까지 달성하면 SSR 한 명은 보통 10 Run 또는 어려움 8 Run 이내에 지정 영입한다. 확정 맵 합류는 이와 별도로 진행된다.</p>
+<table>
+<thead>
+<tr>
+<th>기준</th>
+<th>A안 — 천장 있는 모집</th>
+<th>B안 — 조각 교환</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>새 방향 충족</td>
+<td>재화 뽑기를 직접 제공한다</td>
+<td>뽑기 방향을 철회해야 한다</td>
+</tr>
+<tr>
+<td>영입 경험</td>
+<td>예상하지 않은 킷을 먼저 만나게 된다</td>
+<td>원하는 킷을 순서대로 고른다</td>
+</tr>
+<tr>
+<td>계획 가능성</td>
+<td>천장·기본 조각·확정 합류로 보완한다</td>
+<td>비용과 남은 Run이 바로 보인다</td>
+</tr>
+<tr>
+<td>도감 원칙</td>
+<td>확정 합류 경로가 있어야 양립한다</td>
+<td>확률 의존이 없어 더 직접적으로 맞는다</td>
+</tr>
+<tr>
+<td>중복</td>
+<td>조각 환산·설명이 필요하다</td>
+<td>발생하지 않는다</td>
+</tr>
+<tr>
+<td>UI·저장 비용</td>
+<td>확률·천장·결과 거래·중복 처리 필요</td>
+<td>교환 거래만 필요</td>
+</tr>
+<tr>
+<td>반복 플레이 압박</td>
+<td>조기 획득 욕구가 모집 반복으로 이어질 수 있다</td>
+<td>목표 가격만큼 진행하며 불확실성이 없다</td>
+</tr>
+<tr>
+<td>신규 캐릭터 선택 편향</td>
+<td>무작위 영입이 비주류 킷 체험을 유도한다</td>
+<td>성능 평가가 좋은 캐릭터에 구매가 몰릴 수 있다</td>
+</tr>
+</tbody>
+</table>
+<p><strong>[제안] 시스템 원칙만 기준으로 하면 B안을 권장한다.</strong> 81장의 지도 원칙, 63장의 작은 제작 범위, 76장의 동작 검증 우선과 더 잘 맞는다. 같은 캐릭터 선택을 더 적은 규칙으로 제공한다.</p>
+<p>다만 <strong>“재화로 뽑기 가능하게”가 확정 방향이면 본문의 A안을 채택한다.</strong> A안도 보통 진행으로 전원 합류하고, 모집권을 조각으로 바로 바꿀 수 있어 확률 참여를 강제하지 않는다. B안을 권장한다는 이유로 A안의 구현 규칙을 비워 두지 않는다.</p>
+<hr />
+<h2>12. 모순 · 질문</h2>
+<p><strong>[제안] 선택이 필요한 항목과 검토용 기본값은 다음과 같다.</strong> 선택 전에도 본문의 A안은 아래 기본값으로 일관되게 읽힌다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>문제</th>
+<th>기본값 [제안]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A안·B안</td>
+<td>뽑기 방향과 GDD의 확정 진행 철학 중 어디에 무게를 둘 것인가</td>
+<td>현재 요청 구현은 A안. 단순화할 경우 B안</td>
+</tr>
+<tr>
+<td>전원 확정 합류</td>
+<td>모집만으로 수집하게 하면 81장과 충돌한다</td>
+<td>보통 Map 10까지 12명 전원 확정</td>
+</tr>
+<tr>
+<td>성장 용어</td>
+<td>일반·S·SSR과 초보·중급·프로를 모두 “등급”이라 부르면 혼동한다</td>
+<td>캐릭터 등급 / 성장 단계로 구분</td>
+</tr>
+<tr>
+<td>사람 배치 상한</td>
+<td>한 캐릭터 한 자리만 두면 보유 수가 곧 추가 타워 수가 된다</td>
+<td>구조원 3·집사 2·수의사 1</td>
+</tr>
+<tr>
+<td>SSR 기본 수치</td>
+<td>작은 수치 차이도 여러 축에서 곱해진다</td>
+<td>기본 수치 차이 0%</td>
+</tr>
+<tr>
+<td>수의사 조기 영입</td>
+<td>모집이 Map 7 교육 순서를 앞당길 수 있다</td>
+<td>보유 허용, Map 7 이전 배치 불가</td>
+</tr>
+<tr>
+<td>온유 대여와 보유</td>
+<td>이름 있는 캐릭터를 보유했는데도 대여라고 부르는 이유가 필요하다</td>
+<td>인물 합류와 역할의 영구 사용권을 분리</td>
+</tr>
+<tr>
+<td>프로 구조원 이동</td>
+<td>65장의 Seek 동작과 75장의 사람 배치 지형이 충분히 연결돼 있지 않다</td>
+<td>건물 가장자리의 연결 경로에서만 Auto Move</td>
+</tr>
+<tr>
+<td>초상 규격</td>
+<td>요청 256×256과 71장 기존 초상 비율이 다르다</td>
+<td>로스터 전용 정사각 슬롯, 상체 프레이밍 통일</td>
+</tr>
+<tr>
+<td>주황 조끼</td>
+<td>털색 금지 문장과 구조원 주황 역할색이 충돌한다</td>
+<td>주황 조끼만 명시적 예외, 다른 의상은 남색·청회색·흰색</td>
+</tr>
+<tr>
+<td>67장 수입</td>
+<td>전체 가격·난이도별 정량표가 아직 충분하지 않다</td>
+<td>기존 수입 유지, 모집권 보통 2·어려움 3만 신설</td>
+</tr>
+<tr>
+<td>성장·배치 초깃값</td>
+<td>새 비용이 실제 맵 예산과 맞는지 아직 측정하지 않았다</td>
+<td>6절의 새 저장 진행 검사를 통과하기 전 출시 확정값으로 표시하지 않음</td>
+</tr>
+<tr>
+<td>로스터 완성 후 재화</td>
+<td>조각에 쓸 곳이 사라진다</td>
+<td>잔액 보존. 기본 포인트·Golden Paw 전환은 없음</td>
+</tr>
+<tr>
+<td>71장 대본</td>
+<td>제공 본문에는 합류 장면의 실제 10줄이 없다</td>
+<td>단일 원본 대본에서 화자를 확인한 뒤 수정, 이 설계가 수정 완료를 뜻하지 않음</td>
+</tr>
+</tbody>
+</table>
+<p><strong>[제안] 문서 반영은 82장 신설과 함께 진행한다.</strong> 핵심 수정 장은 6·21·65·67·69·71·72·80·81장이다. 4장의 루프, 39·40장의 데이터와 저장, 43장의 정산, 73장의 보상 표, 75·78장의 이동·범위, 76장의 검사 목록도 맞춘다. 장 번호는 다시 매기지 않는다.</p>
+<p><strong>[제안] 현재 상태는 설계 완료·구현 및 밸런스 미검증이다.</strong> 76장에는 새 수치를 측정값으로 쓰지 않고 검사 예정 항목으로 먼저 등록한다.</p>
+<h3>요약 10줄</h3>
+<ol>
+<li><strong>[제안]</strong> 현장 캐릭터는 구조원 5 · 집사 4 · 수의사 3, 합계 12명이다.</li>
+<li><strong>[제안]</strong> 캐릭터 등급은 일반 6 · S 4 · SSR 2이며 기본 수치 차이는 0%다.</li>
+<li><strong>[제안]</strong> 초보·중급·프로는 개인 성장이고, 승급비는 전 등급 공통 기본 포인트 20·40이다.</li>
+<li><strong>[제안]</strong> 모집권은 보통 클리어 2개·어려움 3개·쉬움 0개이며 1회 비용은 1개다.</li>
+<li><strong>[제안]</strong> 기본 확률은 일반 80%·S 18%·SSR 2%, 천장은 S 이상 10회·SSR 40회다.</li>
+<li><strong>[제안]</strong> 조각 가격은 일반 8·S 24·SSR 60이며, 모든 캐릭터를 지정 영입할 수 있다.</li>
+<li><strong>[제안]</strong> 보통 Map 10까지 모집 없이 전원 합류하며, 사람 도감 완성 보상은 없다.</li>
+<li><strong>[제안]</strong> 동시 인원은 구조원 3·집사 2·수의사 1이고, 일반만으로 모든 맵 보통을 검증한다.</li>
+<li><strong>[제안]</strong> 핵심 변경 장은 6·21·65·67·69·71·72·80·81장, 신설 장은 82장이다.</li>
+<li><strong>[제안]</strong> 신규 그림은 걷기 시트 12장·초상 12장, 총 24파일이며 도감 카드는 시트를 재사용한다.</li>
+</ol>
+<hr />
+</section>
 <section class="chapter" id="end-of-document">
 <h2>End of Document</h2>
-<p><strong>Too Many Cats! — Game Design Document v1.5.1 FULL</strong></p>
+<p><strong>Too Many Cats! — Game Design Document v1.6.0 FULL</strong></p>
 </section>
 <section class="chapter" id="변경-이력">
 <h2>변경 이력</h2>
+<h2>v1.6.0 — 현장 로스터와 모집</h2>
+<ul>
+<li><strong>82장 신설 — 현장 로스터와 모집.</strong> 사람 유닛의 세 역할을 <strong>12명의 캐릭터</strong>(구조원 5 · 집사 4 · 수의사 3)로 나눴다.
+  캐릭터 등급 일반 6 · S 4 · SSR 2 는 <strong>세기가 아니라 킷과 성격</strong>이다 — 기본 수치 차이 0%, 시그니처 특성 하나씩.
+  성장 단계 초보 · 중급 · 프로는 캐릭터 안에 그대로 두고(65장), SSR 도 초보로 합류한다.</li>
+<li><strong>모집(뽑기)과 확정 합류를 같이 둔다.</strong> 새 재화 모집권(보통 클리어 2 · 어려움 3 · 쉬움 0)과 인연 조각. 기본 확률 80 · 18 · 2%,
+  천장 S 이상 10회 · SSR 40회, 중복은 조각, 교환소에서 지정 영입(8 · 24 · 60). <strong>보통 Map 10 까지 진행하면 모집 없이 12명 전원 합류</strong>한다 —
+  81장 「도감은 확률이 아니라 지도」 와 양립시키는 장치다. Golden Paw 는 쓰지 않는다 (6장).</li>
+<li><strong>동시 편성 상한</strong> 구조원 3 · 집사 2 · 수의사 1 (69장) — 보유 수가 곧 타워 수가 되지 않게.</li>
+<li><strong>출시 조건</strong> 「일반 캐릭터만으로 모든 맵 보통 클리어」 (82장 6절 검사 계획). 바뀐 장: 6 · 21 · 65 · 67 · 69 · 71 · 72 · 80 · 81.</li>
+<li>도감 사람 페이지는 명단 → <strong>현장 로스터 12 + 상황실 3</strong>. 완성 보상 없음. 로스터 12명은 본편 대사에 나오지 않고 도감 프로필과 배치 한마디로만 (71장).</li>
+<li>그림 24장(걷기 시트 12 · 초상 12)은 그림 지시문 9단계.</li>
+</ul>
 <h2>v1.5.1 — 장르를 타워 디펜스로 명시</h2>
 <ul>
 <li><strong>장르 (0장 · 1장 · 69장)</strong> — 「Strategy」 로만 적혀 있던 장르를 <strong>타워 디펜스</strong>로 못 박았다.
