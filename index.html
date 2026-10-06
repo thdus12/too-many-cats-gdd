@@ -1,4 +1,4 @@
-<title>Too Many Cats! — 기획서 v1.6.0</title>
+<title>Too Many Cats! — 기획서 v1.6.1</title>
 
 <style>
   /* ── 라이트가 기본. 다크는 토큰만 덮는다 ── */
@@ -1140,7 +1140,7 @@
 <nav id="nav">
   <div class="brand">
     <b>Too Many Cats!</b>
-    <span>GDD v1.6.0</span>
+    <span>GDD v1.6.1</span>
   </div>
   <div class="nav-group"><h3>개요<small>무엇을 만드는가</small></h3><ul><li><a href="#s0"><span class="n">0</span><span class="t">문서 정보</span><span class="fig"></span></a></li><li><a href="#s1"><span class="n">1</span><span class="t">게임 개요</span><span class="fig"></span></a></li><li><a href="#s2"><span class="n">2</span><span class="t">핵심 판타지</span><span class="fig"></span></a></li><li><a href="#s3"><span class="n">3</span><span class="t">디자인 원칙</span><span class="fig"></span></a></li><li><a href="#s4"><span class="n">4</span><span class="t">기본 게임 루프</span><span class="fig"></span></a></li><li><a href="#s5"><span class="n">5</span><span class="t">Run 구조</span><span class="fig"></span></a></li><li><a href="#s6"><span class="n">6</span><span class="t">자원</span><span class="fig"></span></a></li></ul></div>
 <div class="nav-group"><h3>고양이<small>무리가 어떻게 움직이는가</small></h3><ul><li><a href="#s7"><span class="n">7</span><span class="t">고양이 데이터</span><span class="fig"></span></a></li><li><a href="#s8"><span class="n">8</span><span class="t">Cat State Machine</span><span class="fig"></span></a></li><li><a href="#s9"><span class="n">9</span><span class="t">고양이 이동 시스템</span><span class="fig"></span></a></li><li><a href="#s10"><span class="n">10</span><span class="t">Flow Field</span><span class="fig"></span></a></li><li><a href="#s11"><span class="n">11</span><span class="t">Attraction System</span><span class="fig"></span></a></li><li><a href="#s12"><span class="n">12</span><span class="t">Separation / Crowd</span><span class="fig"></span></a></li><li><a href="#s13"><span class="n">13</span><span class="t">기본 고양이 종류</span><span class="fig"></span></a></li><li><a href="#s14"><span class="n">14</span><span class="t">특수 고양이</span><span class="fig"></span></a></li><li><a href="#s15"><span class="n">15</span><span class="t">Wave 시스템</span><span class="fig"></span></a></li></ul></div>
@@ -1157,7 +1157,7 @@
 
 <main>
   <header>
-    <p class="eyebrow">Game Design Document v1.6.0</p>
+    <p class="eyebrow">Game Design Document v1.6.1</p>
     <h1>Too Many Cats!</h1>
     <p>
       외계 고양이 행성에서 쳐들어온 고양이 떼를 구조해 로켓에 태워 돌려보내는
@@ -1183,7 +1183,7 @@
 <li>Art Style: 2D Pixel Art</li>
 <li>Primary Art Tool: PixelLab</li>
 <li>Development Style: Solo + AI Assisted</li>
-<li>Document Version: 1.6.0</li>
+<li>Document Version: 1.6.1</li>
 </ul>
 <p>현재 제작·검증 대상은 웹판이다. Unity / C# 은 이전 프로토타입이고, 본문에 남은 그쪽 코드 이름과
 실측은 이식 참고 기록이다. 웹판 구현이 끝났다는 뜻이 아니다.</p>
@@ -1235,7 +1235,7 @@ x742</p>
 <li><strong>구조 시작</strong> — 플레이어가 직접 시작을 누른다</li>
 <li>고양이 Spawn</li>
 <li>기본 Flow를 따라 이동</li>
-<li><strong>실행 중 개입</strong> — 참치 · 캣닢 · 레이저로 흐름을 튼다 (69장)</li>
+<li><strong>실행 중 개입</strong> — 참치 · 캣닢 · 레이저로 흐름을 틀고, 번 돈으로 즉시 업그레이드하거나 급한 자리에 설치한다 (69장)</li>
 <li>고양이를 한곳에 집결</li>
 <li>대량 구조</li>
 <li>Rescue Points 획득</li>
@@ -1254,7 +1254,7 @@ x742</p>
 <pre class="mermaid">flowchart LR
   Start([Run 시작]) --> Prep[준비 단계<br/>배치 · 69장]
   Prep -->|구조 시작| Wave[Wave 진행<br/>Spawn · 흐름 · 집결]
-  Wave --> Live[실행 중 개입<br/>투척 · 조준 · 69장]
+  Wave --> Live[실행 중 개입<br/>투척 · 조준 · 구매 · 업그레이드 · 69장]
   Live --> Wave
   Wave --> Judge{Wave 종료<br/>클리어 평가 · 67장}
   Judge -->|남은 Wave 있음| Upgrade[Run Upgrade<br/>20장]
@@ -1905,7 +1905,7 @@ Wave 총 수 T, 황금 수 G, 최종 비율 r 에 대해 비황금 특수 수는
 <tr>
 <td>0.6</td>
 <td>먹보</td>
-<td>실행 중에는 참치 · 캣닢을 던져 점유를 분산한다. 설치형 유인원 추가는 다음 준비 단계에서</td>
+<td>실행 중에는 참치 · 캣닢을 던져 점유를 분산한다. 설치형 유인원 추가는 실행 중에도 되지만 설치 시간을 치른다 (69장)</td>
 </tr>
 <tr>
 <td>0.5</td>
@@ -1915,7 +1915,7 @@ Wave 총 수 T, 황금 수 G, 최종 비율 r 에 대해 비황금 특수 수는
 <tr>
 <td>0.35</td>
 <td><strong>도둑 · 애교냥이 · 광란 · 돌연변이</strong></td>
-<td><strong>실행 중 투척 · 조준으로 대응하고, 다음 준비 단계에 배치를 바꾼다</strong></td>
+<td><strong>실행 중 투척 · 조준으로 대응하고, 급하면 설치 시간을 치르고 세운다. 옮기는 것은 다음 준비 단계</strong></td>
 </tr>
 </tbody>
 </table>
@@ -3092,8 +3092,8 @@ TooManyCats</p>
 </table>
 <p>프로 효과는 17장의 츄르 Transformation 을 유닛으로 옮긴 것이다.</p>
 <h3>수의사</h3>
-<p>준비 단계에 배치한다. 실행 중 범위 안에 치료 대상이 들어오면 스스로 반응한다.
-플레이어는 광란 · 돌연변이를 투척 · 조준으로 치료 범위에 데려온다. 실행 중 신규 배치 · 회수 ·
+<p>준비 단계에 배치하거나, 실행 중 도착 시간 5초를 치르고 세운다 (69장). 실행 중 범위 안에 치료 대상이 들어오면 스스로 반응한다.
+플레이어는 광란 · 돌연변이를 투척 · 조준으로 치료 범위에 데려온다. 실행 중 회수 ·
 수동 재배치는 없다 (69장) — 문제가 난 자리에 사람을 즉시 놓게 하면 69장이 막으려던 실시간 배치가
 예외 하나로 돌아온다. 유인이 치료의 선행 조건이 되는 쪽이 3장과 맞다.</p>
 <table>
@@ -3367,14 +3367,19 @@ Wave 전에 배치를 끝내야 Spawn 위치와 지형을 읽고 판을 짜게 �
 </thead>
 <tbody>
 <tr>
-<td><strong>준비</strong></td>
+<td><strong>준비, 실행 중(도착 5초)</strong></td>
 <td>구조원 · 수의사 · 집사 (65장)</td>
-<td>사람은 원래 상주시킨다</td>
+<td>사람은 원래 상주시킨다. 실행 중에는 걸어와서 자리를 잡는다</td>
 </tr>
 <tr>
-<td><strong>준비</strong></td>
+<td><strong>준비, 실행 중(설치 3초)</strong></td>
 <td>츄르 디스펜서 · 구조망 · 드론 기지 · 차량 경로</td>
-<td>설치물</td>
+<td>설치물. 실행 중에는 「작업 중」 표시 뒤 켜진다</td>
+</tr>
+<tr>
+<td><strong>준비, 실행 중(즉시)</strong></td>
+<td>설치물 · 사람의 업그레이드</td>
+<td>Rescue Points 를 바로 쓴다</td>
 </tr>
 <tr>
 <td><strong>실행 중</strong></td>
@@ -3391,6 +3396,18 @@ Wave 전에 배치를 끝내야 Spawn 위치와 지형을 읽고 판을 짜게 �
 <p>이 경계는 이미 <code>EquipmentCategory</code> 로 코드에 있다.
 <code>Device</code> / <code>Attraction</code> 은 설치, <code>Throwable</code> / <code>Beam</code> 은 투척·조준이다.
 우연이 아니라 원래 입력 방식부터 다른 물건이라 그렇게 나뉘어 있었다.</p>
+<h2>실행 중 구매와 업그레이드 (v1.6.1)</h2>
+<p><strong>기획자 판단: 「설치 후 시작을 눌러 보기만」 과 「전부 실시간」 사이.</strong></p>
+<ul>
+<li><strong>업그레이드는 실행 중 즉시.</strong> 구조로 번 Rescue Points 를 바로 쓴다 — 「구조 → 강해짐」 이 손에 잡혀야 수천 마리가 몰리는 장면에서 손이 심심하지 않다.
+  이미 놓인 것을 키우는 일이라 맵 읽기를 해치지 않는다.</li>
+<li><strong>설치는 실행 중에도 되지만 설치 시간을 치른다.</strong> 설치물 3초 「작업 중」, 사람은 도착 5초 — 가장 가까운 길가에서 걸어와 자리를 잡는다. 도착 전에는 일하지 않고
+  Build Zone 규칙(18장)과 편성 상한(아래)은 같다. 미리 깐 것은 0초부터 일하므로 <strong>예측이 여전히 이득</strong>이고, 급할 때 급히 세우는 재미는 생긴다.</li>
+<li><strong>회수 · 이동은 Wave 사이에만.</strong> 「몰린 데로 옮기기」 를 막는 선이다. 실행 중 세운 것도 그 Wave 안에서는 확정이다.</li>
+<li><strong>구조 시작은 수동 그대로.</strong> Wave 는 저절로 흐르지 않는다. 준비 화면에서 흐름 화살표와 등장 예정을 보고 판을 짜는 순간은 남는다.</li>
+<li>실행 중 구매 · 업그레이드 패널은 하단 바 안에 접혀 있고 펼쳐도 중앙 70% 를 가리지 않는다 (72장).</li>
+</ul>
+<p>「실시간 배치만 있으면 몰린 데 찍기」 의 답이 설치 시간이고, 「전부 사전 배치면 관객」 의 답이 즉시 업그레이드와 투척물이다.</p>
 <h2>계획과 즉흥의 긴장</h2>
 <p>준비 단계는 예산을 태워 판을 짜는 시간이고,
 투척물은 계획이 틀어졌을 때 쓰는 <strong>제한된 카드</strong>다.</p>
@@ -3400,7 +3417,7 @@ Wave 전에 배치를 끝내야 Spawn 위치와 지형을 읽고 판을 짜게 �
 <h2>회수 정책</h2>
 <ul>
 <li><strong>Wave 사이</strong> — 자유롭게 회수하고 다시 배치한다. 비용은 전액 돌려받는다.</li>
-<li><strong>구조 시작 후</strong> — 확정된다. 설치형은 옮길 수 없다.</li>
+<li><strong>구조 시작 후</strong> — 놓인 것은 확정된다. 설치형은 옮길 수 없다. 새로 사서 세우는 것과 업그레이드는 된다 (위 절).</li>
 </ul>
 <p>준비 단계는 계획을 세우는 시간이지 벌 받는 시간이 아니다.
 실수의 대가는 Wave 안에서 이미 충분히 치른다.</p>
@@ -3424,7 +3441,7 @@ Wave 전에 배치를 끝내야 Spawn 위치와 지형을 읽고 판을 짜게 �
 </tr>
 <tr>
 <td>사람 · 장비 · 등급 · 경로</td>
-<td>구조 시작 직전 배치</td>
+<td>구조 시작 직전 배치 (실행 중 세우고 올린 것은 버린다)</td>
 </tr>
 <tr>
 <td>Rescue Points</td>
@@ -5169,6 +5186,7 @@ v1.5 에는 따로 미니맵을 두지 않는다 — 전체 보기가 그 역할
 <li>콤보(22장)는 상시 표시가 아니라 <strong>올라갈 때만</strong> 화면 옆에서 튀어나온다</li>
 <li>장비 슬롯은 쿨다운을 <strong>링과 남은 초를 함께</strong> 표시한다 — 1초 미만은 소수 1자리, 1초 이상은 올림한 정수 초. 준비 단계에서 배치한 것과 실행 중 쓰는 것을 <strong>줄로 나눈다</strong>(69장)</li>
 <li>직접 쓰는 도구는 참치 · 캣닢 · 레이저 · 낚시대 <strong>4슬롯으로 고정</strong>한다. 미해금 슬롯은 잠금으로 남기고, 설치물은 별도 상태 행에서 종류별 개수로 묶는다</li>
+<li><strong>구매 · 업그레이드 패널</strong>은 하단 바에 접혀 있다 (69장 v1.6.1). 펼치면 설치물 · 사람 목록과 가격, 선택한 것의 업그레이드 한 줄. 중앙 70% 를 가리지 않는다. 실행 중 설치는 「작업 중 3초」 · 「도착 5초」 를 자리 위에 링으로 보여 준다</li>
 </ul>
 <div class="mockup">  <figure>
     <div class="screen" id="scr-hud">
@@ -7424,7 +7442,7 @@ A안(천장 있는 모집)을 적용한다. B안(조각 교환만)은 11절에 �
 </tr>
 <tr>
 <td>69장·18장 — 사람은 준비 단계에 배치한다</td>
-<td><strong>[제안]</strong> 모집·영구 성장은 Run 밖에서만 한다. 실행 중 합류·교대·신규 배치는 없고, 시그니처도 이 경계를 넘지 않는다.</td>
+<td><strong>[제안]</strong> 모집·영구 성장은 Run 밖에서만 한다. 실행 중 교대는 없고(신규 배치는 도착 5초를 치르고 가능, 69장 v1.6.1), 시그니처도 이 경계를 넘지 않는다.</td>
 </tr>
 <tr>
 <td>6장·67장 — 기존 재화의 용도와 수입이 정해져 있다</td>
@@ -8136,7 +8154,7 @@ A안(천장 있는 모집)을 적용한다. B안(조각 교환만)은 11절에 �
 </tr>
 <tr>
 <td>실행 중 교체·수동 이동</td>
-<td>불가</td>
+<td>불가. 신규 배치는 도착 5초 (69장 v1.6.1)</td>
 </tr>
 <tr>
 <td>실행 중 자동 이동</td>
@@ -9017,10 +9035,17 @@ A안(천장 있는 모집)을 적용한다. B안(조각 교환만)은 11절에 �
 </section>
 <section class="chapter" id="end-of-document">
 <h2>End of Document</h2>
-<p><strong>Too Many Cats! — Game Design Document v1.6.0 FULL</strong></p>
+<p><strong>Too Many Cats! — Game Design Document v1.6.1 FULL</strong></p>
 </section>
 <section class="chapter" id="변경-이력">
 <h2>변경 이력</h2>
+<h2>v1.6.1 — 실행 중 구매와 업그레이드</h2>
+<ul>
+<li><strong>69장 — 구매 · 설치 · 업그레이드를 실행 중에도 연다.</strong> 업그레이드는 즉시, 설치는 설치 시간(설치물 3초 · 사람 도착 5초)을 치른다.
+  회수 · 이동은 Wave 사이에만, 구조 시작은 수동 그대로. 기획자 판단 — 「설치 후 시작 눌러 보기만」 은 관객이 되는 Wave 가 생기고,
+  「전부 실시간」 은 몰린 데 찍기가 된다. 설치 시간이 예측의 값을 지키고, 즉시 업그레이드가 「구조 → 강해짐」 을 손에 쥐어 준다.</li>
+<li>14 · 65 · 72 · 82장의 「실행 중 신규 배치 없음」 문장을 같이 고쳤다. 투척 · 조준의 제한 카드 성격은 그대로다.</li>
+</ul>
 <h2>v1.6.0 — 현장 로스터와 모집</h2>
 <ul>
 <li><strong>82장 신설 — 현장 로스터와 모집.</strong> 사람 유닛의 세 역할을 <strong>12명의 캐릭터</strong>(구조원 5 · 집사 4 · 수의사 3)로 나눴다.
