@@ -1094,6 +1094,12 @@
   .rc-bottom { display: flex; align-items: center; gap: 1em; color: var(--s-dim); font-size: .88em; }
   .rc-bottom .back { padding: .18em .8em; border: 1px solid var(--s-rule); border-radius: 4px; color: var(--s-ink); }
 
+  /* ── 재화 피드백 (69장 v1.6.1) ── */
+  .coin-float { position: absolute; font-family: ui-monospace, monospace; font-weight: 700; color: var(--s-gold); font-size: .95em; text-shadow: 0 1px 0 #000; pointer-events: none; }
+  .coin-float i { display: inline-block; width: .7em; height: .7em; border-radius: 50%; background: var(--s-gold); border: 1px solid #7a5a0a; margin-right: .25em; vertical-align: -1px; }
+  .up-badge { position: absolute; width: 1.3em; height: 1.3em; border-radius: 50%; background: var(--s-gold); color: #1a1200; font-weight: 700; font-size: .8em; line-height: 1.3em; text-align: center; border: 1px solid #7a5a0a; pointer-events: none; }
+  .up-chip { display: inline-block; margin-left: .6em; padding: 0 .5em; border: 1px solid var(--s-gold); border-radius: 3px; color: var(--s-gold); font-size: .78em; vertical-align: middle; }
+
 
   /* ── 좁은 화면 ── */
   .nav-toggle {
@@ -2239,8 +2245,8 @@ Wave 총 수 T, 황금 수 G, 최종 비율 r 에 대해 비황금 특수 수는
 <li>약한 Screen Shake</li>
 <li>Rescue Effect</li>
 <li>Combo Sound</li>
-<li>Currency Explosion</li>
-<li>UI Counter 급증</li>
+<li>Currency Explosion — 코인 묶음 하나가 터져 HUD 로 날아간다. 마리당 코인이 아니다 (69장 재화 피드백 루프, 동시 24개 상한)</li>
+<li>UI Counter 급증 — 코인이 도착하는 박자에 맞춰 뛴다</li>
 <li>고양이 군집이 빠르게 사라지는 연출</li>
 </ul>
 </section>
@@ -2733,6 +2739,43 @@ docs/
 <li>Medium Horde: 여러 고양이 Ambience</li>
 <li>Huge Horde: 군중형 Cat Sound</li>
 </ul>
+<h2>재화 · 업그레이드 소리 (v1.6.1)</h2>
+<table>
+<thead>
+<tr>
+<th>소리</th>
+<th>언제</th>
+<th>규칙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>코인 드롭</td>
+<td>구조 판정, 코인이 바닥에 튈 때</td>
+<td>짧고 낮게. 0.1초 안에 겹치면 하나로 합친다</td>
+</tr>
+<tr>
+<td>뾰로롱</td>
+<td>코인이 소지금에 도착할 때</td>
+<td>밝은 상승음. 묶음은 한 번, 피치는 금액에 따라 살짝 올린다</td>
+</tr>
+<tr>
+<td>업글 가능</td>
+<td>살 수 있게 된 순간</td>
+<td>1회. 상시 반복 없음</td>
+</tr>
+<tr>
+<td>업글 완료</td>
+<td>업그레이드를 눌렀을 때</td>
+<td>묵직한 확인음</td>
+</tr>
+<tr>
+<td>대량 구조</td>
+<td>구조망 · 차량이 묶음으로 걷을 때</td>
+<td>Combo Sound 와 Currency Explosion 이 같이 난다 (23장)</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section class="chapter" id="s45">
 <h2>45. VFX</h2>
@@ -3408,6 +3451,22 @@ Wave 전에 배치를 끝내야 Spawn 위치와 지형을 읽고 판을 짜게 �
 <li>실행 중 구매 · 업그레이드 패널은 하단 바 안에 접혀 있고 펼쳐도 중앙 70% 를 가리지 않는다 (72장).</li>
 </ul>
 <p>「실시간 배치만 있으면 몰린 데 찍기」 의 답이 설치 시간이고, 「전부 사전 배치면 관객」 의 답이 즉시 업그레이드와 투척물이다.</p>
+<h3>재화 피드백 루프 — 구조 → 코인 → 뾰로롱 → 업글 표식 → 업글</h3>
+<pre><code>구조 판정  →  Rescue Points 즉시 가산 (로직)
+            →  고양이 자리에 코인 드롭 (0.4초 바닥에서 튐)
+            →  코인이 HUD 소지금으로 날아간다 — 「뾰로롱」 모션 + 효과음, 도착하는 순간 숫자가 뛴다 (연출)
+            →  업그레이드가 가능해진 설치물 · 사람 위에 ↑ 표식, 하단 패널의 그 항목이 밝아진다 + 짧은 알림음 1회
+            →  누르면 즉시 업그레이드. 소지금이 줄고 표식이 꺼진다
+</code></pre>
+<ul>
+<li><strong>로직은 즉시, 연출은 따라간다.</strong> 가산은 구조 판정 프레임에 끝난다. 코인이 날아가는 0.5초 동안에도 그 돈으로 업그레이드할 수 있다 — 연출 때문에 입력을 막지 않는다.
+  소지금 숫자는 코인이 도착할 때 뛰게 보이되, 표시값이 실제값보다 뒤처지는 시간은 0.6초를 넘기지 않는다.</li>
+<li><strong>대량 구조는 묶는다.</strong> 구조망이 100마리를 한 번에 걷으면 코인 100개가 아니라 <strong>코인 묶음 하나 + 숫자 팝업(+1,200)</strong> 이다 (23장 Currency Explosion · Number Pop).
+  화면에 동시에 떠 있는 코인 스프라이트는 최대 24개, 넘치면 숫자 팝업으로만 보여 준다. 수천 마리 판에서 코인 파티클이 고양이보다 많아지면 안 된다 (32 · 53장).</li>
+<li><strong>업글 표식은 「살 수 있게 된 순간」 한 번만 알린다.</strong> 돈이 모자라졌다가 다시 차면 다시 뜬다. 상시 깜빡임은 없다 — 깜빡이면 알림이 아니라 소음이다.
+  표식은 설치물 머리 위 16px ↑ 배지(UI 색 <code>#F0B840</code>), 패널 항목은 테두리가 밝아진다. 색만으로 알리지 않는다 (58장).</li>
+<li>코인은 수집 입력이 없다. 떨어진 코인을 줍는 게임이 아니라 자동으로 들어온다 — 손은 투척 · 조준 · 업글에 쓴다.</li>
+</ul>
 <h2>계획과 즉흥의 긴장</h2>
 <p>준비 단계는 예산을 태워 판을 짜는 시간이고,
 투척물은 계획이 틀어졌을 때 쓰는 <strong>제한된 카드</strong>다.</p>
@@ -5187,6 +5246,7 @@ v1.5 에는 따로 미니맵을 두지 않는다 — 전체 보기가 그 역할
 <li>장비 슬롯은 쿨다운을 <strong>링과 남은 초를 함께</strong> 표시한다 — 1초 미만은 소수 1자리, 1초 이상은 올림한 정수 초. 준비 단계에서 배치한 것과 실행 중 쓰는 것을 <strong>줄로 나눈다</strong>(69장)</li>
 <li>직접 쓰는 도구는 참치 · 캣닢 · 레이저 · 낚시대 <strong>4슬롯으로 고정</strong>한다. 미해금 슬롯은 잠금으로 남기고, 설치물은 별도 상태 행에서 종류별 개수로 묶는다</li>
 <li><strong>구매 · 업그레이드 패널</strong>은 하단 바에 접혀 있다 (69장 v1.6.1). 펼치면 설치물 · 사람 목록과 가격, 선택한 것의 업그레이드 한 줄. 중앙 70% 를 가리지 않는다. 실행 중 설치는 「작업 중 3초」 · 「도착 5초」 를 자리 위에 링으로 보여 준다</li>
+<li><strong>소지금은 코인이 도착하는 박자에 뛴다</strong> (69장 재화 피드백 루프). 업그레이드가 가능해지면 설치물 머리 위 ↑ 배지와 패널 항목의 밝은 테두리, 알림음 1회. 3등급 정보 「지금 뭘 쓸 수 있나」 가 이것이다</li>
 </ul>
 <div class="mockup">  <figure>
     <div class="screen" id="scr-hud">
@@ -5229,7 +5289,7 @@ v1.5 에는 따로 미니맵을 두지 않는다 — 전체 보기가 그 역할
               <div class="slot cooling"><span class="ico">🎣</span><span class="key">4</span><span class="cd">11</span></div>
               <div style="margin-left:.8em">
                 <span class="stat-label">소지금</span>
-                <span class="stat-value" style="color:var(--s-gold)">1,240</span>
+                <span class="stat-value" style="color:var(--s-gold)">1,240<span class="up-chip">↑ 구조망 업글 가능 · 900</span></span>
               </div>
             </div>
           </div>
@@ -5238,6 +5298,9 @@ v1.5 에는 따로 미니맵을 두지 않는다 — 전체 보기가 그 역할
           </div>
         </div>
 
+        <span class="coin-float" style="left:38%; top:46%;"><i></i>+12</span>
+        <span class="coin-float" style="left:55%; top:58%;"><i></i>+1,200</span>
+        <span class="up-badge" style="left:62%; top:52%;">↑</span>
         <span class="pin" style="right:1.3em; top:4.8em;">1</span>
         <span class="pin" style="left:1.3em; top:4.8em;">2</span>
         <span class="pin" style="left:1.3em; bottom:8.2em;">3</span>
@@ -5250,6 +5313,7 @@ v1.5 에는 따로 미니맵을 두지 않는다 — 전체 보기가 그 역할
     <li><b>2</b><span>Wave 진행과 남은 고양이. 진행 막대가 있어야 "이 판이 언제 끝나나" 가 읽힌다.</span></li>
     <li><b>3</b><span>장비 슬롯은 <strong>준비 단계에서 배치한 것과 실행 중 쓰는 것을 줄로 나눈다</strong> (GDD 69). 쿨다운은 링이 아니라 남은 초로 — 숫자가 더 정확하다.</span></li>
     <li><b>4</b><span>콤보는 상시 표시가 아니다. 올라갈 때만 화면 옆에서 튀어나왔다 사라진다 (GDD 22).</span></li>
+    <li><b>✦</b><span><strong>재화 피드백 루프</strong> (GDD 69). 구조하면 코인이 떨어져 「뾰로롱」 하고 소지금으로 날아가고, 살 수 있게 된 설치물 위에 ↑ 배지가 뜬다. 묶음 구조는 코인 100개가 아니라 <em>+1,200</em> 한 덩어리다.</span></li>
   </ul></div>
 
 <h3>Run Upgrade 선택</h3>
@@ -9045,6 +9109,8 @@ A안(천장 있는 모집)을 적용한다. B안(조각 교환만)은 11절에 �
   회수 · 이동은 Wave 사이에만, 구조 시작은 수동 그대로. 기획자 판단 — 「설치 후 시작 눌러 보기만」 은 관객이 되는 Wave 가 생기고,
   「전부 실시간」 은 몰린 데 찍기가 된다. 설치 시간이 예측의 값을 지키고, 즉시 업그레이드가 「구조 → 강해짐」 을 손에 쥐어 준다.</li>
 <li>14 · 65 · 72 · 82장의 「실행 중 신규 배치 없음」 문장을 같이 고쳤다. 투척 · 조준의 제한 카드 성격은 그대로다.</li>
+<li><strong>재화 피드백 루프 (69 · 23 · 44 · 72장).</strong> 구조하면 재화는 즉시 가산되고, 고양이 자리에 코인이 떨어져 「뾰로롱」 모션과 소리로 소지금에 들어간다.
+  업그레이드가 가능해지면 그 설치물 위에 표식이 뜨고 패널이 밝아진다 — 보고 누른다. 대량 구조는 코인을 묶고 숫자로 보여 준다 (성능).</li>
 </ul>
 <h2>v1.6.0 — 현장 로스터와 모집</h2>
 <ul>
